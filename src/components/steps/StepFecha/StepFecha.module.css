@@ -1,0 +1,175 @@
+.wrapper { width: 100%; }
+
+.title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #18120E;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: #78716c;
+  margin: 0 0 2rem;
+  line-height: 1.65;
+}
+
+.calendarWrapper {
+  background-color: #ffffff;
+  border: 1px solid rgba(24,18,14,0.09);
+  border-radius: 1.1rem;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  width: 100%;
+  box-shadow: 0 1px 4px rgba(24,18,14,0.04);
+}
+
+.calendarWrapper :global(.rdp) {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: #18120E;
+  --rdp-background-color: rgba(24,18,14,0.05);
+  margin: 0;
+  width: 100%;
+}
+
+.calendarWrapper :global(.rdp-months) { width: 100%; }
+.calendarWrapper :global(.rdp-month) { width: 100%; }
+.calendarWrapper :global(.rdp-table) { width: 100%; max-width: 100%; }
+
+.calendarWrapper :global(.rdp-caption_label) {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #18120E;
+  text-transform: capitalize;
+}
+
+.calendarWrapper :global(.rdp-head_cell) {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #a8a29e;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.calendarWrapper :global(.rdp-day) {
+  font-size: 0.85rem;
+  color: #18120E;
+  border-radius: 0.5rem;
+  transition: background-color 0.15s;
+}
+
+.calendarWrapper :global(.rdp-day:hover:not(.rdp-day_selected):not(.rdp-day_disabled)) {
+  background-color: rgba(24,18,14,0.05);
+}
+
+.calendarWrapper :global(.rdp-day_selected) {
+  background-color: #18120E !important;
+  color: #ffffff !important;
+  border-radius: 0.5rem;
+}
+
+.calendarWrapper :global(.rdp-day_today:not(.rdp-day_selected)) {
+  color: #A07848;
+  font-weight: 700;
+}
+
+.calendarWrapper :global(.rdp-day_disabled) {
+  color: #d4d0cb;
+  cursor: not-allowed;
+}
+
+.calendarWrapper :global(.rdp-nav_button) {
+  color: #18120E;
+  border-radius: 0.5rem;
+  transition: background-color 0.15s;
+}
+
+.calendarWrapper :global(.rdp-nav_button:hover) {
+  background-color: rgba(24,18,14,0.05);
+}
+
+.selectedDate {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 1rem 1.25rem;
+  background-color: #18120E;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.selectedDateIcon {
+  color: #A07848;
+  flex-shrink: 0;
+}
+
+.selectedDateText {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: capitalize;
+}
+
+.selectedDateSub {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.45);
+  margin-top: 0.12rem;
+}
+
+.buttons { display: flex; gap: 0.75rem; }
+
+.btnSecondary {
+  flex: 1;
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  border: 1.5px solid rgba(24,18,14,0.12);
+  background-color: #ffffff;
+  color: #57534e;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.btnSecondary:hover {
+  border-color: #18120E;
+  color: #18120E;
+}
+
+.btnPrimary {
+  flex: 2;
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  border: none;
+  background-color: #18120E;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.btnPrimary:hover {
+  background-color: #2C1F14;
+  transform: translateY(-1px);
+}
+
+.btnPrimary:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  transform: none;
+}

@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink:        #18120E;
+  --ink-soft:   #57534e;
+  --ink-muted:  #a8a29e;
+  --ink-faint:  #d4d0cb;
+  --gold:       #A07848;
+  --gold-light: rgba(160,120,72,0.1);
+  --surface:    #FFFFFF;
+  --bg:         #FAFAF8;
+  --border:     rgba(24,18,14,0.09);
+  --border-mid: rgba(24,18,14,0.14);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  background-color: var(--bg);
+  min-height: 100vh;
+}
+
+body {
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+}
+
+::selection {
+  background: var(--ink);
+  color: #fff;
+}

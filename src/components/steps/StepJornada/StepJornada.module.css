@@ -1,0 +1,307 @@
+.wrapper { width: 100%; }
+
+.title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #18120E;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: #78716c;
+  margin: 0 0 2rem;
+  line-height: 1.65;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-bottom: 2.25rem;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.35rem;
+  border-radius: 1.1rem;
+  border: 1.5px solid rgba(24,18,14,0.1);
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s, transform 0.2s;
+  text-align: left;
+  width: 100%;
+  box-shadow: 0 1px 3px rgba(24,18,14,0.04);
+}
+
+.card:hover {
+  border-color: #18120E;
+  box-shadow: 0 4px 16px rgba(24,18,14,0.1);
+  transform: translateY(-1px);
+}
+
+.card.selected {
+  border-color: #18120E;
+  background-color: #18120E;
+  box-shadow: 0 6px 24px rgba(24,18,14,0.2);
+  transform: translateY(-1px);
+}
+
+.cardLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.cardIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background-color: #F5F4F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
+}
+
+.card.selected .cardIcon {
+  background-color: rgba(255,255,255,0.1);
+}
+
+.cardIcon svg {
+  color: #A07848;
+  transition: color 0.2s;
+}
+
+.card.selected .cardIcon svg {
+  color: rgba(255,255,255,0.8);
+}
+
+.cardName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #18120E;
+  transition: color 0.2s;
+  letter-spacing: -0.01em;
+}
+
+.card.selected .cardName { color: #ffffff; }
+
+.cardHours {
+  font-size: 0.78rem;
+  color: #a8a29e;
+  margin-top: 0.12rem;
+  transition: color 0.2s;
+}
+
+.card.selected .cardHours { color: rgba(255,255,255,0.5); }
+
+.cardRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cardPrice {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #18120E;
+  transition: color 0.2s;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.card.selected .cardPrice { color: #ffffff; }
+
+.cardPriceSub {
+  font-size: 0.68rem;
+  color: #a8a29e;
+  text-align: right;
+  margin-top: 0.15rem;
+  transition: color 0.2s;
+}
+
+.card.selected .cardPriceSub { color: rgba(255,255,255,0.4); }
+
+/* SECTION */
+.section { margin-bottom: 2rem; }
+
+.sectionLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #18120E;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+/* COUNTER */
+.counterWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background-color: #ffffff;
+  border: 1px solid rgba(24,18,14,0.1);
+  border-radius: 999px;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 1px 4px rgba(24,18,14,0.05);
+}
+
+.counterBtn {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(24,18,14,0.12);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #18120E;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+
+.counterBtn:hover {
+  border-color: #18120E;
+  background-color: #18120E;
+  color: #ffffff;
+}
+
+.counterBtn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.counterBtn:disabled:hover {
+  border-color: rgba(24,18,14,0.12);
+  background-color: #ffffff;
+  color: #18120E;
+}
+
+.counterValue {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #18120E;
+  min-width: 2.5rem;
+  text-align: center;
+  letter-spacing: -0.03em;
+}
+
+.counterMax {
+  font-size: 0.75rem;
+  color: #a8a29e;
+  text-align: center;
+}
+
+/* LAYOUT GRID */
+.layoutGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.65rem;
+}
+
+.layoutCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1rem 0.5rem;
+  border-radius: 1rem;
+  border: 1.5px solid rgba(24,18,14,0.1);
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 3px rgba(24,18,14,0.04);
+}
+
+.layoutCard:hover {
+  border-color: #18120E;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24,18,14,0.08);
+}
+
+.layoutCard.selected {
+  border-color: #18120E;
+  background-color: #18120E;
+  box-shadow: 0 4px 16px rgba(24,18,14,0.2);
+}
+
+.layoutEmoji { font-size: 1.25rem; line-height: 1; }
+
+.layoutName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #18120E;
+  transition: color 0.2s;
+}
+
+.layoutCard.selected .layoutName { color: #ffffff; }
+
+.layoutMax {
+  font-size: 0.72rem;
+  color: #a8a29e;
+  transition: color 0.2s;
+}
+
+.layoutCard.selected .layoutMax { color: rgba(255,255,255,0.5); }
+
+/* CTA */
+.cta {
+  margin-top: 2rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  border: none;
+  background-color: #18120E;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  letter-spacing: 0.01em;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.cta:hover {
+  background-color: #2C1F14;
+  transform: translateY(-1px);
+}
+
+.cta:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (min-width: 640px) {
+  .cards { grid-template-columns: repeat(3, 1fr); }
+  .card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+  .cardLeft { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+  .cardRight { align-items: flex-start; }
+  .cardPriceSub { text-align: left; }
+  .layoutGrid { grid-template-columns: repeat(4, 1fr); }
+}
