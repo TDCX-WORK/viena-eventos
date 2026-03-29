@@ -3,6 +3,7 @@ import { DayPicker } from 'react-day-picker'
 import { es } from 'date-fns/locale'
 import { format, isBefore, startOfDay } from 'date-fns'
 import { CalendarDays, ArrowLeft, ArrowRight } from 'lucide-react'
+import { ShimmerButton } from '../../magicui/shimmer-button'
 import 'react-day-picker/dist/style.css'
 import styles from './StepFecha.module.css'
 
@@ -71,14 +72,14 @@ export default function StepFecha({ booking, updateBooking, onNext, onPrev }) {
           <ArrowLeft size={15} />
           Anterior
         </button>
-        <button
-          className={styles.btnPrimary}
+        <ShimmerButton
+          style={{ flex: 2 }}
           onClick={onNext}
           disabled={!canContinue}
         >
           Siguiente — Extras
           <ArrowRight size={15} />
-        </button>
+        </ShimmerButton>
       </div>
 
     </motion.div>

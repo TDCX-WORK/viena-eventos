@@ -40,3 +40,15 @@ body {
   background: var(--ink);
   color: #fff;
 }
+
+/* ─── Magic UI keyframes ─── */
+
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(200%); }
+}
+
+@keyframes border-beam-travel {
+  0%   { offset-distance: 0%; }
+  100% { offset-distance: 100%; }
+}

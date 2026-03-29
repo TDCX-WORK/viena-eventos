@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, Send, CheckCircle, Loader } from 'lucide-react'
+import { ShimmerButton } from '../../magicui/shimmer-button'
 import { useEmailSend } from '../../../hooks/useEmailSend'
 import styles from './StepContacto.module.css'
 
@@ -201,8 +202,8 @@ export default function StepContacto({ booking, updateContacto, hotel, onPrev })
           <ArrowLeft size={15} />
           Anterior
         </button>
-        <button
-          className={styles.btnSubmit}
+        <ShimmerButton
+          style={{ flex: 2 }}
           onClick={handleSubmit}
           disabled={!canSubmit}
         >
@@ -217,7 +218,7 @@ export default function StepContacto({ booking, updateContacto, hotel, onPrev })
               Enviar solicitud
             </>
           )}
-        </button>
+        </ShimmerButton>
       </div>
 
     </motion.div>

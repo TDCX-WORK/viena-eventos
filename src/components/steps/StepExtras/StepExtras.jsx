@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
 import { Wifi, Monitor, FileText, Droplets, Coffee, UtensilsCrossed, Check, ArrowLeft, ArrowRight, Store } from 'lucide-react'
+import { ShimmerButton } from '../../magicui/shimmer-button'
+import { MagicCard } from '../../magicui/magic-card'
 import styles from './StepExtras.module.css'
 
 const INCLUDED = [
@@ -89,13 +91,14 @@ export default function StepExtras({ booking, updateBooking, hotel, onNext, onPr
         </div>
         <div className={styles.extraGrid}>
           {coffeeExtras.map(extra => (
-            <div
+            <MagicCard
               key={extra.id}
               className={`${styles.extraCard} ${isSelected(extra.id) ? styles.selected : ''}`}
               onClick={(e) => toggleExtra(e, extra.id)}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => e.key === 'Enter' && toggleExtra(e, extra.id)}
+              gradientColor="rgba(160,120,72,0.08)"
             >
               <div className={styles.extraCardIcon}>
                 <Coffee size={15} />
@@ -112,7 +115,7 @@ export default function StepExtras({ booking, updateBooking, hotel, onNext, onPr
               <div className={styles.checkCircle}>
                 {isSelected(extra.id) && <Check size={11} color="#ffffff" />}
               </div>
-            </div>
+            </MagicCard>
           ))}
         </div>
       </div>
@@ -127,13 +130,14 @@ export default function StepExtras({ booking, updateBooking, hotel, onNext, onPr
         </div>
         <div className={styles.extraGrid}>
           {menuExtras.map(extra => (
-            <div
+            <MagicCard
               key={extra.id}
               className={`${styles.extraCard} ${isSelected(extra.id) ? styles.selected : ''}`}
               onClick={(e) => toggleExtra(e, extra.id)}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => e.key === 'Enter' && toggleExtra(e, extra.id)}
+              gradientColor="rgba(160,120,72,0.08)"
             >
               <div className={styles.extraCardIcon}>
                 <UtensilsCrossed size={15} />
@@ -150,7 +154,7 @@ export default function StepExtras({ booking, updateBooking, hotel, onNext, onPr
               <div className={styles.checkCircle}>
                 {isSelected(extra.id) && <Check size={11} color="#ffffff" />}
               </div>
-            </div>
+            </MagicCard>
           ))}
         </div>
       </div>
@@ -161,10 +165,10 @@ export default function StepExtras({ booking, updateBooking, hotel, onNext, onPr
           <ArrowLeft size={15} />
           Anterior
         </button>
-        <button className={styles.btnPrimary} onClick={onNext}>
+        <ShimmerButton style={{ flex: 2 }} onClick={onNext}>
           Siguiente — Contacto
           <ArrowRight size={15} />
-        </button>
+        </ShimmerButton>
       </div>
 
     </motion.div>

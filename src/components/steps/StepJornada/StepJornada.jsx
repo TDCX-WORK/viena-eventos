@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Sunrise, Sunset, CalendarDays, ArrowRight, Minus, Plus } from 'lucide-react'
+import { ShimmerButton } from '../../magicui/shimmer-button'
+import { MagicCard } from '../../magicui/magic-card'
 import styles from './StepJornada.module.css'
 
 const JORNADAS = [
@@ -66,10 +68,12 @@ export default function StepJornada({ booking, updateBooking, onNext }) {
           const price = room.pricing[j.priceKey]
           const isSelected = booking.jornada === j.id
           return (
-            <button
+            <MagicCard
               key={j.id}
+              as="button"
               className={`${styles.card} ${isSelected ? styles.selected : ''}`}
               onClick={() => handleJornada(j.id)}
+              gradientColor={isSelected ? 'rgba(255,255,255,0.05)' : 'rgba(160,120,72,0.1)'}
             >
               <div className={styles.cardLeft}>
                 <div className={styles.cardIcon}>
@@ -84,7 +88,7 @@ export default function StepJornada({ booking, updateBooking, onNext }) {
                 <div className={styles.cardPrice}>{price}{room.pricing.currency}</div>
                 <span className={styles.cardPriceSub}>IVA incluido</span>
               </div>
-            </button>
+            </MagicCard>
           )
         })}
       </div>
@@ -121,27 +125,30 @@ export default function StepJornada({ booking, updateBooking, onNext }) {
         <div className={styles.sectionLabel}>Configuración de sala</div>
         <div className={styles.layoutGrid}>
           {room.layouts.map(layout => (
-            <button
+            <MagicCard
               key={layout.type}
+              as="button"
               className={`${styles.layoutCard} ${booking.layout === layout.type ? styles.selected : ''}`}
               onClick={() => handleLayout(layout.type)}
+              gradientColor={booking.layout === layout.type ? 'rgba(255,255,255,0.05)' : 'rgba(160,120,72,0.12)'}
+              gradientSize={120}
             >
               <span className={styles.layoutEmoji}>{LAYOUT_ICONS[layout.type]}</span>
               <span className={styles.layoutName}>{layout.label}</span>
               <span className={styles.layoutMax}>hasta {layout.max} pax</span>
-            </button>
+            </MagicCard>
           ))}
         </div>
       </div>
 
-      <button
-        className={styles.cta}
+      <ShimmerButton
+        className="w-full mt-8"
         onClick={onNext}
         disabled={!canContinue}
       >
         Siguiente — Elegir fecha
         <ArrowRight size={16} />
-      </button>
+      </ShimmerButton>
     </motion.div>
   )
 }

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find . -maxdepth 3 -not -path */node_modules/* -type f)",
+      "Bash(ls -la ./src/components/**/*.module.css)"
+    ]
+  }
+}

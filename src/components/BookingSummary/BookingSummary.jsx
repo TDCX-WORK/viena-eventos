@@ -1,6 +1,8 @@
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { Clock, CalendarDays, Users, LayoutGrid, Coffee } from 'lucide-react'
+import { BorderBeam } from '../magicui/border-beam'
+import { NumberTicker } from '../magicui/number-ticker'
 import styles from './BookingSummary.module.css'
 
 const JORNADA_LABELS = {
@@ -25,6 +27,7 @@ export default function BookingSummary({ booking, room, getTotalPrice, hotel }) 
 
   return (
     <div className={styles.wrapper}>
+      <BorderBeam size={100} duration={10} />
 
       {/* Header */}
       <div className={styles.header}>
@@ -92,7 +95,7 @@ export default function BookingSummary({ booking, room, getTotalPrice, hotel }) 
           <div className={styles.totalRow}>
             <span className={styles.totalLabel}>Total estimado</span>
             <div>
-              <div className={styles.totalPrice}>{total}€</div>
+              <div className={styles.totalPrice}><NumberTicker value={total} />€</div>
             </div>
           </div>
           <div className={styles.totalSub}>IVA incluido · sujeto a confirmación</div>
