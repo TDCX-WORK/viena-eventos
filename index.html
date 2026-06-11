@@ -2,9 +2,156 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Eventos — Suites Viena</title>
+
+    <!-- ── SEO básico ── -->
+    <title>Salas de Reuniones en Madrid Centro | Suites Viena Plaza de España</title>
+    <meta name="description" content="Alquiler de salas de reuniones en Madrid centro, junto a Plaza de España. 3 espacios de 27 a 61 m² con luz natural, WiFi, proyector y catering. Desde 190 €/media jornada. Reserva online." />
+    <meta name="keywords" content="salas de reuniones madrid, salas de reuniones madrid centro, alquiler sala reuniones plaza de españa, espacios para eventos madrid, sala formación madrid, sala conferencias madrid centro" />
+    <meta name="author" content="Suites Viena Plaza de España" />
+    <meta name="robots" content="index, follow" />
+    <!-- TODO: Actualizar cuando se conecte el dominio oficial -->
+    <link rel="canonical" href="https://reservas.suitesviena.com/" />
+
+    <!-- ── Favicon ── -->
+    <!-- TODO: Reemplazar con el logo del hotel -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+    <!-- ── Geo tags (Madrid — C/ Mendizábal 17) ── -->
+    <meta name="geo.region" content="ES-MD" />
+    <meta name="geo.placename" content="Madrid" />
+    <meta name="geo.position" content="40.4235;-3.7138" />
+    <meta name="ICBM" content="40.4235, -3.7138" />
+
+    <!-- ── Open Graph (WhatsApp, LinkedIn, Facebook) ── -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Salas de Reuniones en Madrid Centro | Suites Viena" />
+    <meta property="og:description" content="3 espacios únicos junto a Plaza de España. De 27 a 61 m², luz natural, equipamiento completo y catering. Desde 190 €. Reserva online." />
+    <!-- TODO: Añadir imagen real del hotel (1200x630px recomendado) -->
+    <meta property="og:image" content="https://reservas.suitesviena.com/og-image.jpg" />
+    <meta property="og:url" content="https://reservas.suitesviena.com/" />
+    <meta property="og:site_name" content="Suites Viena Plaza de España" />
+    <meta property="og:locale" content="es_ES" />
+
+    <!-- ── Twitter Card ── -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Salas de Reuniones en Madrid Centro | Suites Viena" />
+    <meta name="twitter:description" content="3 espacios únicos junto a Plaza de España. Desde 190 €. Reserva online." />
+    <!-- TODO: Misma imagen que og:image -->
+    <meta name="twitter:image" content="https://reservas.suitesviena.com/og-image.jpg" />
+
+    <!-- ── Datos estructurados JSON-LD ── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Suites Viena Plaza de España",
+      "description": "Alquiler de salas de reuniones en Madrid centro, junto a Plaza de España. Espacios equipados con WiFi, proyector, pantalla y servicio de catering.",
+      "url": "https://reservas.suitesviena.com",
+      "telephone": "+34917583605",
+      "email": "reservas@suitesviena.es",
+      "image": "https://reservas.suitesviena.com/og-image.jpg",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "C/ Juan Álvarez Mendizábal, 17",
+        "addressLocality": "Madrid",
+        "addressRegion": "Comunidad de Madrid",
+        "postalCode": "28008",
+        "addressCountry": "ES"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 40.4235,
+        "longitude": -3.7138
+      },
+      "priceRange": "190 € – 450 €",
+      "currenciesAccepted": "EUR",
+      "paymentAccepted": "Transferencia, Tarjeta",
+      "areaServed": {
+        "@type": "City",
+        "name": "Madrid"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Salas de reuniones",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "MeetingRoom",
+              "name": "Viena + Capellanes",
+              "description": "El espacio más amplio del hotel. Superficie diáfana de 61 m² con luz natural. Ideal para convenciones, presentaciones y eventos de hasta 40 personas.",
+              "maximumAttendeeCapacity": 40,
+              "floorSize": {
+                "@type": "QuantitativeValue",
+                "value": 61,
+                "unitCode": "MTK"
+              },
+              "amenityFeature": [
+                { "@type": "LocationFeatureSpecification", "name": "WiFi", "value": true },
+                { "@type": "LocationFeatureSpecification", "name": "Proyector", "value": true },
+                { "@type": "LocationFeatureSpecification", "name": "Pantalla", "value": true },
+                { "@type": "LocationFeatureSpecification", "name": "Luz natural", "value": true }
+              ]
+            },
+            "priceSpecification": [
+              { "@type": "PriceSpecification", "name": "Media jornada", "price": 350, "priceCurrency": "EUR" },
+              { "@type": "PriceSpecification", "name": "Jornada completa", "price": 450, "priceCurrency": "EUR" }
+            ]
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "MeetingRoom",
+              "name": "Sala Viena",
+              "description": "Sala versátil de 34 m² con luz natural en la 1ª planta. Ideal para reuniones de equipo y presentaciones de hasta 25 personas.",
+              "maximumAttendeeCapacity": 25,
+              "floorSize": {
+                "@type": "QuantitativeValue",
+                "value": 34,
+                "unitCode": "MTK"
+              },
+              "amenityFeature": [
+                { "@type": "LocationFeatureSpecification", "name": "WiFi", "value": true },
+                { "@type": "LocationFeatureSpecification", "name": "Proyector", "value": true },
+                { "@type": "LocationFeatureSpecification", "name": "Pantalla", "value": true },
+                { "@type": "LocationFeatureSpecification", "name": "Luz natural", "value": true }
+              ]
+            },
+            "priceSpecification": [
+              { "@type": "PriceSpecification", "name": "Media jornada", "price": 250, "priceCurrency": "EUR" },
+              { "@type": "PriceSpecification", "name": "Jornada completa", "price": 350, "priceCurrency": "EUR" }
+            ]
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "MeetingRoom",
+              "name": "Sala Capellanes",
+              "description": "Sala íntima y funcional de 27 m² en la 1ª planta. Perfecta para reuniones pequeñas y sesiones de trabajo de hasta 20 personas.",
+              "maximumAttendeeCapacity": 20,
+              "floorSize": {
+                "@type": "QuantitativeValue",
+                "value": 27,
+                "unitCode": "MTK"
+              },
+              "amenityFeature": [
+                { "@type": "LocationFeatureSpecification", "name": "WiFi", "value": true },
+                { "@type": "LocationFeatureSpecification", "name": "Proyector", "value": true },
+                { "@type": "LocationFeatureSpecification", "name": "Pantalla", "value": true }
+              ]
+            },
+            "priceSpecification": [
+              { "@type": "PriceSpecification", "name": "Media jornada", "price": 190, "priceCurrency": "EUR" },
+              { "@type": "PriceSpecification", "name": "Jornada completa", "price": 290, "priceCurrency": "EUR" }
+            ]
+          }
+        ]
+      }
+    }
+    </script>
+
+    <!-- ── Estilos base ── -->
     <style>
       html, body, #root {
         background-color: #ffffff;
@@ -15,5 +162,62 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- ── Contenido estático para crawlers sin JavaScript ── -->
+    <noscript>
+      <div style="font-family: Georgia, serif; max-width: 800px; margin: 0 auto; padding: 2rem; color: #3D3530;">
+        <h1>Salas de Reuniones en Madrid Centro — Suites Viena Plaza de España</h1>
+        <p>
+          Alquiler de salas de reuniones equipadas en el corazón de Madrid,
+          a un paso de Plaza de España. Espacios versátiles para reuniones,
+          formaciones, presentaciones y eventos corporativos.
+        </p>
+
+        <h2>Nuestras salas</h2>
+
+        <h3>Viena + Capellanes — 61 m²</h3>
+        <p>
+          El espacio más amplio del hotel. Superficie diáfana con luz natural.
+          Capacidad hasta 40 personas en configuración teatro.
+          Desde 350 € media jornada / 450 € jornada completa. IVA incluido.
+        </p>
+
+        <h3>Sala Viena — 34 m²</h3>
+        <p>
+          Sala versátil con luz natural en la 1ª planta.
+          Capacidad hasta 25 personas en configuración teatro.
+          Desde 250 € media jornada / 350 € jornada completa. IVA incluido.
+        </p>
+
+        <h3>Sala Capellanes — 27 m²</h3>
+        <p>
+          Sala íntima y funcional en la 1ª planta.
+          Capacidad hasta 20 personas en configuración teatro.
+          Desde 190 € media jornada / 290 € jornada completa. IVA incluido.
+        </p>
+
+        <h2>Incluido en todas las salas</h2>
+        <p>WiFi de alta velocidad, proyector, pantalla, flipchart, agua y material de oficina.</p>
+
+        <h2>Configuraciones disponibles</h2>
+        <p>Imperial, en U, escuela y teatro. Adaptamos el espacio a tu evento.</p>
+
+        <h2>Catering</h2>
+        <p>
+          Coffee breaks desde 10 €/persona y menús desde 16,80 €/persona.
+          Servicio propio de Suites Viena.
+        </p>
+
+        <h2>Contacto</h2>
+        <p>
+          <strong>Suites Viena Plaza de España</strong><br />
+          C/ Juan Álvarez Mendizábal, 17, 28008 Madrid<br />
+          Teléfono: <a href="tel:+34917583605">+34 917 583 605</a><br />
+          WhatsApp: <a href="tel:+34671613939">+34 671 613 939</a><br />
+          Email: <a href="mailto:reservas@suitesviena.es">reservas@suitesviena.es</a><br />
+          Web: <a href="https://www.suitesviena.com">www.suitesviena.com</a>
+        </p>
+      </div>
+    </noscript>
   </body>
 </html>

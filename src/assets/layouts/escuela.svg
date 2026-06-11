@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 72" width="80" height="72" fill="none">
+  <!-- Fila 1: mesas dobles -->
+  <rect x="4"  y="4"  width="16" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="24" y="4"  width="16" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="44" y="4"  width="16" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="64" y="4"  width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+  <!-- Sillas fila 1 -->
+  <rect x="6"  y="15" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="13" y="15" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="26" y="15" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="33" y="15" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="46" y="15" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="53" y="15" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="66" y="15" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <!-- Fila 2: mesas dobles -->
+  <rect x="4"  y="26" width="16" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="24" y="26" width="16" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="44" y="26" width="16" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="64" y="26" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+  <!-- Sillas fila 2 -->
+  <rect x="6"  y="37" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="13" y="37" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="26" y="37" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="33" y="37" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="46" y="37" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="53" y="37" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="66" y="37" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <!-- Fila 3: mesas dobles -->
+  <rect x="4"  y="48" width="16" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="24" y="48" width="16" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="44" y="48" width="16" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="64" y="48" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+  <!-- Sillas fila 3 -->
+  <rect x="6"  y="59" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="13" y="59" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="26" y="59" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="33" y="59" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="46" y="59" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="53" y="59" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+  <rect x="66" y="59" width="6"  height="6" rx="1" stroke="currentColor" stroke-width="1"/>
+</svg>

@@ -4,36 +4,34 @@ import { Clock, CalendarDays, Users, LayoutGrid, Coffee } from 'lucide-react'
 import styles from './BookingSummary.module.css'
 
 const JORNADA_LABELS = {
-  manana:   'Mañana (9:00–14:00)',
-  tarde:    'Tarde (15:00–20:00)',
-  completo: 'Día completo (9:00–20:00)',
+  manana:   'Mañana (9–14h)',
+  tarde:    'Tarde (15–20h)',
+  completo: 'Día completo (9–20h)',
+}
+const LAYOUT_LABELS = {
+  teatro: 'Teatro', u: 'En U', escuela: 'Escuela', imperial: 'Imperial',
 }
 
-const LAYOUT_LABELS = {
-  teatro:   'Teatro',
-  u:        'En U',
-  escuela:  'Escuela',
-  imperial: 'Imperial',
+function formatPrice(n) {
+  if (Number.isInteger(n)) return n.toLocaleString('es-ES')
+  return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 export default function BookingSummary({ booking, room, getTotalPrice, hotel }) {
-  const total = getTotalPrice()
-
+  const total = getTotalPrice(hotel)
   const selectedExtras = (booking.extras || [])
     .map(id => hotel.extras.find(e => e.id === id))
     .filter(Boolean)
 
+  const fechas = booking.fechas || []
+  const hasFechas = fechas.length > 0
+
   return (
-    <div className={styles.wrapper}>
+    <aside className={styles.wrapper}>
 
-      {/* Header */}
-      <div className={styles.header}>
-        <p className={styles.headerTitle}>Resumen de solicitud</p>
-      </div>
-
-      {/* Room card con foto grande */}
+      {/* Room header con imagen */}
       <div className={styles.roomCard}>
-        <img src={room.image} alt={room.name} className={styles.roomImage} />
+        <img src={room.images?.[0]} alt={room.name} className={styles.roomImage} />
         <div className={styles.roomOverlay} />
         <div className={styles.roomInfo}>
           <p className={styles.roomName}>{room.name}</p>
@@ -43,34 +41,65 @@ export default function BookingSummary({ booking, room, getTotalPrice, hotel }) 
         </div>
       </div>
 
-      {/* Details */}
+      {/* Filas de detalle */}
       <div className={styles.rows}>
+
+        {/* Fechas */}
         <div className={styles.row}>
-          <span className={styles.rowLabel}><Clock size={12} /> Jornada</span>
-          {booking.jornada
-            ? <span className={styles.rowValue}>{JORNADA_LABELS[booking.jornada]}</span>
-            : <span className={styles.empty}>Sin seleccionar</span>}
-        </div>
-        <div className={styles.row}>
-          <span className={styles.rowLabel}><CalendarDays size={12} /> Fecha</span>
-          {booking.fecha
-            ? <span className={styles.rowValue}>
-                {format(booking.fecha, "d MMM yyyy", { locale: es })}
+          <span className={styles.rowLabel}>
+            <CalendarDays size={12} />
+            {fechas.length > 1 ? `Fechas (${fechas.length})` : 'Fecha'}
+          </span>
+          {hasFechas ? (
+            fechas.length === 1 ? (
+              <span className={styles.rowValue}>
+                {format(fechas[0].date, 'd MMM yyyy', { locale: es })}
               </span>
-            : <span className={styles.empty}>Sin seleccionar</span>}
+            ) : (
+              <div className={styles.fechasSummary}>
+                {fechas.slice(0, 3).map((f, i) => (
+                  <span key={i} className={styles.fechaTag}>
+                    {format(f.date, 'd MMM', { locale: es })}
+                  </span>
+                ))}
+                {fechas.length > 3 && (
+                  <span className={styles.fechaTagMore}>+{fechas.length - 3}</span>
+                )}
+              </div>
+            )
+          ) : (
+            <span className={styles.empty}>Sin seleccionar</span>
+          )}
         </div>
-        <div className={styles.row}>
-          <span className={styles.rowLabel}><Users size={12} /> Asistentes</span>
-          {booking.asistentes
-            ? <span className={styles.rowValue}>{booking.asistentes} personas</span>
-            : <span className={styles.empty}>Sin indicar</span>}
-        </div>
-        <div className={styles.row}>
-          <span className={styles.rowLabel}><LayoutGrid size={12} /> Montaje</span>
-          {booking.layout
-            ? <span className={styles.rowValue}>{LAYOUT_LABELS[booking.layout]}</span>
-            : <span className={styles.empty}>Sin seleccionar</span>}
-        </div>
+
+        {/* Detalle por fecha */}
+        {hasFechas && fechas.map((f, i) => (
+          <div key={i} className={styles.fechaDetail}>
+            <span className={styles.fechaDetailDate}>
+              {format(f.date, 'd MMM', { locale: es })}
+            </span>
+            <div className={styles.fechaDetailItems}>
+              <span className={styles.fechaDetailItem}>
+                <Clock size={10} />
+                {JORNADA_LABELS[f.jornada] || '—'}
+              </span>
+              {f.layout && (
+                <span className={styles.fechaDetailItem}>
+                  <LayoutGrid size={10} />
+                  {LAYOUT_LABELS[f.layout]}
+                </span>
+              )}
+              {f.asistentes && (
+                <span className={styles.fechaDetailItem}>
+                  <Users size={10} />
+                  {f.asistentes} pax
+                </span>
+              )}
+            </div>
+          </div>
+        ))}
+
+        {/* Extras */}
         {selectedExtras.length > 0 && (
           <div className={styles.row}>
             <span className={styles.rowLabel}><Coffee size={12} /> Extras</span>
@@ -91,19 +120,19 @@ export default function BookingSummary({ booking, room, getTotalPrice, hotel }) 
         <div className={styles.totalBlock}>
           <div className={styles.totalRow}>
             <span className={styles.totalLabel}>Total estimado</span>
-            <div>
-              <div className={styles.totalPrice}>{total}€</div>
-            </div>
+            <div className={styles.totalPrice}>{formatPrice(total)}€</div>
           </div>
-          <div className={styles.totalSub}>IVA incluido · sujeto a confirmación</div>
+          <div className={styles.totalSub}>
+            {fechas.length > 1
+              ? `${fechas.length} días · IVA incluido · sujeto a confirmación`
+              : 'IVA incluido · sujeto a confirmación'}
+          </div>
         </div>
       )}
 
-      {/* Nota */}
       <div className={styles.nota}>
-        Recibirás un email de confirmación con tu número de referencia. Nos pondremos en contacto contigo para verificar disponibilidad.
+        Recibirás un email de confirmación con tu número de referencia.
       </div>
-
-    </div>
+    </aside>
   )
 }

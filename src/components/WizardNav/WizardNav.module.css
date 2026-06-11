@@ -1,0 +1,115 @@
+/* 
+  WizardNav: siempre al fondo del step.
+  Funciona porque cada .wrapper de step es flex-column
+  y el nav tiene margin-top: auto — empuja hacia el fondo.
+  El padding-bottom crea espacio visual sobre el borde del scroll.
+*/
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  padding-bottom: 0.75rem;
+  /* Fade sutil para separar visualmente del contenido */
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(to top, #ffffff 75%, rgba(255,255,255,0));
+  z-index: 5;
+}
+
+/* ── VOLVER ── */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.875rem 0.5rem 0.65rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(24, 18, 14, 0.14);
+  background-color: #ffffff;
+  color: #78716c;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Inter', system-ui, sans-serif;
+  transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(24,18,14,0.06);
+}
+
+.back:hover {
+  border-color: #3D3530;
+  color: #18120E;
+  background-color: #F5F4F0;
+}
+
+.back:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── SIGUIENTE ── */
+.next {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(24, 18, 14, 0.2);
+  background-color: #ffffff;
+  color: #3D3530;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', system-ui, sans-serif;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(24,18,14,0.06);
+}
+
+.next:hover {
+  background-color: #3D3530;
+  border-color: #3D3530;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(61,53,48,0.16);
+}
+
+.next:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── ENVIAR ── */
+.submit {
+  border-color: rgba(160,120,72,0.5);
+  color: #A07848;
+}
+
+.submit:hover {
+  background-color: #A07848;
+  border-color: #A07848;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(160,120,72,0.22);
+}
+
+/* ── Spinner ── */
+.spinner { animation: spin 0.9s linear infinite; opacity: 0.7; }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Solo hay botón siguiente (step 1): lo centramos */
+.bar:has(.next:only-child) .next {
+  max-width: 300px;
+  margin: 0 auto;
+}

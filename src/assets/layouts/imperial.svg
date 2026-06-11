@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 72" width="80" height="72" fill="none">
+  <!-- Mesa larga central -->
+  <rect x="8" y="28" width="64" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/>
+  <!-- Sillas arriba -->
+  <rect x="10" y="10" width="9"  height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="23" y="10" width="9"  height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="36" y="10" width="9"  height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="49" y="10" width="9"  height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="62" y="10" width="9"  height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
+  <!-- Sillas abajo -->
+  <rect x="10" y="46" width="9"  height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="23" y="46" width="9"  height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="36" y="46" width="9"  height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="49" y="46" width="9"  height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="62" y="46" width="9"  height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
+</svg>

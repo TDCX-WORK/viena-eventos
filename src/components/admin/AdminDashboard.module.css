@@ -1,0 +1,117 @@
+.wrapper { display: flex; flex-direction: column; gap: 2rem; }
+
+.header { display: flex; flex-direction: column; gap: 0.3rem; }
+.title {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 1.85rem; font-weight: 800; color: #111; margin: 0; letter-spacing: -0.03em;
+}
+.subtitle { font-size: 0.95rem; color: #999; margin: 0; }
+
+/* ── Stats grid ── */
+.statsGrid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+@media (min-width: 600px) { .statsGrid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .statsGrid { grid-template-columns: repeat(4, 1fr); } }
+
+.statCard {
+  display: flex; align-items: center; gap: 1.1rem;
+  padding: 1.4rem 1.35rem; background: #fff;
+  border: 1.5px solid rgba(120, 30, 30, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(120, 30, 30, 0.03), 0 4px 16px rgba(0, 0, 0, 0.02);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
+}
+.statCard:hover {
+  border-color: rgba(139, 32, 32, 0.3);
+  box-shadow:
+    0 0 0 1px rgba(139, 32, 32, 0.08),
+    0 4px 20px rgba(139, 32, 32, 0.08),
+    0 0 30px -5px rgba(139, 32, 32, 0.1);
+  transform: translateY(-2px);
+}
+
+.statIcon {
+  width: 2.85rem; height: 2.85rem; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.statCard:hover .statIcon {
+  transform: scale(1.08) rotate(-3deg);
+}
+
+.statValue {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 1.65rem; font-weight: 800; color: #111; margin: 0; letter-spacing: -0.02em;
+}
+
+.statLabel { font-size: 0.85rem; font-weight: 500; color: #999; margin: 0.1rem 0 0; }
+
+/* ── Recent bookings ── */
+.recentCard {
+  background: #fff;
+  border: 1.5px solid rgba(120, 30, 30, 0.06);
+  border-radius: 16px;
+  padding: 1.65rem;
+  box-shadow: 0 1px 4px rgba(120, 30, 30, 0.03), 0 4px 16px rgba(0, 0, 0, 0.02);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.recentCard:hover {
+  border-color: rgba(139, 32, 32, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(139, 32, 32, 0.05),
+    0 4px 20px rgba(139, 32, 32, 0.06),
+    0 0 30px -5px rgba(139, 32, 32, 0.08);
+}
+
+.recentTitle {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 1.2rem; font-weight: 800; color: #111; margin: 0 0 1.15rem; letter-spacing: -0.01em;
+}
+
+.emptyText { font-size: 0.95rem; color: #999; padding: 2.5rem 0; text-align: center; }
+
+.tableWrap { overflow-x: auto; }
+
+.table {
+  width: 100%; border-collapse: collapse;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.table th {
+  font-size: 0.74rem; font-weight: 700; color: #999;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 0.7rem 0.85rem; text-align: left;
+  border-bottom: 1px solid rgba(120, 30, 30, 0.08); white-space: nowrap;
+}
+
+.table td {
+  padding: 0.95rem 0.85rem; font-size: 0.92rem; color: #333;
+  border-bottom: 1px solid rgba(120, 30, 30, 0.04); vertical-align: middle;
+}
+
+.table tbody tr {
+  transition: all 0.2s ease;
+}
+.table tbody tr:hover {
+  background: rgba(139, 32, 32, 0.02);
+}
+
+.cellRef {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-weight: 700; font-size: 0.85rem; color: #8B2020;
+}
+
+.cellName { display: block; font-weight: 700; color: #111; font-size: 0.92rem; }
+.cellEmail { display: block; font-size: 0.78rem; color: #999; margin-top: 0.15rem; }
+
+.cellPrice { font-weight: 700; font-size: 0.95rem; }
+.cellDate { font-size: 0.85rem; color: #999; white-space: nowrap; }
+
+.badge {
+  display: inline-block; padding: 0.25rem 0.7rem;
+  border-radius: 999px; font-size: 0.74rem; font-weight: 700; white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.badge_pending   { background: rgba(139, 32, 32, 0.07); color: #8B2020; }
+.badge_confirmed { background: rgba(22, 163, 74, 0.08); color: #16a34a; }
+.badge_cancelled { background: rgba(220, 38, 38, 0.06); color: #dc2626; }

@@ -1,17 +1,14 @@
 import { useState } from 'react'
+import { JORNADA_LABELS_SHORT } from '../lib/constants'
 
 const initialState = {
   room: null,
-  jornada: null,      // 'manana' | 'tarde' | 'completo'
-  fecha: null,        // Date object
-  asistentes: '',
-  layout: null,       // 'teatro' | 'u' | 'escuela' | 'imperial'
-  extras: [],         // array de ids de extras seleccionados
+  jornada: null,
+  fecha: null,
+  fechas: [],         // [{ date, jornada, layout, asistentes }]
+  extras: [],
   contacto: {
-    tipoEvento: '',
-    nombreEvento: '',
     nombre: '',
-    empresa: '',
     email: '',
     telefono: '',
     comentarios: '',
@@ -33,31 +30,67 @@ export function useBooking(room) {
     }))
   }
 
-  const getTotalPrice = () => {
-    if (!booking.room || !booking.jornada) return 0
+  /** Actualiza campos de una fecha concreta por su date */
+  const updateFecha = (date, fields) => {
+    setBooking(prev => ({
+      ...prev,
+      fechas: prev.fechas.map(f =>
+        f.date.getTime() === date.getTime() ? { ...f, ...fields } : f
+      )
+    }))
+  }
 
-    let base = 0
-    if (booking.jornada === 'completo') {
-      base = booking.room.pricing.fullDay
-    } else {
-      base = booking.room.pricing.halfDay
+  const getBasePrice = () => {
+    if (!booking.room) return 0
+    if (booking.fechas && booking.fechas.length > 0) {
+      return booking.fechas.reduce((total, f) => {
+        const jornada = f.jornada || 'completo'
+        const dayPrice = jornada === 'completo'
+          ? booking.room.pricing.fullDay
+          : booking.room.pricing.halfDay
+
+        // Suplemento fin de semana (sábado = 6, domingo = 0)
+        const day = f.date.getDay()
+        const isWeekend = day === 0 || day === 6
+        const supplement = isWeekend
+          ? (booking.room.pricing.weekendSupplement || 0)
+          : 0
+
+        return total + dayPrice + supplement
+      }, 0)
     }
+    return 0
+  }
 
-    return base
+  const getTotalPrice = (hotel = null) => {
+    const base = getBasePrice()
+    if (!hotel || !booking.extras || booking.extras.length === 0) return base
+
+    const maxAsistentes = booking.fechas.reduce((max, f) => {
+      return Math.max(max, parseInt(f.asistentes) || 0)
+    }, 0)
+
+    const extrasTotal = booking.extras.reduce((sum, id) => {
+      const extra = hotel.extras.find(e => e.id === id)
+      if (!extra) return sum
+      return sum + extra.pricePerPerson * Math.max(maxAsistentes, extra.minPersons)
+    }, 0)
+
+    return base + extrasTotal
   }
 
   const getJornadaLabel = () => {
-    const labels = {
-      manana: 'Mañana (9h – 14h)',
-      tarde: 'Tarde (15h – 20h)',
-      completo: 'Día completo (9h – 20h)',
+    if (booking.fechas && booking.fechas.length > 1) {
+      return `${booking.fechas.length} días`
     }
-    return labels[booking.jornada] || ''
+    const j = booking.fechas?.[0]?.jornada || booking.jornada
+    return JORNADA_LABELS_SHORT[j] || ''
   }
 
   return {
     booking,
     updateBooking,
+    updateFecha,
     updateContacto,
     getTotalPrice,
     getJornadaLabel,

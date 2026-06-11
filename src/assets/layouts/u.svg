@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80" fill="none">
+  <!-- Mesa central (rectángulo hueco en U) -->
+  <!-- Lado izquierdo -->
+  <rect x="8"  y="8"  width="10" height="58" rx="2" stroke="currentColor" stroke-width="1.4"/>
+  <!-- Lado derecho -->
+  <rect x="62" y="8"  width="10" height="58" rx="2" stroke="currentColor" stroke-width="1.4"/>
+  <!-- Base -->
+  <rect x="8"  y="60" width="64" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/>
+  <!-- Sillas lado izquierdo exterior -->
+  <circle cx="4"  cy="18" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="4"  cy="30" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="4"  cy="42" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="4"  cy="54" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+  <!-- Sillas lado derecho exterior -->
+  <circle cx="76" cy="18" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="76" cy="30" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="76" cy="42" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="76" cy="54" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+  <!-- Sillas base exterior -->
+  <circle cx="20" cy="74" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="32" cy="74" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="44" cy="74" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="56" cy="74" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+</svg>

@@ -8,7 +8,7 @@ export default {
     extend: {
       colors: {
         cream: {
-          50:  '#FAFAF8',
+          50:  '#FFFFFF',
           100: '#F5F4F0',
           200: '#EDEAE3',
         },

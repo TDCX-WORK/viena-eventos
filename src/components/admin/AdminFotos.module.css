@@ -1,0 +1,126 @@
+.wrapper { display: flex; flex-direction: column; gap: 1.75rem; }
+.header { display: flex; flex-direction: column; gap: 0.25rem; }
+.title { font-family: 'Inter', system-ui, -apple-system, sans-serif; font-size: 1.85rem; font-weight: 800; color: #111; margin: 0; letter-spacing: -0.03em; }
+.subtitle { font-size: 0.95rem; color: #999; margin: 0; }
+
+.roomsList { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.roomCard {
+  background: #fff; border: 1.5px solid rgba(120, 30, 30, 0.06); border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(120, 30, 30, 0.03), 0 4px 16px rgba(0, 0, 0, 0.02);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.roomCard:hover {
+  border-color: rgba(139, 32, 32, 0.2);
+  box-shadow: 0 4px 20px rgba(139, 32, 32, 0.06), 0 0 30px -5px rgba(139, 32, 32, 0.06);
+}
+
+.roomHeader {
+  display: flex; align-items: center; gap: 0.85rem; padding: 1.15rem 1.4rem;
+  border-bottom: 1px solid rgba(120, 30, 30, 0.04); flex-wrap: wrap;
+  cursor: pointer; user-select: none; transition: background 0.2s ease;
+}
+.roomHeader:hover { background: rgba(139, 32, 32, 0.015); }
+.roomName { font-size: 1.15rem; font-weight: 700; color: #111; margin: 0; flex: 1; }
+.roomCount { font-size: 0.85rem; color: #8B2020; font-weight: 600; }
+
+.chevron { color: #999; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.chevronOpen { transform: rotate(180deg); }
+
+.uploadBtn {
+  display: flex; align-items: center; gap: 0.45rem;
+  padding: 0.58rem 1.15rem; border-radius: 12px; border: 1.5px solid rgba(120, 30, 30, 0.1);
+  background: none; font-family: 'Inter', system-ui, -apple-system, sans-serif; font-size: 0.85rem;
+  font-weight: 700; color: #8B2020; cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.uploadBtn:hover:not(:disabled) {
+  background: #8B2020; color: #fff; border-color: #8B2020;
+  box-shadow: 0 4px 14px rgba(139, 32, 32, 0.2);
+  transform: translateY(-1px);
+}
+.uploadBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.emptyGrid {
+  display: flex; flex-direction: column; align-items: center; gap: 0.55rem;
+  padding: 3.5rem; color: #ddd; text-align: center;
+}
+.emptyGrid p { font-size: 0.92rem; color: #999; margin: 0; }
+
+.photoGrid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; padding: 1.15rem;
+  content-visibility: auto; contain-intrinsic-size: auto 300px;
+}
+@media (min-width: 600px) { .photoGrid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .photoGrid { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1200px) { .photoGrid { grid-template-columns: repeat(5, 1fr); } }
+
+.photoCard {
+  position: relative; border-radius: 14px; overflow: hidden;
+  border: 2px solid transparent; aspect-ratio: 4/3;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.photoCard:hover {
+  border-color: rgba(139, 32, 32, 0.25);
+  box-shadow: 0 4px 16px rgba(139, 32, 32, 0.1);
+  transform: scale(1.02);
+}
+.photoCardCover { border-color: #8B2020; box-shadow: 0 2px 10px rgba(139, 32, 32, 0.15); }
+.photoCardCover:hover { border-color: #8B2020; }
+
+.photoPlaceholder {
+  width: 100%; height: 100%;
+  background: linear-gradient(110deg, #f0ede8 30%, #f7f5f2 50%, #f0ede8 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.photoImg {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  opacity: 0; transition: opacity 0.4s ease;
+}
+
+.photoImgLoaded { opacity: 1; }
+
+.photoOverlay {
+  position: absolute; inset: 0; background: rgba(0, 0, 0, 0.5);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding: 0.6rem; opacity: 0;
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(2px);
+}
+.photoCard:hover .photoOverlay { opacity: 1; }
+
+.photoActions { display: flex; gap: 0.4rem; }
+
+.actionBtn {
+  width: 2.1rem; height: 2.1rem; border-radius: 12px; border: none;
+  background: rgba(255, 255, 255, 0.92); display: flex; align-items: center;
+  justify-content: center; cursor: pointer; color: #333;
+  font-size: 0.85rem; font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.actionBtn:hover:not(:disabled) { background: #fff; transform: scale(1.08); }
+.actionBtn:disabled { opacity: 0.3; cursor: not-allowed; }
+.actionBtnActive { background: #8B2020; color: #fff; }
+.actionBtnActive:hover { background: #7a1b1b; }
+.actionBtnDanger:hover:not(:disabled) { background: #dc2626; color: #fff; }
+
+.coverBadge {
+  position: absolute; top: 0.5rem; left: 0.5rem;
+  display: flex; align-items: center; gap: 0.25rem;
+  padding: 0.25rem 0.6rem; border-radius: 999px;
+  background: linear-gradient(135deg, #8B2020, #a83232);
+  color: #fff; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  box-shadow: 0 2px 8px rgba(139, 32, 32, 0.3);
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.8s linear infinite; }

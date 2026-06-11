@@ -1,290 +1,456 @@
-.wrapper { width: 100%; }
+.wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
 
 .title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.75rem;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: #18120E;
-  margin: 0 0 0.4rem;
+  margin: 0 0 0.15rem;
   letter-spacing: -0.02em;
 }
 
-.subtitle {
-  font-size: 0.95rem;
-  font-weight: 300;
-  color: #78716c;
-  margin: 0 0 1.75rem;
-  line-height: 1.65;
-}
+.subtitle { font-size: 0.95rem; font-weight: 400; color: #57534e; margin: 0; line-height: 1.5; }
 
-.operadoBanner {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  background-color: #18120E;
-  border-radius: 1rem;
-  padding: 1rem 1.25rem;
-  margin-bottom: 2rem;
-}
-
-.operadoIcon {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0.6rem;
-  background-color: rgba(160,120,72,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  color: #A07848;
-}
-
-.operadoText {
-  font-size: 0.72rem;
-  color: rgba(255,255,255,0.4);
-  line-height: 1;
-  margin-bottom: 0.2rem;
-}
-
-.operadoName {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: -0.01em;
-}
-
-.section { margin-bottom: 2rem; }
-
-.sectionHeader {
-  display: flex;
+.banner {
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.7rem;
-  border-bottom: 1px solid rgba(24,18,14,0.07);
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 2px solid rgba(24,18,14,0.12);
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  width: fit-content;
+}
+.bannerIcon { color: #A07848; flex-shrink: 0; }
+.bannerText { font-size: 0.88rem; color: #44403c; font-weight: 500; }
+.bannerText strong { font-weight: 700; color: #18120E; }
+
+.section { display: flex; flex-direction: column; gap: 0.75rem; }
+
+/* ── Section with decorative background ── */
+.sectionWithBg {
+  position: relative;
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  background: rgba(255,255,255,0.25);
+  border: 1.5px solid rgba(24,18,14,0.06);
 }
 
-.sectionIcon {
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 0.5rem;
-  background-color: #F5F4F0;
+.sectionBgImg {
+  position: absolute;
+  right: -1.5rem;
+  bottom: -2.5rem;
+  width: 13rem;
+  height: auto;
+  opacity: 0.18;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  filter: drop-shadow(0 0 28px rgba(160,120,72,0.6)) drop-shadow(0 0 8px rgba(160,120,72,0.4));
+}
+
+.sectionHead {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #A07848;
-  flex-shrink: 0;
+  gap: 0.45rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1.5px solid rgba(24,18,14,0.1);
+  position: relative;
+  z-index: 1;
 }
-
+.sectionIcon { color: #A07848; flex-shrink: 0; }
 .sectionLabel {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: #18120E;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #3D3530;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.includedGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
-}
+.includedGrid { display: flex; flex-wrap: wrap; gap: 0.45rem; }
 
 .includedItem {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 0.875rem;
-  background-color: #FAFAF8;
-  border: 1px solid rgba(24,18,14,0.07);
-  border-radius: 0.75rem;
-  font-size: 0.8rem;
-  color: #57534e;
+  gap: 0.45rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #3D3530;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 2px solid rgba(24,18,14,0.12);
+}
+.includedIcon { color: #A07848; flex-shrink: 0; }
+
+/* ══════════════════════════════════════════
+   CARD GRID
+   ══════════════════════════════════════════ */
+.cardGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
 }
 
-.includedIcon {
-  color: #A07848;
+/* ── Card slot — wraps card + detail panels ── */
+.cardSlot {
+  display: flex;
+  align-items: stretch;
+  border-radius: 1rem;
+  transition: margin 0.28s ease;
+}
+
+/* ── The card itself ── */
+.extraCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 10.5rem;
+  min-width: 10.5rem;
+  aspect-ratio: 1 / 1.1;
+  padding: 1.3rem 0.7rem 1rem;
+  border: 2px solid rgba(24,18,14,0.12);
+  border-radius: 1rem;
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  font-family: 'Inter', system-ui, sans-serif;
+  text-align: center;
+  transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+  overflow: hidden;
+  z-index: 2;
   flex-shrink: 0;
 }
 
-.extraGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
+.extraCard:hover:not(.extraCardInactive) {
+  border-color: var(--card-color);
+  background: rgba(255,255,255,0.78);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
-.extraCard {
-  display: flex;
-  align-items: center;
-  padding: 1rem 1.1rem;
-  border-radius: 1rem;
-  border: 1.5px solid rgba(24,18,14,0.1);
-  background-color: #ffffff;
-  cursor: pointer;
-  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s, transform 0.2s;
-  text-align: left;
-  width: 100%;
-  gap: 0.875rem;
-  box-shadow: 0 1px 3px rgba(24,18,14,0.04);
+.extraCard.extraCardSelected {
+  border-color: var(--card-color);
+  background: rgba(255,255,255,0.85);
+  box-shadow:
+    0 0 0 1px var(--card-color),
+    0 4px 20px rgba(0,0,0,0.08);
 }
 
-.extraCard:hover {
-  border-color: #18120E;
-  box-shadow: 0 4px 16px rgba(24,18,14,0.09);
-  transform: translateY(-1px);
+.extraCard.extraCardInactive {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.6);
 }
 
-.extraCard.selected {
-  border-color: #18120E;
-  background-color: #FAFAF8;
-  box-shadow: 0 4px 16px rgba(24,18,14,0.08);
-}
-
-.extraCardIcon {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0.6rem;
-  background-color: #F5F4F0;
+/* ── Check badge ── */
+.checkBadge {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  border: 2px solid rgba(24,18,14,0.18);
+  background: rgba(255,255,255,0.8);
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  transition: background-color 0.2s;
-  color: #A07848;
+  color: transparent;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.extraCard.selected .extraCardIcon {
-  background-color: #18120E;
-  color: #ffffff;
+.checkBadgeOn {
+  background: var(--card-color);
+  border-color: var(--card-color);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-.extraCardBody {
-  flex: 1;
-  min-width: 0;
-}
-
-.extraCardName {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #18120E;
-  letter-spacing: -0.01em;
-}
-
-.extraCardDesc {
-  font-size: 0.75rem;
-  font-weight: 300;
-  color: #a8a29e;
-  margin-top: 0.15rem;
-  line-height: 1.5;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.extraCardMeta {
-  font-size: 0.65rem;
-  color: #A07848;
-  margin-top: 0.2rem;
-  font-weight: 600;
-}
-
-.extraCardRight {
+/* ── Card icon ── */
+.cardIcon {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.3rem;
-  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--card-color) 12%, transparent);
+  color: var(--card-color);
+  transition: background 0.25s, color 0.25s;
 }
 
-.extraCardPrice {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.15rem;
+.extraCardSelected .cardIcon {
+  background: color-mix(in srgb, var(--card-color) 18%, transparent);
+}
+
+/* ── Card text ── */
+.cardName {
+  font-size: 0.95rem;
   font-weight: 700;
   color: #18120E;
-  letter-spacing: -0.03em;
+  line-height: 1.25;
 }
 
-.extraCardPriceSub {
-  font-size: 0.65rem;
-  color: #a8a29e;
-  white-space: nowrap;
+.cardPrice {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--card-color);
+  letter-spacing: -0.02em;
 }
 
-.checkCircle {
-  width: 1.35rem;
-  height: 1.35rem;
-  border-radius: 999px;
-  border: 1.5px solid rgba(24,18,14,0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: background-color 0.2s, border-color 0.2s;
-}
-
-.extraCard.selected .checkCircle {
-  background-color: #18120E;
-  border-color: #18120E;
-}
-
-.buttons {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 2rem;
-}
-
-.btnSecondary {
-  flex: 1;
-  padding: 1rem 1.25rem;
-  border-radius: 1rem;
-  border: 1.5px solid rgba(24,18,14,0.12);
-  background-color: #ffffff;
-  color: #57534e;
-  font-size: 0.9rem;
+.pax {
+  font-size: 0.74rem;
   font-weight: 500;
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
+  color: #78716c;
+  font-family: 'Inter', system-ui, sans-serif;
+  letter-spacing: 0;
+}
+
+.cardMeta {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  font-family: 'Inter', system-ui, sans-serif;
-}
-
-.btnSecondary:hover {
-  border-color: #18120E;
-  color: #18120E;
-}
-
-.btnPrimary {
-  flex: 2;
-  padding: 1rem 1.25rem;
-  border-radius: 1rem;
-  border: none;
-  background-color: #18120E;
-  color: #ffffff;
-  font-size: 0.9rem;
+  gap: 0.3rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.2s;
+  color: #8a8480;
+}
+
+/* ── Inactive label ── */
+.inactiveLabel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.3rem;
+  background: rgba(24,18,14,0.07);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #8a8480;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+/* ── See more arrow ── */
+.seeMore {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--card-color);
+  opacity: 0.65;
+  transition: opacity 0.2s;
+  margin-top: 0.1rem;
+}
+
+.seeMoreArrow {
+  transition: transform 0.25s ease;
+}
+
+.seeMoreOpen {
+  opacity: 1;
+}
+
+.seeMoreOpen .seeMoreArrow {
+  transform: translateX(2px);
+}
+
+.extraCard:hover .seeMore {
+  opacity: 1;
+}
+
+/* ══════════════════════════════════════════
+   DETAIL PANELS — shared inner styles
+   ══════════════════════════════════════════ */
+.detailInner {
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
-  font-family: 'Inter', system-ui, sans-serif;
 }
 
-.btnPrimary:hover {
-  background-color: #2C1F14;
-  transform: translateY(-1px);
+.detailTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
 }
 
-.btnPrimary:disabled {
-  opacity: 0.25;
-  cursor: not-allowed;
-  transform: none;
+.detailList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-@media (min-width: 640px) {
-  .includedGrid { grid-template-columns: repeat(3, 1fr); }
+.detailItem {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.45;
+  padding-left: 0.8rem;
+  position: relative;
+}
+
+.detailItem::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  font-weight: 800;
+  color: rgba(255,255,255,0.5);
+}
+
+.detailSpacer { height: 0.3rem; }
+
+/* ══════════════════════════════════════════
+   DESKTOP ≥ 1600px  →  panel slides RIGHT
+   ══════════════════════════════════════════ */
+.detailPanelDown { display: none; }
+
+.detailPanelRight {
+  overflow: hidden;
+  border: 2px solid var(--card-color);
+  border-left: none;
+  border-radius: 0 1rem 1rem 0;
+  background: var(--card-color);
+  z-index: 1;
+}
+
+.detailPanelRight .detailInner {
+  width: 14rem;
+}
+
+/* Merge card right border into panel */
+.cardSlotOpen .extraCard {
+  border-right-color: var(--card-color);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* ══════════════════════════════════════════
+   NARROW < 1600px  →  1 card/row, panel DOWN
+   ══════════════════════════════════════════ */
+@media (max-width: 1599px) {
+  .cardGrid {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .cardSlot {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 22rem;
+  }
+
+  .extraCard {
+    width: 100%;
+    min-width: unset;
+    aspect-ratio: unset;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 0.85rem;
+    padding: 1rem 1.2rem;
+    text-align: left;
+  }
+
+  .checkBadge {
+    top: 0.65rem;
+    right: 0.65rem;
+  }
+
+  .cardIcon {
+    width: 3.2rem;
+    height: 3.2rem;
+    flex-shrink: 0;
+  }
+
+  /* Group text items vertically beside the icon */
+  .cardName {
+    font-size: 1rem;
+  }
+
+  .cardPrice {
+    font-size: 1.15rem;
+  }
+
+  .cardMeta {
+    font-size: 0.8rem;
+  }
+
+  .seeMore {
+    position: absolute;
+    bottom: 0.65rem;
+    right: 1rem;
+    margin-top: 0;
+    font-size: 0.72rem;
+  }
+
+  .seeMoreArrow {
+    transform: rotate(90deg);
+  }
+
+  .seeMoreOpen .seeMoreArrow {
+    transform: rotate(270deg);
+  }
+
+  .inactiveLabel {
+    border-radius: 0 0 1rem 1rem;
+  }
+
+  /* Hide the right panel, show the down panel */
+  .detailPanelRight { display: none !important; }
+
+  .detailPanelDown {
+    display: block;
+    overflow: hidden;
+    border: 2px solid var(--card-color);
+    border-top: none;
+    border-radius: 0 0 1rem 1rem;
+    background: var(--card-color);
+    z-index: 1;
+    width: 100%;
+  }
+
+  /* Merge card bottom border into panel */
+  .cardSlotOpen .extraCard {
+    border-right-color: rgba(24,18,14,0.12);
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-color: var(--card-color);
+  }
+
+  .cardSlotOpen .extraCard.extraCardSelected {
+    border-right-color: var(--card-color);
+  }
+}
+
+@media (min-width: 600px) {
+  .title { font-size: 1.65rem; }
 }

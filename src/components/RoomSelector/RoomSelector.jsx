@@ -1,10 +1,16 @@
-import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Images, Settings } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import RoomCard from './RoomCard'
+import Gallery from '../Gallery/Gallery'
 import styles from './RoomSelector.module.css'
 
 export default function RoomSelector({ hotel, onSelectRoom }) {
+  const [showGallery, setShowGallery] = useState(false)
+
   return (
-    <div className={styles.wrapper}>
+    <section className={styles.wrapper}>
 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
@@ -30,7 +36,20 @@ export default function RoomSelector({ hotel, onSelectRoom }) {
         ))}
       </div>
 
+      {/* Botón ver galería */}
       <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.5 }}
+        className={styles.galleryRow}
+      >
+        <button className={styles.galleryBtn} onClick={() => setShowGallery(true)}>
+          <Images size={18} />
+          Ver galería de fotos
+        </button>
+      </motion.div>
+
+      <motion.footer
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8, duration: 0.6 }}
@@ -44,8 +63,21 @@ export default function RoomSelector({ hotel, onSelectRoom }) {
           o escríbenos a{' '}
           <a href={`mailto:${hotel.email}`}>{hotel.email}</a>
         </span>
-      </motion.div>
+        <Link to="/admin" className={styles.adminLink} aria-label="Panel de administración">
+          <Settings size={15} />
+        </Link>
+      </motion.footer>
 
-    </div>
+      {/* Modal galería */}
+      <AnimatePresence>
+        {showGallery && (
+          <Gallery
+            images={hotel.gallery}
+            onClose={() => setShowGallery(false)}
+          />
+        )}
+      </AnimatePresence>
+
+    </section>
   )
 }

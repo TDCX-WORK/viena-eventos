@@ -1,0 +1,266 @@
+.wrapper { display: flex; flex-direction: column; gap: 1.5rem; }
+.header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.title { font-family: 'Inter', system-ui, -apple-system, sans-serif; font-size: 1.85rem; font-weight: 800; color: #111; margin: 0; letter-spacing: -0.03em; }
+.subtitle { font-size: 0.95rem; color: #999; margin: 0.15rem 0 0; }
+
+/* ── Status tabs ── */
+.tabBar {
+  display: flex; gap: 0.35rem; background: #fff;
+  padding: 0.35rem; border-radius: 16px;
+  border: 1.5px solid rgba(120, 30, 30, 0.06);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+  overflow-x: auto;
+}
+.tab {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  padding: 0.7rem 1rem; border-radius: 12px; border: none; background: none;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 0.88rem; font-weight: 600; color: #888; cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+.tab:hover { background: rgba(0, 0, 0, 0.03); color: #555; }
+
+.tabActive_all { background: #111; color: #fff; }
+.tabActive_all:hover { background: #222; color: #fff; }
+.tabActive_amber { background: #8B2020; color: #fff; }
+.tabActive_amber:hover { background: #7a1b1b; color: #fff; }
+.tabActive_green { background: #16a34a; color: #fff; }
+.tabActive_green:hover { background: #15803d; color: #fff; }
+.tabActive_red { background: #dc2626; color: #fff; }
+.tabActive_red:hover { background: #b91c1c; color: #fff; }
+
+.tabLabel { font-weight: 600; }
+.tabCount {
+  font-size: 0.72rem; font-weight: 700;
+  padding: 0.12rem 0.45rem; border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06); color: #888;
+  min-width: 1.3rem; text-align: center;
+}
+.tabCountActive_all { background: rgba(255, 255, 255, 0.2); color: #fff; }
+.tabCountActive_amber { background: rgba(255, 255, 255, 0.25); color: #fff; }
+.tabCountActive_green { background: rgba(255, 255, 255, 0.25); color: #fff; }
+.tabCountActive_red { background: rgba(255, 255, 255, 0.25); color: #fff; }
+
+/* ── Search ── */
+.searchWrap {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.75rem 1.1rem; background: #fff; border: 1.5px solid rgba(120, 30, 30, 0.08);
+  border-radius: 14px; color: #999;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+}
+.searchWrap:focus-within {
+  border-color: #8B2020;
+  box-shadow: 0 0 0 3px rgba(139, 32, 32, 0.06), 0 4px 12px rgba(139, 32, 32, 0.04);
+}
+.searchInput {
+  border: none; outline: none; flex: 1; font-size: 0.92rem; color: #111;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif; background: transparent;
+}
+.searchInput::placeholder { color: #bbb; }
+.clearSearch {
+  background: none; border: none; cursor: pointer; color: #bbb;
+  display: flex; padding: 0.2rem; border-radius: 6px;
+  transition: all 0.2s;
+}
+.clearSearch:hover { color: #8B2020; background: rgba(139, 32, 32, 0.05); }
+
+/* ── Empty ── */
+.emptyCard {
+  display: flex; flex-direction: column; align-items: center; gap: 0.65rem;
+  padding: 4rem 2rem; background: #fff; border: 1.5px dashed rgba(120, 30, 30, 0.1);
+  border-radius: 18px; text-align: center;
+}
+.emptyTitle { font-size: 1.1rem; font-weight: 700; color: #333; margin: 0; }
+.emptyText { font-size: 0.92rem; color: #999; margin: 0; max-width: 320px; }
+
+/* ── List ── */
+.list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+/* ── Card ── */
+.card {
+  background: #fff; border: 1.5px solid rgba(120, 30, 30, 0.06); border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(120, 30, 30, 0.03), 0 4px 16px rgba(0, 0, 0, 0.015);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card:hover {
+  border-color: rgba(139, 32, 32, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(139, 32, 32, 0.05),
+    0 4px 20px rgba(139, 32, 32, 0.06),
+    0 0 30px -5px rgba(139, 32, 32, 0.07);
+}
+.cardOpen { border-color: rgba(139, 32, 32, 0.2); }
+
+/* Card header */
+.cardHeader {
+  display: flex; flex-direction: column; gap: 0.55rem;
+  padding: 1.15rem 1.45rem; width: 100%; background: none; border: none; cursor: pointer;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif; text-align: left;
+  transition: background 0.2s ease;
+}
+.cardHeader:hover { background: rgba(139, 32, 32, 0.012); }
+
+.headerTop { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.headerLeft { display: flex; align-items: center; gap: 0.6rem; }
+.headerRight { display: flex; align-items: center; gap: 0.75rem; }
+
+.statusDot {
+  width: 8px; height: 8px; border-radius: 999px; flex-shrink: 0;
+  box-shadow: 0 0 6px;
+}
+.dot_amber { background: #8B2020; box-shadow: 0 0 6px rgba(139, 32, 32, 0.3); }
+.dot_green { background: #16a34a; box-shadow: 0 0 6px rgba(22, 163, 74, 0.3); }
+.dot_red   { background: #dc2626; box-shadow: 0 0 6px rgba(220, 38, 38, 0.3); }
+
+.ref {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.82rem; font-weight: 700; color: #8B2020;
+}
+.badge {
+  padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.badge_amber { background: rgba(139, 32, 32, 0.08); color: #8B2020; }
+.badge_green { background: rgba(22, 163, 74, 0.08); color: #16a34a; }
+.badge_red   { background: rgba(220, 38, 38, 0.06); color: #dc2626; }
+
+.headerDate { font-size: 0.82rem; color: #aaa; display: none; }
+@media (min-width: 600px) { .headerDate { display: inline; } }
+.chevron { color: #bbb; display: flex; transition: color 0.2s; }
+
+.headerBottom { display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap; }
+.clientName { font-size: 1.02rem; font-weight: 700; color: #111; }
+.headerMeta { font-size: 0.85rem; color: #999; }
+.headerPrice {
+  font-size: 0.92rem; font-weight: 800; color: #111;
+  margin-left: auto; display: none;
+}
+@media (min-width: 600px) { .headerPrice { display: inline; } }
+
+/* Card body */
+.cardBody {
+  padding: 0 1.45rem 1.45rem; display: flex; flex-direction: column; gap: 1.35rem;
+  border-top: 1px solid rgba(120, 30, 30, 0.06); padding-top: 1.35rem;
+  animation: bodyIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes bodyIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Info grid */
+.infoGrid {
+  display: grid; grid-template-columns: 1fr; gap: 1.25rem;
+}
+@media (min-width: 650px) { .infoGrid { grid-template-columns: 1fr 1fr; } }
+
+.infoBlock {
+  display: flex; flex-direction: column; gap: 0.65rem;
+  padding: 1rem 1.15rem; border-radius: 14px;
+  background: rgba(120, 30, 30, 0.015);
+  border: 1px solid rgba(120, 30, 30, 0.05);
+}
+
+.infoLabel {
+  display: flex; align-items: center; gap: 0.45rem;
+  font-size: 0.72rem; font-weight: 700; color: #8B2020;
+  text-transform: uppercase; letter-spacing: 0.08em; margin: 0;
+}
+
+.infoContent { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.infoRow {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.9rem; color: #333;
+}
+.infoRow svg { color: #bbb; flex-shrink: 0; }
+.commentRow { font-style: italic; color: #666; }
+
+.priceValue { font-weight: 800; color: #111; font-size: 1rem; }
+
+/* Dates */
+.datesSection { display: flex; flex-direction: column; gap: 0.65rem; }
+
+.datesGrid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.dateCard {
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.65rem 1rem 0.65rem 0.65rem;
+  background: #fff; border: 1.5px solid rgba(120, 30, 30, 0.08);
+  border-radius: 14px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dateCard:hover {
+  border-color: rgba(139, 32, 32, 0.2);
+  box-shadow: 0 2px 8px rgba(139, 32, 32, 0.06);
+}
+
+.dateDay {
+  width: 2.8rem; height: 2.8rem; border-radius: 12px;
+  background: linear-gradient(135deg, #8B2020, #a83232);
+  color: #fff; font-size: 1.15rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(139, 32, 32, 0.2);
+}
+
+.dateMeta { display: flex; flex-direction: column; gap: 0.1rem; }
+.dateMonth {
+  font-size: 0.85rem; font-weight: 700; color: #111;
+  text-transform: capitalize;
+}
+.dateDetails {
+  display: flex; align-items: center; gap: 0.3rem;
+  font-size: 0.75rem; color: #888; font-weight: 500;
+}
+
+/* Extras */
+.extrasSection { display: flex; flex-direction: column; gap: 0.65rem; }
+.extrasList { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.extraChip {
+  padding: 0.32rem 0.8rem; background: rgba(139, 32, 32, 0.05);
+  border: 1px solid rgba(139, 32, 32, 0.1);
+  border-radius: 999px; font-size: 0.82rem; font-weight: 600; color: #8B2020;
+  transition: all 0.2s ease;
+}
+.extraChip:hover { background: rgba(139, 32, 32, 0.08); }
+
+/* Actions bar */
+.actionsBar {
+  display: flex; gap: 0.45rem; flex-wrap: wrap;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(120, 30, 30, 0.06);
+}
+.actionBtn {
+  flex: 1; min-width: 110px;
+  padding: 0.65rem 1rem; border-radius: 12px; border: 1.5px solid;
+  font-size: 0.85rem; font-weight: 700;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.actionBtn_amber { border-color: rgba(139, 32, 32, 0.15); color: #8B2020; background: none; }
+.actionBtn_amber:hover:not(:disabled) {
+  background: #8B2020; color: #fff; border-color: #8B2020;
+  box-shadow: 0 4px 14px rgba(139, 32, 32, 0.15);
+  transform: translateY(-1px);
+}
+.actionBtn_green { border-color: rgba(22, 163, 74, 0.15); color: #16a34a; background: none; }
+.actionBtn_green:hover:not(:disabled) {
+  background: #16a34a; color: #fff; border-color: #16a34a;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.15);
+  transform: translateY(-1px);
+}
+.actionBtn_red { border-color: rgba(220, 38, 38, 0.12); color: #dc2626; background: none; }
+.actionBtn_red:hover:not(:disabled) {
+  background: #dc2626; color: #fff; border-color: #dc2626;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.12);
+  transform: translateY(-1px);
+}
+
+.actionBtnCurrent { opacity: 0.35; cursor: not-allowed; }
+.actionBtn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.8s linear infinite; }

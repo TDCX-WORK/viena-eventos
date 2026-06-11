@@ -1,8 +1,21 @@
-.wrapper { width: 100%; }
+.wrapper {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Título y subtítulo alineados a la izquierda dentro del bloque centrado */
+.title,
+.subtitle {
+  width: 100%;
+  max-width: 420px;
+}
 
 .title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.75rem;
+  font-size: 1.6rem;
   font-weight: 600;
   color: #18120E;
   margin: 0 0 0.4rem;
@@ -13,63 +26,192 @@
   font-size: 0.95rem;
   font-weight: 300;
   color: #78716c;
-  margin: 0 0 2rem;
+  margin: 0 0 1.75rem;
   line-height: 1.65;
 }
 
-.calendarWrapper {
+/* ── STRIP — próximos 7 días ── */
+.strip {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  width: 100%;
+  max-width: 420px;
+  justify-content: center;
+}
+
+.strip::-webkit-scrollbar { display: none; }
+
+.stripDay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.65rem 0.875rem;
+  border-radius: 0.875rem;
+  border: 1.5px solid rgba(24, 18, 14, 0.1);
   background-color: #ffffff;
-  border: 1px solid rgba(24,18,14,0.09);
-  border-radius: 1.1rem;
-  padding: 1.25rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    border-color 0.25s,
+    background-color 0.25s,
+    box-shadow 0.25s,
+    transform 0.25s;
+  box-shadow:
+    0 1px 0 rgba(24, 18, 14, 0.07),
+    0 2px 8px rgba(24, 18, 14, 0.04);
+  min-width: 3.25rem;
+}
+
+.stripDay:hover {
+  border-color: rgba(24, 18, 14, 0.28);
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 0 rgba(24, 18, 14, 0.1),
+    0 6px 16px rgba(24, 18, 14, 0.08);
+}
+
+.stripDay.stripSelected {
+  border-color: #3D3530;
+  background-color: #3D3530;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px rgba(61, 53, 48, 0.2);
+  transform: translateY(-2px);
+}
+
+.stripDayName {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #a8a29e;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: color 0.25s;
+}
+
+.stripDay.stripSelected .stripDayName { color: rgba(255, 255, 255, 0.6); }
+
+.stripDayNumber {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #18120E;
+  line-height: 1;
+  transition: color 0.25s;
+}
+
+.stripDay.stripSelected .stripDayNumber { color: #ffffff; }
+
+.stripDayMonth {
+  font-size: 0.6rem;
+  color: #c4bfba;
+  transition: color 0.25s;
+}
+
+.stripDay.stripSelected .stripDayMonth { color: rgba(255, 255, 255, 0.5); }
+
+.stripDayToday {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background-color: #A07848;
+  margin-top: 0.1rem;
+}
+
+.stripDay.stripSelected .stripDayToday { background-color: rgba(255, 255, 255, 0.6); }
+
+/* ── SEPARATOR ── */
+.separator {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
   margin-bottom: 1.25rem;
   width: 100%;
-  box-shadow: 0 1px 4px rgba(24,18,14,0.04);
+  max-width: 420px;
+}
+
+.separatorLine {
+  flex: 1;
+  height: 1px;
+  background-color: rgba(24, 18, 14, 0.07);
+}
+
+.separatorText {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #c4bfba;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── CALENDAR ── */
+.calendarWrapper {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
 }
 
 .calendarWrapper :global(.rdp) {
   --rdp-cell-size: 40px;
-  --rdp-accent-color: #18120E;
-  --rdp-background-color: rgba(24,18,14,0.05);
+  --rdp-accent-color: #3D3530;
+  --rdp-background-color: rgba(61, 53, 48, 0.06);
   margin: 0;
   width: 100%;
+  max-width: 360px;
 }
 
-.calendarWrapper :global(.rdp-months) { width: 100%; }
-.calendarWrapper :global(.rdp-month) { width: 100%; }
-.calendarWrapper :global(.rdp-table) { width: 100%; max-width: 100%; }
+.calendarWrapper :global(.rdp-months)  { width: 100%; }
+.calendarWrapper :global(.rdp-month)   { width: 100%; }
+.calendarWrapper :global(.rdp-table)   { width: 100%; max-width: 100%; }
+
+.calendarWrapper :global(.rdp-caption) {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
 
 .calendarWrapper :global(.rdp-caption_label) {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: #18120E;
   text-transform: capitalize;
 }
 
 .calendarWrapper :global(.rdp-head_cell) {
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: #a8a29e;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  text-align: center;
 }
 
 .calendarWrapper :global(.rdp-day) {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: #18120E;
-  border-radius: 0.5rem;
-  transition: background-color 0.15s;
+  border-radius: 0.6rem;
+  transition: background-color 0.2s, transform 0.2s;
+  font-weight: 400;
 }
 
 .calendarWrapper :global(.rdp-day:hover:not(.rdp-day_selected):not(.rdp-day_disabled)) {
-  background-color: rgba(24,18,14,0.05);
+  background-color: rgba(61, 53, 48, 0.07);
+  transform: scale(1.1);
 }
 
 .calendarWrapper :global(.rdp-day_selected) {
-  background-color: #18120E !important;
+  background-color: #3D3530 !important;
   color: #ffffff !important;
-  border-radius: 0.5rem;
+  border-radius: 0.6rem;
+  font-weight: 700;
 }
 
 .calendarWrapper :global(.rdp-day_today:not(.rdp-day_selected)) {
@@ -85,27 +227,28 @@
 .calendarWrapper :global(.rdp-nav_button) {
   color: #18120E;
   border-radius: 0.5rem;
-  transition: background-color 0.15s;
+  transition: background-color 0.2s;
+  border: 1px solid rgba(24, 18, 14, 0.1);
 }
 
 .calendarWrapper :global(.rdp-nav_button:hover) {
-  background-color: rgba(24,18,14,0.05);
+  background-color: rgba(61, 53, 48, 0.06);
 }
 
+/* ── SELECTED DATE ── */
 .selectedDate {
   display: flex;
   align-items: center;
   gap: 0.875rem;
-  padding: 1rem 1.25rem;
-  background-color: #18120E;
-  border-radius: 1rem;
-  margin-bottom: 1.5rem;
+  padding: 0.875rem 1.1rem;
+  background-color: #3D3530;
+  border-radius: 0.875rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  max-width: 420px;
 }
 
-.selectedDateIcon {
-  color: #A07848;
-  flex-shrink: 0;
-}
+.selectedDateIcon { color: #A07848; flex-shrink: 0; }
 
 .selectedDateText {
   font-size: 0.9rem;
@@ -116,60 +259,16 @@
 
 .selectedDateSub {
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255, 255, 255, 0.45);
   margin-top: 0.12rem;
 }
 
-.buttons { display: flex; gap: 0.75rem; }
-
-.btnSecondary {
-  flex: 1;
-  padding: 1rem 1.25rem;
-  border-radius: 1rem;
-  border: 1.5px solid rgba(24,18,14,0.12);
-  background-color: #ffffff;
-  color: #57534e;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  font-family: 'Inter', system-ui, sans-serif;
+/* ── Breakpoints ── */
+@media (min-width: 600px) {
+  .title { font-size: 1.75rem; }
+  .calendarWrapper :global(.rdp) { --rdp-cell-size: 44px; }
 }
 
-.btnSecondary:hover {
-  border-color: #18120E;
-  color: #18120E;
-}
-
-.btnPrimary {
-  flex: 2;
-  padding: 1rem 1.25rem;
-  border-radius: 1rem;
-  border: none;
-  background-color: #18120E;
-  color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  font-family: 'Inter', system-ui, sans-serif;
-}
-
-.btnPrimary:hover {
-  background-color: #2C1F14;
-  transform: translateY(-1px);
-}
-
-.btnPrimary:disabled {
-  opacity: 0.25;
-  cursor: not-allowed;
-  transform: none;
+@media (min-width: 768px) {
+  .title { font-size: 1.875rem; }
 }

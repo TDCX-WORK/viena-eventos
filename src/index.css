@@ -5,16 +5,20 @@
 @tailwind utilities;
 
 :root {
-  --ink:        #18120E;
-  --ink-soft:   #57534e;
-  --ink-muted:  #a8a29e;
-  --ink-faint:  #d4d0cb;
-  --gold:       #A07848;
-  --gold-light: rgba(160,120,72,0.1);
-  --surface:    #FFFFFF;
-  --bg:         #FAFAF8;
-  --border:     rgba(24,18,14,0.09);
-  --border-mid: rgba(24,18,14,0.14);
+  /* ── Paleta principal ── */
+  --color-gold: #A07848;
+  --color-gold-light: #b8935a;
+  --color-ink: #18120E;
+  --color-soft: #3D3530;
+  --color-body: #44403c;        /* texto cuerpo — antes era #78716c, demasiado apagado */
+  --color-muted: #6b6560;       /* texto secundario — antes #a8a29e, ahora legible */
+  --color-hint: #8a8480;        /* hints/placeholders — antes #c4bfba */
+  --color-faint: #a8a29e;       /* solo para bordes y separadores */
+
+  /* ── Bordes y sombras ── */
+  --border: rgba(24,18,14,0.13);
+  --shadow-card: 0 2px 0 rgba(24,18,14,0.08), 0 4px 16px rgba(24,18,14,0.07), 0 12px 32px rgba(24,18,14,0.05);
+  --shadow-card-hover: 0 2px 0 rgba(24,18,14,0.12), 0 8px 24px rgba(24,18,14,0.1), 0 24px 48px rgba(24,18,14,0.08);
 }
 
 *, *::before, *::after {
@@ -23,20 +27,41 @@
   padding: 0;
 }
 
+html {
+  background-color: #EDE5D8;
+}
+
 html, body, #root {
-  background-color: var(--bg);
   min-height: 100vh;
 }
 
 body {
-  color: var(--ink);
+  background-color: #EDE5D8;
+  background-image:
+    radial-gradient(ellipse 90% 70% at 15% 5%,  rgba(160,120,72,0.20) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 60% at 85% 90%, rgba(61,53,48,0.13)  0%, transparent 50%),
+    radial-gradient(ellipse 50% 45% at 55% 45%, rgba(160,120,72,0.08) 0%, transparent 55%);
+  background-attachment: fixed;
+  color: var(--color-body);
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 16px;
+  font-size: 17px;
+  line-height: 1.6;
+  font-weight: 400;
 }
 
 ::selection {
-  background: var(--ink);
+  background: #3D3530;
   color: #fff;
+}
+
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(200%); }
+}
+
+@keyframes border-beam-travel {
+  0%   { offset-distance: 0%; }
+  100% { offset-distance: 100%; }
 }

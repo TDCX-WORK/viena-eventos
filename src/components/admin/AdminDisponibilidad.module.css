@@ -1,0 +1,310 @@
+.wrapper { display: flex; flex-direction: column; gap: 1.75rem; }
+
+.header { display: flex; flex-direction: column; gap: 0.25rem; }
+.title { font-family: 'Inter', system-ui, -apple-system, sans-serif; font-size: 1.85rem; font-weight: 800; color: #111; margin: 0; letter-spacing: -0.03em; }
+.subtitle { font-size: 0.95rem; color: #999; margin: 0; }
+
+.feedback {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.8rem 1.15rem; border-radius: 14px; font-size: 0.92rem; font-weight: 600;
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.feedback_success { background: rgba(22, 163, 74, 0.06); color: #16a34a; border: 1.5px solid rgba(22, 163, 74, 0.15); }
+.feedback_error { background: rgba(220, 38, 38, 0.05); color: #dc2626; border: 1.5px solid rgba(220, 38, 38, 0.1); }
+
+.roomPills { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.roomPill {
+  padding: 0.6rem 1.2rem; border-radius: 999px; border: 1.5px solid rgba(120, 30, 30, 0.1);
+  background: #fff; font-family: 'Inter', system-ui, -apple-system, sans-serif; font-size: 0.92rem;
+  font-weight: 600; color: #333; cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+.roomPill:hover {
+  border-color: rgba(139, 32, 32, 0.25);
+  box-shadow: 0 2px 8px rgba(139, 32, 32, 0.06);
+  transform: translateY(-1px);
+}
+.roomPillActive {
+  background: #8B2020; color: #fff; border-color: #8B2020;
+  box-shadow: 0 3px 12px rgba(139, 32, 32, 0.2);
+}
+
+.mainGrid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+@media (min-width: 800px) { .mainGrid { grid-template-columns: auto 1fr; align-items: flex-start; } }
+
+.calCard {
+  background: #fff; border: 1.5px solid rgba(120, 30, 30, 0.06); border-radius: 16px;
+  padding: 1.4rem;
+  box-shadow: 0 1px 4px rgba(120, 30, 30, 0.03), 0 4px 16px rgba(0, 0, 0, 0.02);
+  display: flex; flex-direction: column; gap: 1.15rem;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.calCard:hover {
+  border-color: rgba(139, 32, 32, 0.2);
+  box-shadow: 0 4px 20px rgba(139, 32, 32, 0.06), 0 0 30px -5px rgba(139, 32, 32, 0.06);
+}
+
+.calCard :global(.rdp) { --rdp-cell-size: 42px; --rdp-accent-color: #8B2020; margin: 0; }
+.calCard :global(.rdp-caption_label) {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif; font-size: 1.1rem; font-weight: 700;
+  color: #111; text-transform: capitalize;
+}
+.calCard :global(.rdp-day) { border-radius: 12px; font-size: 0.92rem; transition: all 0.15s ease; }
+.calCard :global(.rdp-day_selected) {
+  background: #8B2020 !important; color: #fff !important; font-weight: 700;
+  box-shadow: 0 2px 8px rgba(139, 32, 32, 0.3);
+}
+
+.blockedDay {
+  background: rgba(220, 38, 38, 0.08) !important; color: #dc2626 !important;
+  font-weight: 700; text-decoration: line-through; border-radius: 12px;
+}
+
+.blockForm {
+  display: flex; flex-direction: column; gap: 0.8rem;
+  padding-top: 0.75rem; border-top: 1px solid rgba(120, 30, 30, 0.06);
+}
+.blockCount { font-size: 0.9rem; font-weight: 700; color: #111; margin: 0; }
+
+/* ── Jornada selector ── */
+.jornadaSelector { display: flex; flex-direction: column; gap: 0.45rem; }
+.jornadaTitle {
+  font-size: 0.72rem; font-weight: 700; color: #8B2020;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.jornadaOptions { display: flex; flex-direction: column; gap: 0.35rem; }
+
+.jornadaOption {
+  display: flex; align-items: center; gap: 0.55rem;
+  padding: 0.65rem 0.85rem; border-radius: 12px;
+  border: 1.5px solid rgba(120, 30, 30, 0.08); background: #fff;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #888;
+}
+.jornadaOption:hover {
+  border-color: rgba(139, 32, 32, 0.2);
+  background: rgba(139, 32, 32, 0.02);
+  color: #555;
+}
+.jornadaOption svg { flex-shrink: 0; }
+
+.jornadaOptionActive {
+  border-color: #8B2020;
+  background: rgba(139, 32, 32, 0.05);
+  color: #8B2020;
+  box-shadow: 0 0 0 2px rgba(139, 32, 32, 0.08);
+}
+.jornadaOptionActive svg { color: #8B2020; }
+
+.jornadaLabel { font-size: 0.88rem; font-weight: 700; color: inherit; }
+.jornadaSub { font-size: 0.78rem; color: #aaa; margin-left: auto; }
+.jornadaOptionActive .jornadaSub { color: rgba(139, 32, 32, 0.5); }
+
+/* ── End jornada selector ── */
+
+.reasonInput {
+  padding: 0.7rem 0.95rem; border: 1.5px solid rgba(120, 30, 30, 0.1); border-radius: 12px;
+  font-size: 0.92rem; color: #111; font-family: 'Inter', system-ui, -apple-system, sans-serif; outline: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reasonInput:focus { border-color: #8B2020; box-shadow: 0 0 0 3px rgba(139, 32, 32, 0.06); }
+.reasonInput::placeholder { color: #bbb; }
+
+.blockBtns { display: flex; gap: 0.5rem; }
+.blockBtn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+  padding: 0.75rem; border: none; border-radius: 12px;
+  background: #8B2020; color: #fff; font-size: 0.88rem; font-weight: 700;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif; cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.blockBtn:hover:not(:disabled) {
+  background: #7a1b1b;
+  box-shadow: 0 4px 14px rgba(139, 32, 32, 0.2);
+  transform: translateY(-1px);
+}
+.blockBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.blockBtnAll {
+  padding: 0.75rem 0.95rem; border: 1.5px solid rgba(139, 32, 32, 0.2); border-radius: 12px;
+  background: none; color: #8B2020; font-size: 0.88rem; font-weight: 700;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif; cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+.blockBtnAll:hover:not(:disabled) {
+  background: rgba(139, 32, 32, 0.05);
+  box-shadow: 0 2px 8px rgba(139, 32, 32, 0.06);
+  transform: translateY(-1px);
+}
+.blockBtnAll:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Blocked list ── */
+.listCard {
+  background: #fff; border: 1.5px solid rgba(120, 30, 30, 0.06); border-radius: 16px;
+  padding: 1.4rem;
+  box-shadow: 0 1px 4px rgba(120, 30, 30, 0.03), 0 4px 16px rgba(0, 0, 0, 0.02);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.listCard:hover {
+  border-color: rgba(139, 32, 32, 0.2);
+  box-shadow: 0 4px 20px rgba(139, 32, 32, 0.06), 0 0 30px -5px rgba(139, 32, 32, 0.06);
+}
+
+.listTitle {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 1rem; font-weight: 700; color: #111; margin: 0 0 1.15rem;
+}
+.listTitle svg { color: #8B2020; }
+
+.emptyText { font-size: 0.92rem; color: #999; text-align: center; padding: 2.5rem 0; margin: 0; }
+
+.blockedList { display: flex; flex-direction: column; gap: 0.85rem; }
+
+/* Grouped by date */
+.blockedGroup {
+  display: flex; flex-direction: column; gap: 0.35rem;
+}
+.blockedGroupDate {
+  font-size: 0.82rem; font-weight: 700; color: #111;
+  text-transform: capitalize;
+  padding: 0.35rem 0; border-bottom: 1px solid rgba(120, 30, 30, 0.06);
+  margin-bottom: 0.15rem;
+}
+
+.blockedItem {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+  padding: 0.6rem 0.85rem; border-radius: 12px; border: 1px solid rgba(120, 30, 30, 0.04);
+  transition: all 0.2s ease; margin-left: 0.5rem;
+}
+.blockedItem:hover { background: rgba(139, 32, 32, 0.015); border-color: rgba(139, 32, 32, 0.1); }
+
+.blockedInfo { display: flex; align-items: center; gap: 0.55rem; min-width: 0; flex-wrap: wrap; }
+
+.blockedJornada {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  font-size: 0.78rem; font-weight: 700; padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+.blockedJornada_completo { background: rgba(139, 32, 32, 0.07); color: #8B2020; }
+.blockedJornada_manana   { background: rgba(234, 179, 8, 0.1); color: #b45309; }
+.blockedJornada_tarde    { background: rgba(99, 102, 241, 0.08); color: #6366f1; }
+
+.blockedReason { font-size: 0.78rem; color: #999; font-weight: 500; }
+
+.unblockBtn {
+  width: 2rem; height: 2rem; border-radius: 10px; border: 1.5px solid rgba(120, 30, 30, 0.06);
+  background: none; display: flex; align-items: center; justify-content: center;
+  color: #999; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); flex-shrink: 0;
+}
+.unblockBtn:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.05); color: #dc2626; border-color: rgba(220, 38, 38, 0.15);
+  transform: scale(1.05);
+}
+.unblockBtn:disabled { opacity: 0.5; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.8s linear infinite; }
+
+/* ── View toggle ── */
+.viewToggle {
+  display: flex; gap: 0.3rem; background: #fff;
+  padding: 0.3rem; border-radius: 14px;
+  border: 1.5px solid rgba(120, 30, 30, 0.06);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+  width: fit-content;
+}
+.viewBtn {
+  display: flex; align-items: center; gap: 0.45rem;
+  padding: 0.6rem 1.1rem; border-radius: 11px; border: none; background: none;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 0.88rem; font-weight: 600; color: #888; cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.viewBtn:hover { background: rgba(0, 0, 0, 0.03); color: #555; }
+.viewBtnActive { background: #8B2020; color: #fff; box-shadow: 0 2px 8px rgba(139, 32, 32, 0.15); }
+.viewBtnActive:hover { background: #7a1b1b; color: #fff; }
+
+/* ── Global view ── */
+.globalView { display: flex; flex-direction: column; gap: 1rem; }
+
+.emptyGlobal {
+  display: flex; flex-direction: column; align-items: center; gap: 0.65rem;
+  padding: 3.5rem; background: #fff; border: 1.5px dashed rgba(120, 30, 30, 0.1);
+  border-radius: 16px; text-align: center;
+}
+.emptyGlobal p { font-size: 0.95rem; color: #999; margin: 0; }
+
+.globalList { display: flex; flex-direction: column; gap: 0.85rem; }
+
+.globalDateBlock {
+  background: #fff; border: 1.5px solid rgba(120, 30, 30, 0.06); border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(120, 30, 30, 0.03), 0 4px 16px rgba(0, 0, 0, 0.015);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.globalDateBlock:hover {
+  border-color: rgba(139, 32, 32, 0.2);
+  box-shadow: 0 4px 20px rgba(139, 32, 32, 0.06);
+}
+
+.globalDateHeader {
+  padding: 0.85rem 1.25rem; font-size: 0.92rem; font-weight: 700; color: #111;
+  text-transform: capitalize;
+  border-bottom: 1px solid rgba(120, 30, 30, 0.06);
+  background: rgba(120, 30, 30, 0.015);
+}
+
+.globalRoomsList { display: flex; flex-direction: column; }
+
+.globalRoomRow {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid rgba(120, 30, 30, 0.04);
+  flex-wrap: wrap;
+}
+.globalRoomRow:last-child { border-bottom: none; }
+
+.globalRoomFree { opacity: 0.55; }
+.globalRoomPartial { background: rgba(234, 179, 8, 0.03); }
+.globalRoomFullBlocked { background: rgba(220, 38, 38, 0.03); }
+
+.globalRoomName { font-size: 0.88rem; font-weight: 700; color: #111; min-width: 120px; }
+
+.globalJornadas { display: flex; gap: 0.35rem; flex-wrap: wrap; flex: 1; }
+
+.globalJornadaChip {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+.globalJornada_completo { background: rgba(220, 38, 38, 0.08); color: #dc2626; }
+.globalJornada_manana   { background: rgba(234, 179, 8, 0.12); color: #b45309; }
+.globalJornada_tarde    { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
+
+.globalFreeChip {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(22, 163, 74, 0.07); color: #16a34a;
+}
+
+.globalFreeLabel {
+  font-size: 0.78rem; font-weight: 500; color: #aaa; font-style: italic;
+}
+
+.globalActions { display: flex; gap: 0.25rem; margin-left: auto; }
+
+.globalUnblockBtn {
+  width: 1.65rem; height: 1.65rem; border-radius: 8px; border: 1px solid rgba(120, 30, 30, 0.06);
+  background: none; display: flex; align-items: center; justify-content: center;
+  color: #ccc; cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.globalUnblockBtn:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.05); color: #dc2626; border-color: rgba(220, 38, 38, 0.15);
+}
+.globalUnblockBtn:disabled { opacity: 0.5; }
