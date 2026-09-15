@@ -33,7 +33,7 @@ function getCarouselImages(room) {
 
 const DEFAULT_BADGE_COLOR = '#B8860B'
 
-export default function RoomCard({ room, onSelect, index = 0 }) {
+export default function RoomCard({ room, onSelect, index = 0, oferta = null }) {
   const [isOpen, setIsOpen]     = useState(false)
   const [photoIdx, setPhotoIdx] = useState(0)
   const [imgLoaded, setImgLoaded] = useState({})
@@ -97,9 +97,9 @@ export default function RoomCard({ room, onSelect, index = 0 }) {
 
           <div className={styles.imageGradient} />
 
-          {room.badge && (
-            <span className={styles.badge}>{room.badge}</span>
-          )}
+          {/* La pastilla de "Más solicitada" se quitó: la tapaba la cinta
+              de la oferta, que dice algo más útil. El campo `badge` sigue
+              en la base de datos y en la pestaña de Fotos por si vuelve. */}
 
           {/* Flechas carrusel */}
           <button className={`${styles.carouselBtn} ${styles.carouselPrev}`} onClick={prevPhoto} aria-label="Foto anterior">
@@ -122,10 +122,24 @@ export default function RoomCard({ room, onSelect, index = 0 }) {
         </div>
       </div>
 
-      {/* Precio — pestaña esquina superior derecha */}
-      <span className={styles.priceBadge}>
-        {room.pricing.halfDay}{room.pricing.currency}
+      {/* Precio — pestaña esquina superior derecha.
+          Con oferta se tacha el de siempre y se enseña el rebajado. Es
+          un "desde": la oferta puede depender del día o de la jornada,
+          así que no vale para toda reserva. */}
+      <span className={`${styles.priceBadge} ${oferta ? styles.priceBadgeOferta : ''}`}>
+        {oferta && (
+          <s className={styles.priceAntes}>
+            {room.pricing.halfDay}{room.pricing.currency}
+          </s>
+        )}
+        <span className={styles.priceAhora}>
+          {oferta ? oferta.precio : room.pricing.halfDay}{room.pricing.currency}
+        </span>
       </span>
+
+      {oferta && (
+        <span className={styles.ofertaCinta}>{oferta.oferta.name}</span>
+      )}
 
       {/* ── CONTENT ── */}
       <div className={styles.content}>
@@ -137,7 +151,7 @@ export default function RoomCard({ room, onSelect, index = 0 }) {
           aria-expanded={isOpen}
         >
           <div className={styles.nameBlock}>
-            <h2 className={styles.name}>{room.name}</h2>
+            <h3 className={styles.name}>{room.name}</h3>
             <div className={styles.meta}>
               <span className={styles.metaItem}>
                 <Maximize2 size={13} />
@@ -242,6 +256,14 @@ export default function RoomCard({ room, onSelect, index = 0 }) {
                     <span className={styles.priceHint}>9–20h</span>
                   </div>
                 </div>
+
+                {oferta && (
+                  <p className={styles.ofertaNota}>
+                    <strong>{oferta.oferta.name}</strong>
+                    {oferta.oferta.description ? ` · ${oferta.oferta.description}` : ''}
+                    {' '}El descuento se aplica al elegir las fechas.
+                  </p>
+                )}
 
               </div>
             </motion.div>

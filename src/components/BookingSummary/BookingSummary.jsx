@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { Clock, CalendarDays, Users, LayoutGrid, Coffee } from 'lucide-react'
+import { Clock, CalendarDays, Users, LayoutGrid, Coffee, Tag, CalendarPlus } from 'lucide-react'
+import { explicarDescuento } from '../../lib/ofertas'
 import styles from './BookingSummary.module.css'
 
 const JORNADA_LABELS = {
@@ -17,14 +18,36 @@ function formatPrice(n) {
   return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
-export default function BookingSummary({ booking, room, getTotalPrice, hotel }) {
-  const total = getTotalPrice(hotel)
+export default function BookingSummary({ booking, room, desglose, hotel }) {
+  /* `desglose` viene de useBooking y siempre tiene la misma forma, haya
+     oferta o no. El fallback es por si algún sitio monta el resumen sin
+     pasarlo: mejor un total a cero que una pantalla en blanco. */
+  const { base = 0, extras = 0, descuento = 0, oferta = null, total = 0 } = desglose || {}
+  const sinDescuento = base + extras
+
+  /* Sobre qué se ha calculado el descuento. El porcentaje se aplica al
+     precio de sala, no al total con extras, y sin decirlo el cliente
+     divide, le sale otro número y piensa que hay un error. Cuántos días
+     entran en la oferta lo sabe el motor: viene en `desglose.dias`. */
+  const explicacion = oferta
+    ? explicarDescuento(oferta, { dias: (desglose?.dias || []).length })
+    : ''
   const selectedExtras = (booking.extras || [])
     .map(id => hotel.extras.find(e => e.id === id))
     .filter(Boolean)
 
   const fechas = booking.fechas || []
   const hasFechas = fechas.length > 0
+
+  /* Suplemento de fin de semana. Va desglosado porque si no, el cliente
+     ve un total más alto del que esperaba y no sabe de dónde sale. Si el
+     hotel no cobra suplemento, esto no aparece. */
+  const suplemento = room.pricing?.weekendSupplement || 0
+  const diasFinde = fechas.filter(f => {
+    const d = f.date.getDay()
+    return d === 0 || d === 6
+  }).length
+  const totalSuplemento = suplemento * diasFinde
 
   return (
     <aside className={styles.wrapper}>
@@ -116,11 +139,46 @@ export default function BookingSummary({ booking, room, getTotalPrice, hotel }) 
       </div>
 
       {/* Total */}
-      {total > 0 && (
+      {sinDescuento > 0 && (
         <div className={styles.totalBlock}>
+          {totalSuplemento > 0 && (
+            <div className={styles.suplementoRow}>
+              <span className={styles.suplementoLabel}>
+                <CalendarPlus size={11} />
+                Suplemento fin de semana
+                {diasFinde > 1 && ` · ${diasFinde} días`}
+              </span>
+              <span className={styles.suplementoAmount}>
+                +{formatPrice(totalSuplemento)}€
+              </span>
+            </div>
+          )}
+
+          {/* La oferta se enseña antes del precio: primero por qué baja,
+              luego cuánto. Al revés parece un error de cálculo. */}
+          {oferta && descuento > 0 && (
+            <div className={styles.ofertaRow}>
+              <div className={styles.ofertaCol}>
+                <span className={styles.ofertaName}>
+                  <Tag size={11} />
+                  {oferta.name}
+                </span>
+                {explicacion && (
+                  <span className={styles.ofertaBase}>{explicacion}</span>
+                )}
+              </div>
+              <span className={styles.ofertaAmount}>−{formatPrice(descuento)}€</span>
+            </div>
+          )}
+
           <div className={styles.totalRow}>
             <span className={styles.totalLabel}>Total estimado</span>
-            <div className={styles.totalPrice}>{formatPrice(total)}€</div>
+            <div className={styles.totalPriceWrap}>
+              {descuento > 0 && (
+                <s className={styles.totalAntes}>{formatPrice(sinDescuento)}€</s>
+              )}
+              <div className={styles.totalPrice}>{formatPrice(total)}€</div>
+            </div>
           </div>
           <div className={styles.totalSub}>
             {fechas.length > 1

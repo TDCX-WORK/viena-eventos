@@ -56,9 +56,9 @@
   padding: 0.85rem 1.75rem;
   border-radius: 999px;
   border: 2px solid rgba(24,18,14,0.18);
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  /* Sin backdrop-filter: va sobre fondo liso, el desenfoque no se veía
+     y forzaba un repintado en cada fotograma del scroll. */
+  background: rgba(255,255,255,0.85);
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 0.95rem;
   font-weight: 700;
@@ -126,3 +126,52 @@
   .wrapper { padding: 5rem 8rem; }
   .grid    { gap: 2.5rem; }
 }
+/* ─────────────────────────────────────────────────────────────────────
+   El pie vive fuera de .wrapper desde que la FAQ se cuela entre medias.
+   Este contenedor le devuelve el mismo margen lateral que tenía dentro;
+   el espacio de arriba lo sigue poniendo .footer con su margin-top.
+   ───────────────────────────────────────────────────────────────────── */
+.footerWrapper { padding: 0 1rem 2rem; }
+
+@media (min-width: 600px)  { .footerWrapper { padding: 0 1.75rem 2.5rem; } }
+@media (min-width: 1024px) { .footerWrapper { padding: 0 5rem 4rem; } }
+@media (min-width: 1280px) { .footerWrapper { padding: 0 8rem 5rem; } }
+
+/* ── Esqueleto de carga (SalasCargando) ──
+   Imita el tamaño de RoomCard cerrada: imagen 4/3 con 10 px de margen y
+   la cabecera con nombre y datos. */
+.skCard {
+  background: #FDFCFB;
+  border: 1.5px solid rgba(160,120,72,0.25);
+  border-radius: 20px;
+  padding: 10px 10px 22px;
+}
+.skImagen,
+.skLinea {
+  background: linear-gradient(110deg, #f0ede8 30%, #f7f5f2 50%, #f0ede8 70%);
+  background-size: 200% 100%;
+  animation: skBrillo 1.5s ease-in-out infinite;
+}
+.skImagen { aspect-ratio: 4 / 3; border-radius: 14px; }
+.skLinea { height: 1.3rem; border-radius: 6px; margin: 16px 8px 0; width: 60%; }
+.skLineaCorta { height: 0.85rem; width: 45%; margin-top: 10px; }
+
+@keyframes skBrillo {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skImagen, .skLinea { animation: none; }
+}
+
+.errorBox {
+  max-width: 36rem;
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1.5px solid rgba(160,120,72,0.25);
+  background: #FDFCFB;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.errorTitulo { font-weight: 600; color: #3D3530; margin: 0 0 0.4rem; }
+.errorTexto { font-size: 0.9rem; color: #78716c; margin: 0; line-height: 1.6; }
+.errorTexto a { color: #A07848; }

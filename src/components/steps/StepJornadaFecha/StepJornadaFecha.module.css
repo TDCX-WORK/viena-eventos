@@ -456,3 +456,45 @@
 @media (min-width: 600px) {
   .title { font-size: 1.65rem; }
 }
+
+
+/* ── Días con oferta ─────────────────────────────────────────────────
+   Un punto debajo del número, no un fondo: el fondo ya lo usan los días
+   bloqueados y los seleccionados, y tres fondos distintos en la misma
+   rejilla no hay quien los lea. */
+
+.ofertaDay {
+  position: relative;
+  font-weight: 600;
+}
+
+.ofertaDay::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: #166534;
+}
+
+.ofertaLeyenda {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: #6b6b6b;
+}
+
+.ofertaLeyendaDot {
+  flex-shrink: 0;
+  width: 5px;
+  height: 5px;
+  margin-top: 0.42rem;
+  border-radius: 50%;
+  background: #166534;
+}

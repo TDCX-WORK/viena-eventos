@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Wifi, Monitor, Tv2, FileText, Droplets, Coffee, UtensilsCrossed, Check, Store, Users, Info } from 'lucide-react'
+import { Wifi, Monitor, Tv2, FileText, Droplets, Coffee, UtensilsCrossed, Check, Store, Users, Info, Tag, X, Gift } from 'lucide-react'
+import { motivoDeOferta } from '../../../lib/ofertas'
 import styles from './StepExtras.module.css'
 import coffeeBg from '../../../assets/coffee-bg.webp'
 import menuBg from '../../../assets/menu-bg.webp'
@@ -264,9 +265,31 @@ function CardGrid({ items, colors, selectedExtras, onToggleSelect, iconGetter, h
   )
 }
 
-export default function StepExtras({ booking, updateBooking, hotel }) {
+export default function StepExtras({
+  booking, updateBooking, hotel,
+  desglose, codigo, ofertaCodigo, estadoCodigo, aplicarCodigo, quitarCodigo,
+}) {
   const selectedExtras = booking.extras || []
   const [hoveredId, setHoveredId] = useState(null)
+
+  /* El código se escribe aquí y se comprueba contra la base de datos al
+     pulsar Aplicar. No se valida en el navegador porque el navegador no
+     tiene la lista: precisamente para que nadie pueda leerla. */
+  const [textoCodigo, setTextoCodigo] = useState(codigo || '')
+
+  const regalos = desglose?.gratis || []
+
+  /* Que el código exista en la base de datos y que rebaje algo son dos
+     cosas distintas. Antes, con un código válido pero que no cuadraba
+     con las fechas elegidas, esto pintaba un ✓ y el total no se movía:
+     de ahí la sensación de que el descuento estaba mal calculado. El
+     motor ya sabe el porqué, así que se enseña. */
+  const estadoReal = ofertaCodigo
+    ? motivoDeOferta(desglose, ofertaCodigo.id)
+    : null
+
+  const codigoNoAplica = estadoReal && !estadoReal.aplica
+  const codigoNoGana   = estadoReal && estadoReal.aplica && !estadoReal.gana
 
   const isSelected   = (id) => selectedExtras.includes(id)
   const toggleSelect = (id) => {
@@ -331,6 +354,15 @@ export default function StepExtras({ booking, updateBooking, hotel }) {
         />
       </div>
 
+      {regalos.length > 0 && (
+        <div className={styles.regaloAviso}>
+          <Gift size={13} className={styles.regaloIcon} />
+          <span>
+            Incluido con {desglose.oferta?.name}: {regalos.map(g => g.nombre).join(', ')}
+          </span>
+        </div>
+      )}
+
       <div className={`${styles.section} ${styles.sectionWithBg}`}>
         <img src={menuBg} alt="" className={styles.sectionBgImg} aria-hidden="true" />
         <div className={styles.sectionHead}>
@@ -346,6 +378,72 @@ export default function StepExtras({ booking, updateBooking, hotel }) {
           hoveredId={hoveredId}
           onHover={setHoveredId}
         />
+      </div>
+
+      {/* ── Código promocional ── */}
+      <div className={styles.section}>
+        <div className={styles.sectionHead}>
+          <Tag size={12} className={styles.sectionIcon} />
+          <span className={styles.sectionLabel}>¿Tienes un código?</span>
+        </div>
+
+        {ofertaCodigo ? (
+          <>
+            <div className={styles.codigoOk}>
+              <Check size={14} />
+              <span className={styles.codigoOkName}>{ofertaCodigo.name}</span>
+              <button
+                type="button"
+                className={styles.codigoQuitar}
+                onClick={() => { setTextoCodigo(''); quitarCodigo?.() }}
+                aria-label="Quitar el código"
+              >
+                <X size={13} />
+              </button>
+            </div>
+
+            {codigoNoAplica && (
+              <p className={styles.codigoError}>
+                El código es correcto, pero no se puede aplicar a esta reserva
+                {estadoReal.motivo ? `: ${estadoReal.motivo.toLowerCase()}` : '.'}
+              </p>
+            )}
+
+            {codigoNoGana && (
+              <p className={styles.codigoError}>
+                Ya tienes aplicada {desglose?.oferta?.name}, que te rebaja más.
+                Solo se aplica una oferta por reserva.
+              </p>
+            )}
+          </>
+        ) : (
+          <>
+            <div className={styles.codigoFila}>
+              <input
+                type="text"
+                className={`${styles.codigoInput} ${estadoCodigo === 'mal' ? styles.codigoInputMal : ''}`}
+                placeholder="VIENA25"
+                value={textoCodigo}
+                onChange={e => setTextoCodigo(e.target.value.toUpperCase())}
+                onKeyDown={e => { if (e.key === 'Enter') aplicarCodigo?.(textoCodigo) }}
+                autoComplete="off"
+              />
+              <button
+                type="button"
+                className={styles.codigoBtn}
+                onClick={() => aplicarCodigo?.(textoCodigo)}
+                disabled={!textoCodigo.trim() || estadoCodigo === 'validando'}
+              >
+                {estadoCodigo === 'validando' ? 'Comprobando…' : 'Aplicar'}
+              </button>
+            </div>
+            {estadoCodigo === 'mal' && (
+              <p className={styles.codigoError}>
+                Ese código no es válido o ya no está disponible.
+              </p>
+            )}
+          </>
+        )}
       </div>
     </motion.div>
   )

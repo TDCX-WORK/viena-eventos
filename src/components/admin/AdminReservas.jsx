@@ -1,290 +1,562 @@
-import { useState, useEffect } from 'react'
-import { supabase } from '../../lib/supabase'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import {
-  BookOpen, Search, ChevronDown, ChevronUp,
-  Mail, Phone, MessageSquare, Loader2, Calendar,
-  Users, MapPin, Clock, Hash, CreditCard, Tag, X
-} from 'lucide-react'
+  IconSearch,
+  IconX,
+  IconChevronDown,
+  IconCheck,
+  IconRotate,
+  IconAlertTriangle,
+  IconRefresh,
+  IconMail,
+  IconPhone,
+  IconMessage,
+  IconCalendar,
+  IconUsers,
+  IconClock,
+  IconInbox,
+  IconLayoutGrid,
+} from '@tabler/icons-react'
+import useReservas, { filtrarReservas } from '../../hooks/useReservas'
+import { verificarReserva } from '../../lib/verificarReserva'
+import Paginacion from './Paginacion/Paginacion'
+import Modal from './Modal/Modal'
 import styles from './AdminReservas.module.css'
 
-const STATUS_MAP = {
-  pending:   { label: 'Pendiente',  color: 'amber' },
-  confirmed: { label: 'Confirmada', color: 'green' },
-  cancelled: { label: 'Cancelada',  color: 'red' },
+const POR_PAGINA = 8
+
+const ESTADOS = {
+  pending:   { label: 'Pendiente',  badge: 'badgeAmbar',  punto: 'puntoAmbar' },
+  confirmed: { label: 'Confirmada', badge: 'badgeVerde',  punto: 'puntoVerde' },
+  cancelled: { label: 'Cancelada',  badge: 'badgeAcento', punto: 'puntoAcento' },
 }
 
+const FILTROS = [
+  { id: 'all',       label: 'Todas' },
+  { id: 'pending',   label: 'Pendientes' },
+  { id: 'confirmed', label: 'Confirmadas' },
+  { id: 'cancelled', label: 'Canceladas' },
+]
+
+const JORNADAS = { manana: 'Mañana', tarde: 'Tarde', completo: 'Día completo' }
+const LAYOUTS  = { imperial: 'Imperial', u: 'En U', escuela: 'Escuela', teatro: 'Teatro' }
+
+const euros    = (n) => `${Number(n || 0).toLocaleString('es-ES')} €`
+const dia      = (iso) => format(new Date(iso + 'T00:00:00'), 'd MMM', { locale: es })
+const diaLargo = (iso) => format(new Date(iso + 'T00:00:00'), "EEEE d 'de' MMMM yyyy", { locale: es })
+const recibida = (iso) => format(new Date(iso), "d MMM yyyy", { locale: es })
+
 export default function AdminReservas() {
-  const [bookings, setBookings] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
-  const [filterStatus, setFilterStatus] = useState('all')
-  const [expanded, setExpanded] = useState(null)
-  const [updating, setUpdating] = useState(null)
+  const {
+    reservas, ofertas, conflictos, contadores,
+    cargando, error, actualizando, recargar, cambiarEstado,
+  } = useReservas()
 
-  useEffect(() => { loadBookings() }, [])
+  const [filtro, setFiltro] = useState('all')
+  const [busqueda, setBusqueda] = useState('')
+  const [pagina, setPagina] = useState(1)
+  const [abierta, setAbierta] = useState(null)
+  const [confirmacion, setConfirmacion] = useState(null)
 
-  async function loadBookings() {
-    const { data } = await supabase
-      .from('bookings')
-      .select(`*, rooms(name, slug), booking_dates(*), booking_extras(*, extras(*))`)
-      .order('created_at', { ascending: false })
-    setBookings(data || [])
-    setLoading(false)
+  // Indicador deslizante de los filtros. Mismo patrón que la navbar: la
+  // posición y el ancho se miden en JS porque cada pestaña tiene un ancho
+  // distinto según su texto.
+  //
+  // La opacidad se toca por DOM y no con un estado de React. Podría ser
+  // un useState, pero entonces habría que llamar a setState dentro del
+  // efecto y eso encadena un render extra en cada medición (es lo que
+  // avisa react-hooks/set-state-in-effect). El indicador ya se coloca
+  // manipulando el nodo; encenderlo por el mismo camino es coherente y
+  // no cuesta un ciclo de render.
+  const tabsRef = useRef(null)
+  const indicadorRef = useRef(null)
+
+  const colocarIndicador = useCallback(() => {
+    const cont = tabsRef.current
+    const ind = indicadorRef.current
+    if (!cont || !ind) return
+
+    const botones = cont.querySelectorAll('[data-tab]')
+    const idx = FILTROS.findIndex(f => f.id === filtro)
+    const el = botones[idx]
+    if (!el) return
+
+    const cajaCont = cont.getBoundingClientRect()
+    const cajaEl = el.getBoundingClientRect()
+    // scrollLeft: en móvil las pestañas se arrastran de lado, así que la
+    // posición hay que medirla respecto al contenido, no al viewport.
+    ind.style.left = `${cajaEl.left - cajaCont.left + cont.scrollLeft}px`
+    ind.style.width = `${cajaEl.width}px`
+    ind.style.opacity = '1'
+  }, [filtro])
+
+  // useLayoutEffect: coloca antes del pintado, así no se ve nunca en una
+  // posición equivocada. Depende de contadores porque los números de
+  // dentro de cada pestaña cambian su ancho.
+  useLayoutEffect(() => {
+    colocarIndicador()
+  }, [colocarIndicador, contadores])
+
+  useEffect(() => {
+    window.addEventListener('resize', colocarIndicador)
+    // Hasta que Inter no ha cargado, el navegador pinta con la fuente de
+    // sistema y los anchos son otros.
+    document.fonts?.ready.then(colocarIndicador)
+    return () => window.removeEventListener('resize', colocarIndicador)
+  }, [colocarIndicador])
+
+  // Volver a la primera página se hace en el manejador, no en un efecto:
+  // es consecuencia directa de una acción de la persona, no una
+  // sincronización con nada externo.
+  function cambiarFiltro(id) {
+    setFiltro(id)
+    setPagina(1)
+    setAbierta(null)
   }
 
-  const updateStatus = async (id, newStatus) => {
-    setUpdating(id)
-    try {
-      await supabase
-        .from('bookings')
-        .update({ status: newStatus, updated_at: new Date().toISOString() })
-        .eq('id', id)
-      setBookings(prev => prev.map(b => b.id === id ? { ...b, status: newStatus } : b))
-    } catch (err) { console.error(err) }
-    finally { setUpdating(null) }
+  function cambiarBusqueda(valor) {
+    setBusqueda(valor)
+    setPagina(1)
   }
 
-  const filtered = bookings.filter(b => {
-    if (filterStatus !== 'all' && b.status !== filterStatus) return false
-    if (search) {
-      const q = search.toLowerCase()
-      return (
-        b.reference?.toLowerCase().includes(q) ||
-        b.contact_name?.toLowerCase().includes(q) ||
-        b.contact_email?.toLowerCase().includes(q)
-      )
+  function quitarFiltros() {
+    setFiltro('all')
+    setBusqueda('')
+    setPagina(1)
+  }
+
+  const filtradas = useMemo(
+    () => filtrarReservas(reservas, filtro, busqueda),
+    [reservas, filtro, busqueda]
+  )
+
+  const desde = (pagina - 1) * POR_PAGINA
+  const visibles = filtradas.slice(desde, desde + POR_PAGINA)
+
+  /** Confirmar. Si choca con otra ya confirmada, se pregunta antes. */
+  function pedirConfirmar(reserva) {
+    const choques = conflictos[reserva.id]
+    if (choques && choques.length > 0) {
+      setConfirmacion({ tipo: 'conflicto', reserva, choques })
+      return
     }
-    return true
-  })
-
-  const JORNADA_LABELS = { manana: 'Mañana', tarde: 'Tarde', completo: 'Completa' }
-  const LAYOUT_LABELS = { imperial: 'Imperial', u: 'En U', escuela: 'Escuela', teatro: 'Teatro' }
-
-  const counts = {
-    all: bookings.length,
-    pending: bookings.filter(b => b.status === 'pending').length,
-    confirmed: bookings.filter(b => b.status === 'confirmed').length,
-    cancelled: bookings.filter(b => b.status === 'cancelled').length,
+    cambiarEstado(reserva.id, 'confirmed')
   }
 
-  if (loading) return <p style={{ color: '#78716c' }}>Cargando reservas...</p>
+  /** Cancelar una ya confirmada sí se pregunta: se está deshaciendo algo
+   *  que el cliente ya da por bueno. Rechazar una pendiente, no. */
+  function pedirCancelar(reserva) {
+    if (reserva.status === 'confirmed') {
+      setConfirmacion({ tipo: 'cancelar', reserva })
+      return
+    }
+    cambiarEstado(reserva.id, 'cancelled')
+  }
+
+  async function ejecutarConfirmacion() {
+    const { tipo, reserva } = confirmacion
+    setConfirmacion(null)
+    await cambiarEstado(reserva.id, tipo === 'conflicto' ? 'confirmed' : 'cancelled')
+  }
+
+  if (cargando) {
+    return (
+      <div className={styles.cargando}>
+        <div className={styles.puntos} aria-hidden="true"><span /><span /><span /></div>
+        <p>Cargando reservas…</p>
+      </div>
+    )
+  }
+
+  const totalConflictos = Object.keys(conflictos).length
 
   return (
-    <div className={styles.wrapper}>
-      {/* Header */}
+    <div className={styles.page}>
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>Reservas</h1>
-          <p className={styles.subtitle}>{bookings.length} reserva(s) en total</p>
-        </div>
-      </div>
-
-      {/* Status tabs */}
-      <div className={styles.tabBar}>
-        {['all', 'pending', 'confirmed', 'cancelled'].map(s => (
-          <button
-            key={s}
-            className={`${styles.tab} ${filterStatus === s ? styles['tabActive_' + (s === 'all' ? 'all' : STATUS_MAP[s].color)] : ''}`}
-            onClick={() => setFilterStatus(s)}
-          >
-            <span className={styles.tabLabel}>{s === 'all' ? 'Todas' : STATUS_MAP[s].label}</span>
-            <span className={`${styles.tabCount} ${filterStatus === s ? styles['tabCountActive_' + (s === 'all' ? 'all' : STATUS_MAP[s].color)] : ''}`}>
-              {counts[s]}
-            </span>
-          </button>
-        ))}
-      </div>
-
-      {/* Search */}
-      <div className={styles.searchWrap}>
-        <Search size={16} />
-        <input
-          type="text"
-          className={styles.searchInput}
-          placeholder="Buscar por nombre, email o referencia..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-        {search && (
-          <button className={styles.clearSearch} onClick={() => setSearch('')}>
-            <X size={14} />
-          </button>
-        )}
-      </div>
-
-      {/* List */}
-      {filtered.length === 0 ? (
-        <div className={styles.emptyCard}>
-          <BookOpen size={36} style={{ color: '#d4d0cb' }} />
-          <p className={styles.emptyTitle}>Sin resultados</p>
-          <p className={styles.emptyText}>
-            No hay reservas{filterStatus !== 'all' ? ` con estado "${STATUS_MAP[filterStatus]?.label}"` : ''}
-            {search ? ` que coincidan con "${search}"` : ''}.
+          <p className={styles.subtitle}>
+            {contadores.all} en total · {contadores.pending} sin contestar
           </p>
         </div>
-      ) : (
-        <div className={styles.list}>
-          {filtered.map(b => {
-            const isOpen = expanded === b.id
-            const st = STATUS_MAP[b.status] || STATUS_MAP.pending
-            return (
-              <div key={b.id} className={`${styles.card} ${isOpen ? styles.cardOpen : ''}`}>
-                {/* Card header */}
-                <button className={styles.cardHeader} onClick={() => setExpanded(isOpen ? null : b.id)}>
-                  <div className={styles.headerTop}>
-                    <div className={styles.headerLeft}>
-                      <span className={`${styles.statusDot} ${styles['dot_' + st.color]}`} />
-                      <span className={styles.ref}>{b.reference}</span>
-                      <span className={`${styles.badge} ${styles['badge_' + st.color]}`}>{st.label}</span>
-                    </div>
-                    <div className={styles.headerRight}>
-                      <span className={styles.headerDate}>
-                        {format(new Date(b.created_at), "d MMM yyyy", { locale: es })}
-                      </span>
-                      <span className={styles.chevron}>
-                        {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                      </span>
-                    </div>
-                  </div>
-                  <div className={styles.headerBottom}>
-                    <span className={styles.clientName}>{b.contact_name}</span>
-                    <span className={styles.headerMeta}>{b.rooms?.name || '—'}</span>
-                    {b.total_price && (
-                      <span className={styles.headerPrice}>
-                        {Number(b.total_price).toLocaleString('es-ES')} €
-                      </span>
-                    )}
-                  </div>
-                </button>
+      </div>
 
-                {/* Card body */}
-                {isOpen && (
-                  <div className={styles.cardBody}>
-                    {/* Info grid */}
-                    <div className={styles.infoGrid}>
-                      {/* Contact */}
-                      <div className={styles.infoBlock}>
-                        <h4 className={styles.infoLabel}>
-                          <Users size={14} />
-                          Contacto
-                        </h4>
-                        <div className={styles.infoContent}>
-                          <div className={styles.infoRow}>
-                            <Mail size={13} />
-                            <span>{b.contact_email}</span>
-                          </div>
-                          <div className={styles.infoRow}>
-                            <Phone size={13} />
-                            <span>{b.contact_phone || '—'}</span>
-                          </div>
-                          {b.comments && (
-                            <div className={`${styles.infoRow} ${styles.commentRow}`}>
-                              <MessageSquare size={13} />
-                              <span>{b.comments}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Room & price */}
-                      <div className={styles.infoBlock}>
-                        <h4 className={styles.infoLabel}>
-                          <MapPin size={14} />
-                          Reserva
-                        </h4>
-                        <div className={styles.infoContent}>
-                          <div className={styles.infoRow}>
-                            <Hash size={13} />
-                            <span>{b.reference}</span>
-                          </div>
-                          <div className={styles.infoRow}>
-                            <MapPin size={13} />
-                            <span>{b.rooms?.name || '—'}</span>
-                          </div>
-                          <div className={styles.infoRow}>
-                            <CreditCard size={13} />
-                            <span className={styles.priceValue}>
-                              {b.total_price ? `${Number(b.total_price).toLocaleString('es-ES')} €` : '—'}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Dates */}
-                    {b.booking_dates?.length > 0 && (
-                      <div className={styles.datesSection}>
-                        <h4 className={styles.infoLabel}>
-                          <Calendar size={14} />
-                          Fechas reservadas
-                        </h4>
-                        <div className={styles.datesGrid}>
-                          {b.booking_dates.map(d => (
-                            <div key={d.id} className={styles.dateCard}>
-                              <div className={styles.dateDay}>
-                                {format(new Date(d.date + 'T00:00:00'), "d", { locale: es })}
-                              </div>
-                              <div className={styles.dateMeta}>
-                                <span className={styles.dateMonth}>
-                                  {format(new Date(d.date + 'T00:00:00'), "MMM yyyy", { locale: es })}
-                                </span>
-                                <span className={styles.dateDetails}>
-                                  <Clock size={11} />
-                                  {JORNADA_LABELS[d.jornada] || d.jornada}
-                                  {d.layout && (
-                                    <> · {LAYOUT_LABELS[d.layout] || d.layout}</>
-                                  )}
-                                  {d.attendees && (
-                                    <> · {d.attendees} pax</>
-                                  )}
-                                </span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Extras */}
-                    {b.booking_extras?.length > 0 && (
-                      <div className={styles.extrasSection}>
-                        <h4 className={styles.infoLabel}>
-                          <Tag size={14} />
-                          Extras
-                        </h4>
-                        <div className={styles.extrasList}>
-                          {b.booking_extras.map(be => (
-                            <span key={be.id} className={styles.extraChip}>
-                              {be.extras?.name || '—'}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Status actions */}
-                    <div className={styles.actionsBar}>
-                      {['pending', 'confirmed', 'cancelled'].map(s => (
-                        <button
-                          key={s}
-                          className={`${styles.actionBtn} ${styles['actionBtn_' + STATUS_MAP[s].color]} ${b.status === s ? styles.actionBtnCurrent : ''}`}
-                          onClick={() => updateStatus(b.id, s)}
-                          disabled={b.status === s || updating === b.id}
-                        >
-                          {updating === b.id && b.status !== s ? <Loader2 size={14} className={styles.spin} /> : null}
-                          {STATUS_MAP[s].label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          })}
+      {error && (
+        <div className={styles.errorMsg} role="alert">
+          <IconAlertTriangle size={16} stroke={1.75} />
+          <span>{error}</span>
+          <button type="button" className={styles.reintentar} onClick={() => recargar()}>
+            <IconRefresh size={14} stroke={2} />
+            Reintentar
+          </button>
         </div>
       )}
+
+      {totalConflictos > 0 && (
+        <div className={styles.aviso}>
+          <IconAlertTriangle size={16} stroke={1.75} />
+          <span>
+            Hay {totalConflictos} reserva(s) que se solapan con otra ya confirmada
+            en la misma sala y jornada. Están marcadas en la lista.
+          </span>
+        </div>
+      )}
+
+      {/* ── Filtros y buscador ─────────────────────────────────────── */}
+      <div className={styles.barra}>
+        <div className={styles.filtroTabs} ref={tabsRef}>
+          <div
+            ref={indicadorRef}
+            className={styles.filtroIndicator}
+            aria-hidden="true"
+          />
+          {FILTROS.map(f => (
+            <button
+              key={f.id}
+              type="button"
+              data-tab
+              className={`${styles.filtroTab} ${filtro === f.id ? styles.filtroActive : ''}`}
+              onClick={() => cambiarFiltro(f.id)}
+              aria-pressed={filtro === f.id}
+            >
+              {f.label}
+              <span className={styles.tabBadge}>{contadores[f.id]}</span>
+            </button>
+          ))}
+        </div>
+
+        <div className={styles.searchWrap}>
+          <IconSearch size={16} stroke={1.75} className={styles.searchIcon} />
+          <input
+            type="text"
+            className={styles.searchInput}
+            placeholder="Buscar por referencia, nombre, email o sala…"
+            value={busqueda}
+            onChange={(e) => cambiarBusqueda(e.target.value)}
+            aria-label="Buscar reservas"
+          />
+          {busqueda && (
+            <button
+              type="button"
+              className={styles.limpiar}
+              onClick={() => cambiarBusqueda('')}
+              aria-label="Limpiar la búsqueda"
+            >
+              <IconX size={14} stroke={2} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* ── Lista ──────────────────────────────────────────────────── */}
+      {filtradas.length === 0 ? (
+        <div className={styles.vacio}>
+          <IconInbox size={36} stroke={1.25} />
+          <p>
+            {reservas.length === 0
+              ? 'Todavía no ha llegado ninguna solicitud desde la web.'
+              : 'Ninguna reserva coincide con lo que buscas.'}
+          </p>
+          {reservas.length > 0 && (
+            <button
+              type="button"
+              className={styles.btnSecundario}
+              onClick={quitarFiltros}
+            >
+              Quitar los filtros
+            </button>
+          )}
+        </div>
+      ) : (
+        <>
+          <div className={styles.lista}>
+            {visibles.map(r => {
+              const est = ESTADOS[r.status] || ESTADOS.pending
+              const desplegada = abierta === r.id
+              const choques = conflictos[r.id] || []
+              const fechas = [...(r.booking_dates || [])].sort((a, b) => a.date.localeCompare(b.date))
+              const ocupada = actualizando === r.id
+
+              return (
+                <article
+                  key={r.id}
+                  className={`
+                    ${styles.card}
+                    ${desplegada ? styles.cardAbierta : ''}
+                    ${choques.length > 0 ? styles.cardConflicto : ''}
+                    ${r.status === 'cancelled' ? styles.cardCancelada : ''}
+                  `}
+                >
+                  <button
+                    type="button"
+                    className={styles.cardCabecera}
+                    onClick={() => setAbierta(desplegada ? null : r.id)}
+                    aria-expanded={desplegada}
+                  >
+                    <div className={styles.cabeceraArriba}>
+                      <span className={`${styles.punto} ${styles[est.punto]}`} aria-hidden="true" />
+                      <span className={styles.ref}>{r.reference}</span>
+                      <span className={`${styles.badge} ${styles[est.badge]}`}>{est.label}</span>
+                      {choques.length > 0 && (
+                        <span className={styles.badgeConflicto}>
+                          <IconAlertTriangle size={11} stroke={2} />
+                          Se solapa
+                        </span>
+                      )}
+                      <span className={styles.recibida}>{recibida(r.created_at)}</span>
+                      <IconChevronDown
+                        size={18}
+                        stroke={1.75}
+                        className={`${styles.chevron} ${desplegada ? styles.chevronAbierto : ''}`}
+                      />
+                    </div>
+
+                    <div className={styles.cabeceraAbajo}>
+                      <span className={styles.nombre}>{r.contact_name}</span>
+                      <span className={styles.meta}>{r.rooms?.name || '—'}</span>
+                      {fechas.length > 0 && (
+                        <span className={styles.meta}>
+                          {dia(fechas[0].date)}
+                          {fechas.length > 1 && ` +${fechas.length - 1}`}
+                        </span>
+                      )}
+                      <span className={styles.precio}>{euros(r.total_price)}</span>
+                    </div>
+                  </button>
+
+                  {desplegada && (
+                    <div className={styles.cuerpo}>
+                      {choques.length > 0 && (
+                        <div className={styles.avisoInterno}>
+                          <IconAlertTriangle size={15} stroke={1.75} />
+                          <div>
+                            <strong>Choca con otra reserva confirmada.</strong>
+                            <ul>
+                              {choques.map((c, i) => (
+                                <li key={i}>
+                                  {diaLargo(c.fecha)} · {JORNADAS[c.jornada] || c.jornada} · con {c.con}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className={styles.contacto}>
+                        <a href={`mailto:${r.contact_email}`} className={styles.dato}>
+                          <IconMail size={14} stroke={1.75} />
+                          {r.contact_email}
+                        </a>
+                        {r.contact_phone && (
+                          <a href={`tel:${r.contact_phone}`} className={styles.dato}>
+                            <IconPhone size={14} stroke={1.75} />
+                            {r.contact_phone}
+                          </a>
+                        )}
+                      </div>
+
+                      {r.comments && (
+                        <div className={styles.comentario}>
+                          <IconMessage size={14} stroke={1.75} />
+                          <p>{r.comments}</p>
+                        </div>
+                      )}
+
+                      {fechas.length > 0 && (
+                        <div className={styles.bloque}>
+                          <h3 className={styles.bloqueTitulo}>
+                            <IconCalendar size={14} stroke={1.75} />
+                            Fechas reservadas
+                          </h3>
+                          <ul className={styles.fechas}>
+                            {fechas.map(d => (
+                              <li key={d.id} className={styles.fecha}>
+                                <span className={styles.fechaDia}>{diaLargo(d.date)}</span>
+                                <span className={styles.fechaMeta}>
+                                  <IconClock size={12} stroke={1.75} />
+                                  {JORNADAS[d.jornada] || d.jornada}
+                                  {d.layout && (
+                                    <>
+                                      <IconLayoutGrid size={12} stroke={1.75} />
+                                      {LAYOUTS[d.layout] || d.layout}
+                                    </>
+                                  )}
+                                  {d.attendees && (
+                                    <>
+                                      <IconUsers size={12} stroke={1.75} />
+                                      {d.attendees}
+                                    </>
+                                  )}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {r.booking_extras?.length > 0 && (
+                        <div className={styles.bloque}>
+                          <h3 className={styles.bloqueTitulo}>Extras</h3>
+                          <div className={styles.chips}>
+                            {r.booking_extras.map(be => (
+                              <span key={be.id} className={styles.chip}>
+                                {be.extras?.name || '—'}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Recálculo. El precio lo calcula el navegador del
+                          cliente y se guarda tal cual, así que aquí se
+                          rehace con el motor y se avisa si no cuadra.
+                          Un aviso no significa fraude: si las tarifas
+                          cambiaron después, el precio guardado es el
+                          bueno porque es el que se le prometió. */}
+                      {(() => {
+                        const check = verificarReserva(r, ofertas)
+                        if (check.ok) return null
+                        return (
+                          <div className={styles.revisar}>
+                            <IconAlertTriangle size={15} stroke={1.75} />
+                            <div>
+                              <strong>Revisa el importe</strong>
+                              <ul className={styles.revisarLista}>
+                                {check.avisos.map((a, i) => <li key={i}>{a}</li>)}
+                              </ul>
+                            </div>
+                          </div>
+                        )
+                      })()}
+
+                      <div className={styles.desglose}>
+                        <span>Salas <b>{euros(r.base_price)}</b></span>
+                        <span>Extras <b>{euros(r.extras_price)}</b></span>
+                        {/* El descuento solo aparece si lo hubo. El nombre
+                            de la oferta lo escribió el servidor al crear la
+                            reserva, así que sigue siendo el correcto aunque
+                            la oferta se haya editado o borrado después. */}
+                        {Number(r.discount_amount) > 0 && (
+                          <span className={styles.desgloseOferta}>
+                            {r.offer_name || 'Oferta'}
+                            {r.offer_code ? ` · ${r.offer_code}` : ''}
+                            {' '}<b>−{euros(r.discount_amount)}</b>
+                          </span>
+                        )}
+                        <span className={styles.desgloseTotal}>Total <b>{euros(r.total_price)}</b></span>
+                      </div>
+
+                      <div className={styles.acciones}>
+                        {r.status !== 'confirmed' && (
+                          <button
+                            type="button"
+                            className={styles.btnAprobar}
+                            onClick={() => pedirConfirmar(r)}
+                            disabled={ocupada}
+                          >
+                            <IconCheck size={15} stroke={2} />
+                            {r.status === 'cancelled' ? 'Reactivar y confirmar' : 'Confirmar'}
+                          </button>
+                        )}
+
+                        {r.status !== 'cancelled' && (
+                          <button
+                            type="button"
+                            className={styles.btnRechazar}
+                            onClick={() => pedirCancelar(r)}
+                            disabled={ocupada}
+                          >
+                            <IconX size={15} stroke={2} />
+                            {r.status === 'confirmed' ? 'Cancelar' : 'Rechazar'}
+                          </button>
+                        )}
+
+                        {r.status !== 'pending' && (
+                          <button
+                            type="button"
+                            className={styles.btnSecundario}
+                            onClick={() => cambiarEstado(r.id, 'pending')}
+                            disabled={ocupada}
+                          >
+                            <IconRotate size={15} stroke={2} />
+                            Volver a pendiente
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </article>
+              )
+            })}
+          </div>
+
+          <Paginacion
+            total={filtradas.length}
+            pagina={pagina}
+            porPagina={POR_PAGINA}
+            onCambio={(p) => { setPagina(p); setAbierta(null) }}
+            etiqueta="reservas"
+          />
+        </>
+      )}
+
+      {/* ── Confirmaciones ─────────────────────────────────────────── */}
+      <Modal
+        abierto={!!confirmacion}
+        onCerrar={() => setConfirmacion(null)}
+        variante="centrado"
+        ancho={440}
+        pie={
+          <>
+            <button type="button" className={styles.btnSecundario} onClick={() => setConfirmacion(null)}>
+              Volver
+            </button>
+            <button
+              type="button"
+              className={confirmacion?.tipo === 'conflicto' ? styles.btnAprobar : styles.btnRechazar}
+              onClick={ejecutarConfirmacion}
+            >
+              {confirmacion?.tipo === 'conflicto' ? 'Confirmar de todas formas' : 'Sí, cancelar'}
+            </button>
+          </>
+        }
+      >
+        {confirmacion?.tipo === 'conflicto' ? (
+          <>
+            <div className={styles.modalIcono}>
+              <IconAlertTriangle size={26} stroke={1.75} />
+            </div>
+            <h2 className={styles.modalTitulo}>La sala ya está ocupada</h2>
+            <p className={styles.modalTexto}>
+              {confirmacion.reserva.rooms?.name} ya tiene una reserva confirmada en:
+            </p>
+            <ul className={styles.modalLista}>
+              {confirmacion.choques.map((c, i) => (
+                <li key={i}>
+                  {diaLargo(c.fecha)} · {JORNADAS[c.jornada] || c.jornada}
+                  <span> (reserva {c.con})</span>
+                </li>
+              ))}
+            </ul>
+            <p className={styles.modalTexto}>
+              Si la confirmas, quedarán dos reservas para el mismo espacio.
+            </p>
+          </>
+        ) : confirmacion ? (
+          <>
+            <div className={`${styles.modalIcono} ${styles.modalIconoNeutro}`}>
+              <IconX size={26} stroke={1.75} />
+            </div>
+            <h2 className={styles.modalTitulo}>Cancelar {confirmacion.reserva.reference}</h2>
+            <p className={styles.modalTexto}>
+              La reserva de {confirmacion.reserva.contact_name} pasará a cancelada y su
+              sala quedará libre. No se envía ningún aviso al cliente: hay que
+              escribirle aparte.
+            </p>
+          </>
+        ) : null}
+      </Modal>
     </div>
   )
 }

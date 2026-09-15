@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
 
 @tailwind base;
 @tailwind components;
@@ -27,21 +27,32 @@
   padding: 0;
 }
 
-html {
-  background-color: #EDE5D8;
-}
+/* ─────────────────────────────────────────────────────────────────────
+   EL FONDO DE LA WEB PÚBLICA ES BLANCO, Y LO PINTA #root
+
+   Cuidado con esto, que despista: `html` y `body` llevan #EDE5D8 desde
+   el principio, y llevaban además tres degradados radiales con
+   `background-attachment: fixed`. No se han visto NUNCA. `#root` es un
+   selector de ID, gana a `body` por especificidad pase lo que pase con
+   el orden de carga, tiene `min-height: 100vh` y tapa la página entera.
+
+   Aquello estaba declarado en el <style> del index.html, o sea repartido
+   entre dos ficheros y a merced de que nadie tocara ninguno. Ahora el
+   blanco se declara aquí, junto al resto, y el index.html deja de
+   pintar.
+
+   Los degradados se han quitado: costaban un repintado a pantalla
+   completa en cada fotograma del scroll (por `fixed`) para no verse.
+   Si algún día se quieren de verdad, hay que quitarle antes el fondo a
+   #root.
+   ───────────────────────────────────────────────────────────────────── */
 
 html, body, #root {
   min-height: 100vh;
+  background-color: #FFFFFF;
 }
 
 body {
-  background-color: #EDE5D8;
-  background-image:
-    radial-gradient(ellipse 90% 70% at 15% 5%,  rgba(160,120,72,0.20) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 60% at 85% 90%, rgba(61,53,48,0.13)  0%, transparent 50%),
-    radial-gradient(ellipse 50% 45% at 55% 45%, rgba(160,120,72,0.08) 0%, transparent 55%);
-  background-attachment: fixed;
   color: var(--color-body);
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;

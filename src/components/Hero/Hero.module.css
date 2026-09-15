@@ -1,0 +1,554 @@
+/* ─────────────────────────────────────────────────────────────────────
+   HERO
+
+   Tarjeta oscura con esquinas redondeadas flotando sobre el fondo de la
+   página, con margen a los cuatro lados. La foto NO va a sangre: el
+   margen es lo que hace que la portada se lea como una pieza y no como
+   un banner pegado al borde del navegador.
+
+   Reparto vertical: barra de navegación arriba, titular grande justo
+   debajo pegado a la izquierda, y todo lo demás abajo — el párrafo
+   sobre los botones a la derecha, los datos sueltos a la izquierda.
+   En medio queda la foto respirando, que es donde está el templo.
+
+   Colores: se reutilizan los tokens del panel (--accent, --radius-*,
+   --text-*, --ease-ios) de styles/variables.css. Como aquí el fondo es
+   oscuro y esos tokens asumen fondo claro, los de texto se redefinen en
+   local: --h-* solo vive dentro del hero.
+
+   SIN backdrop-filter en ninguna parte, a propósito. Sobre una foto
+   quieta el desenfoque casi no se aprecia y obliga al navegador a
+   rehacerlo en cada fotograma mientras se hace scroll. Los fondos
+   translúcidos van con rgba a secas.
+   ───────────────────────────────────────────────────────────────────── */
+
+.hero {
+  --h-ink:       #14101B;
+  --h-text:      #FFFFFF;
+  --h-text-soft: #DDD6E0;
+  --h-text-dim:  #A69EAC;
+  --h-line:      rgba(255, 255, 255, 0.18);
+
+  width: 100%;
+  padding: 0.75rem;
+  font-family: var(--font, 'Inter', system-ui, sans-serif);
+}
+
+.card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  overflow: hidden;
+  border-radius: 20px;
+  min-height: clamp(560px, calc(100svh - 1.5rem), 820px);
+  background: var(--h-ink);
+  color: var(--h-text);
+}
+
+/* ── Fondo ── */
+
+.picture {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: block;
+}
+
+.bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 42%;
+  /* Sin desaturar: el morado del cielo contra el naranja del templo es
+     justo lo que hace que esta foto funcione. Solo se baja un punto de
+     luz para que el texto blanco no compita con los focos. */
+  filter: brightness(0.92);
+}
+
+/* Velo en tres capas: oscurece arriba (barra y titular), oscurece abajo
+   (párrafo y botones) y deja limpia la franja de en medio, que es donde
+   están el templo y su reflejo. */
+.veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(to bottom,
+      rgba(12, 9, 18, 0.82) 0%,
+      rgba(12, 9, 18, 0.58) 22%,
+      rgba(12, 9, 18, 0.10) 45%,
+      rgba(12, 9, 18, 0) 55%),
+    /* En móvil el texto ocupa más de la mitad de abajo y cae justo
+       sobre el reflejo iluminado, así que el velo sube más arriba. En
+       pantallas anchas se relaja (ver media query de 600px). */
+    linear-gradient(to top,
+      rgba(12, 9, 18, 0.96) 0%,
+      rgba(12, 9, 18, 0.93) 38%,
+      rgba(12, 9, 18, 0.72) 55%,
+      rgba(12, 9, 18, 0.15) 70%,
+      rgba(12, 9, 18, 0) 78%),
+    linear-gradient(100deg,
+      rgba(12, 9, 18, 0.45) 0%,
+      rgba(12, 9, 18, 0.08) 55%,
+      rgba(12, 9, 18, 0) 100%);
+}
+
+/* ── Rejilla interna ── */
+
+.inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 1rem 1.25rem 1.5rem;
+}
+
+/* ── Navegación ── */
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--h-text);
+  text-decoration: none;
+}
+
+.brandMark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--accent, #922B21);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.brandText {
+  font-size: var(--text-sm, 14px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Los enlaces solo caben en la barra a partir de 900 px. Por debajo se
+   pasan al panel desplegable. */
+.navLinks {
+  display: none;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navLink {
+  position: relative;
+  font-size: var(--text-sm, 14px);
+  font-weight: 500;
+  color: var(--h-text-soft);
+  text-decoration: none;
+  transition: color 0.2s var(--ease-ios, ease);
+}
+.navLink::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.22s var(--ease-ios, ease);
+}
+.navLink:hover { color: var(--h-text); }
+.navLink:hover::after { transform: scaleX(1); }
+
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navPhone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--h-line);
+  border-radius: var(--radius-full, 999px);
+  background: rgba(255, 255, 255, 0.1);
+  font-size: var(--text-sm, 14px);
+  font-weight: 500;
+  color: var(--h-text);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s var(--ease-ios, ease), border-color 0.2s var(--ease-ios, ease);
+}
+.navPhone:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.36);
+}
+.navPhone span { display: none; }
+
+.burger {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--h-line);
+  border-radius: var(--radius-full, 999px);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--h-text);
+  cursor: pointer;
+}
+
+.navPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  border: 1px solid var(--h-line);
+  border-radius: var(--radius-md, 12px);
+  background: rgba(20, 16, 27, 0.92);
+  list-style: none;
+}
+
+.navPanelLink {
+  display: block;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  font-size: var(--text-sm, 14px);
+  font-weight: 500;
+  color: var(--h-text-soft);
+  text-decoration: none;
+}
+.navPanelLink:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--h-text);
+}
+
+/* ── Titular ── */
+
+.top {
+  padding-top: 3.5rem;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+  font-size: var(--text-sm, 14px);
+  font-weight: 500;
+  color: var(--h-text-soft);
+}
+
+.eyebrowMark {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 2px;
+  background: var(--accent, #922B21);
+}
+
+.title {
+  max-width: 13ch;
+  font-size: clamp(2.2rem, 9.4vw, 3.3rem);
+  font-weight: 700;
+  line-height: 1.03;
+  letter-spacing: -0.035em;
+  color: var(--h-text);
+  text-wrap: balance;
+}
+
+/* ── Pie ── */
+
+.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  margin-top: auto;
+  padding-top: 3rem;
+}
+
+.bottomRight,
+.bottomLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Los <br> del párrafo solo tienen sentido cuando hay sitio: en móvil
+   partían las frases por donde no tocaba. */
+.lead br { display: none; }
+
+.lead {
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--h-text-soft);
+}
+
+.price {
+  font-size: var(--text-sm, 14px);
+  color: var(--h-text-dim);
+}
+.price strong {
+  font-size: var(--text-md, 18px);
+  font-weight: 600;
+  color: var(--h-text);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.ctaMain,
+.ctaGhost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: var(--radius-full, 999px);
+  font-family: inherit;
+  font-size: var(--text-sm, 14px);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 0.22s var(--ease-ios, ease),
+    border-color 0.22s var(--ease-ios, ease),
+    transform 0.22s var(--ease-ios, ease);
+}
+
+.ctaMain {
+  border: 1px solid transparent;
+  background: var(--accent, #922B21);
+  color: #fff;
+}
+.ctaMain:hover { background: var(--accent-hover, #7B241C); }
+
+.ctaGhost {
+  border: 1px solid var(--h-line);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--h-text);
+}
+.ctaGhost:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.38);
+}
+
+.ctaMain:active,
+.ctaGhost:active { transform: translateY(1px); }
+
+.ctaMain:focus-visible,
+.ctaGhost:focus-visible,
+.navPhone:focus-visible,
+.navLink:focus-visible,
+.navPanelLink:focus-visible,
+.burger:focus-visible,
+.brand:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+/* ── Datos sueltos ── */
+
+/* En fila, no en columna: son tres datos cortos y apilados ocupaban
+   media pantalla sin aportar jerarquía. Se dejan envolver por si en
+   móvil no caben los tres seguidos. */
+.facts {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 0.35rem 1.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fact {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: var(--text-sm, 14px);
+  color: var(--h-text-soft);
+}
+
+.factPlus {
+  color: var(--h-text-dim);
+  font-weight: 500;
+}
+
+/* ── Oferta vigente ──
+
+   Va justo debajo del titular. Verde y no granate a propósito: el
+   granate es el color de la marca y está por toda la página, así que
+   un descuento pintado de granate se lee como un elemento más de
+   decoración. El verde se sale del sistema y por eso se ve.
+
+   Sin barra lateral de acento: la forma de píldora y el icono ya
+   señalan lo suficiente. */
+
+.oferta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  max-width: 100%;
+  margin-top: 1.4rem;
+  padding: 0.45rem 1.15rem 0.45rem 0.45rem;
+  border: 1px solid rgba(52, 211, 153, 0.34);
+  border-radius: var(--radius-full, 999px);
+  background: rgba(16, 185, 129, 0.15);
+  /* El hero es una foto: sin desenfoque, el verde translúcido cambia de
+     tono según lo que tenga detrás y a veces no se lee. */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.ofertaIcono {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(52, 211, 153, 0.22);
+  color: #6EE7B7;
+}
+
+.ofertaTag {
+  flex: none;
+  padding: 0.24rem 0.7rem;
+  border-radius: var(--radius-full, 999px);
+  background: #34D399;
+  font-size: var(--text-sm, 14px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #04271B;
+  white-space: nowrap;
+}
+
+/* Una sola línea con puntos suspensivos. Con dos líneas la píldora se
+   deforma y deja de leerse como una etiqueta. */
+.ofertaTexto {
+  min-width: 0;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--h-text-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ofertaTexto strong {
+  font-weight: 600;
+  color: var(--h-text);
+}
+
+/* La descripción es lo primero que sobra si no hay sitio. */
+.ofertaDesc { color: var(--h-text-dim); }
+
+@media (max-width: 599px) {
+  .ofertaDesc { display: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Tablet
+   ───────────────────────────────────────────────────────────────────── */
+
+@media (min-width: 600px) {
+  .hero  { padding: 1rem; }
+  .card  { border-radius: 24px; min-height: clamp(600px, calc(100svh - 2rem), 840px); }
+  .inner { padding: 1.25rem 1.75rem 1.75rem; }
+
+  .navPhone span { display: inline; }
+
+  .top      { padding-top: 4.75rem; }
+  .title    { font-size: clamp(3.25rem, 7vw, 4.25rem); }
+  .lead     { font-size: 1rem; }
+  .lead br  { display: inline; }
+
+  .veil {
+    background:
+      linear-gradient(to bottom,
+        rgba(12, 9, 18, 0.82) 0%,
+        rgba(12, 9, 18, 0.58) 22%,
+        rgba(12, 9, 18, 0.10) 45%,
+        rgba(12, 9, 18, 0) 55%),
+      linear-gradient(to top,
+        rgba(12, 9, 18, 0.94) 0%,
+        rgba(12, 9, 18, 0.78) 18%,
+        rgba(12, 9, 18, 0.20) 42%,
+        rgba(12, 9, 18, 0) 55%),
+      linear-gradient(100deg,
+        rgba(12, 9, 18, 0.45) 0%,
+        rgba(12, 9, 18, 0.08) 55%,
+        rgba(12, 9, 18, 0) 100%);
+  }
+
+  /* Los datos a la izquierda, el párrafo y los botones a la derecha,
+     alineados por la base. El orden del DOM es el inverso porque en
+     móvil interesa leer antes el párrafo que los datos sueltos. */
+  .bottom {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 2rem;
+  }
+  .bottomLeft  { grid-column: 1; grid-row: 1; align-items: flex-start; }
+  /* La columna se ajusta al contenido y se pega al borde derecho, pero
+     el texto de dentro sigue alineado a la izquierda: párrafo, precio y
+     botones comparten margen izquierdo, como en la referencia. */
+  .bottomRight { grid-column: 2; grid-row: 1; align-items: flex-start; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Escritorio
+   ───────────────────────────────────────────────────────────────────── */
+
+@media (min-width: 900px) {
+  .navLinks { display: flex; }
+  .burger   { display: none; }
+  .navPanel { display: none; }
+}
+
+@media (min-width: 1024px) {
+  .hero  { padding: 1.25rem; }
+  .card  { border-radius: 28px; min-height: clamp(620px, calc(100svh - 2.5rem), 900px); }
+  .inner { padding: 1.5rem 3rem 2.25rem; }
+
+  .top   { padding-top: 7rem; }
+  .title { max-width: 12ch; font-size: clamp(3.5rem, 5vw, 4.75rem); }
+  .lead  { font-size: 1.05rem; }
+
+  /* En escritorio hay sitio de sobra y el titular es enorme: con la
+     píldora pequeña la oferta se perdía debajo. */
+  .oferta       { gap: 0.7rem; margin-top: 1.6rem; padding: 0.55rem 1.35rem 0.55rem 0.55rem; }
+  .ofertaIcono  { width: 36px; height: 36px; }
+  .ofertaTag    { font-size: 0.95rem; padding: 0.26rem 0.8rem; }
+  .ofertaTexto  { font-size: 1.02rem; }
+}
+
+@media (min-width: 1280px) {
+  .inner { padding: 1.75rem 4rem 2.5rem; }
+}
+
+/* ── Accesibilidad ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .ctaMain, .ctaGhost, .navPhone, .navLink, .navLink::after { transition: none; }
+}

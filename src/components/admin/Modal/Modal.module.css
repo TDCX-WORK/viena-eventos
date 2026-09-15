@@ -1,0 +1,118 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  /* Muy por encima de la navbar, que está en 100. Al ir por portal a
+     document.body no hay ningún contexto de apilado que lo encierre. */
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 27px;
+  animation: aparecer 150ms ease;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  width: 100%;
+  /* dvh y no vh: en móvil 100vh es el viewport GRANDE, el que hay con la
+     barra del navegador escondida, así que con la barra visible el pie
+     del modal se sale de la pantalla. */
+  max-height: calc(100dvh - 54px);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-xl);
+  background: var(--bg-surface);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+  animation: entrar 200ms var(--ease-spring);
+}
+
+@keyframes entrar {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px 27px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* Flex y gap para que el título pueda llevar un icono delante. Con un
+   texto suelto se comporta igual. */
+.titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.cerrar {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 150ms;
+}
+
+.cerrar:hover { background: var(--border); }
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  /* Un nombre de archivo largo sin espacios es UNA palabra: no se puede
+     partir sola y se sale por los lados. Con esto se parte donde haga
+     falta. */
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.panel .body { padding: 22px 27px; }
+
+.pie {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 18px 27px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* Variante centrada: confirmaciones. */
+.centrado .body {
+  padding: 36px 31px 27px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cerrar:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay, .modal { animation: none; }
+}

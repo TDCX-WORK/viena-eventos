@@ -5,6 +5,7 @@ import { DayPicker } from 'react-day-picker'
 import { es } from 'date-fns/locale'
 import { format, isBefore, startOfDay, isSameDay, addDays } from 'date-fns'
 import 'react-day-picker/dist/style.css'
+import { cubreElDia } from '../../../lib/ofertas'
 import { JORNADAS } from '../../../lib/constants'
 import styles from './StepJornadaFecha.module.css'
 
@@ -56,7 +57,7 @@ function useBlockedInfo(blockedDates) {
   }, [blockedDates])
 }
 
-export default function StepJornadaFecha({ booking, updateBooking, updateFecha, hotel }) {
+export default function StepJornadaFecha({ booking, updateBooking, updateFecha, hotel, ofertas = [] }) {
   const room  = booking.room
   const today = startOfDay(new Date())
   const tomorrow = addDays(today, 1)
@@ -73,6 +74,17 @@ export default function StepJornadaFecha({ booking, updateBooking, updateFecha, 
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const globalJornada = booking.jornada || 'completo'
+
+  /* Días que caen dentro de alguna oferta. Solo mira fecha y día de la
+     semana: si un día está marcado no quiere decir que el descuento
+     salga seguro, porque puede haber mínimos de días, de asistentes o
+     de importe que dependen de la reserva entera. Por eso es una pista
+     visual y el número de verdad lo pone el resumen de la derecha. */
+  const ofertasDeLaSala = ofertas.filter(
+    o => !o.room_slugs?.length || o.room_slugs.includes(room.slug)
+  )
+
+  const diaConOferta = (date) => ofertasDeLaSala.some(o => cubreElDia(o, date))
 
   // ── Helpers ──
   const isJornadaBlocked = (date, jornadaId) => {
@@ -189,11 +201,22 @@ export default function StepJornadaFecha({ booking, updateBooking, updateFecha, 
               onSelect={handleCalendarSelect}
               locale={es}
               disabled={[{ before: tomorrow }, ...fullyBlockedDays]}
-              modifiers={{ blocked: fullyBlockedDays }}
-              modifiersClassNames={{ blocked: styles.blockedDay }}
+              modifiers={{ blocked: fullyBlockedDays, conOferta: diaConOferta }}
+              modifiersClassNames={{
+                blocked: styles.blockedDay,
+                conOferta: styles.ofertaDay,
+              }}
               showOutsideDays={false}
             />
           </div>
+
+          {ofertasDeLaSala.length > 0 && (
+            <p className={styles.ofertaLeyenda}>
+              <span className={styles.ofertaLeyendaDot} />
+              Días con oferta. El descuento definitivo depende del resto
+              de condiciones y se ve en el resumen.
+            </p>
+          )}
 
           {/* Scroll hint — solo visible en layout apilado cuando hay fechas */}
           {fechas.length > 0 && (

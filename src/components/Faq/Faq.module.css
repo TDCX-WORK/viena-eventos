@@ -1,0 +1,221 @@
+/* ─────────────────────────────────────────────────────────────────────
+   PREGUNTAS FRECUENTES
+
+   Panel claro con esquinas redondeadas y margen, igual que el hero pero
+   invertido: allí una tarjeta oscura sobre fondo blanco, aquí una clara.
+   Los dos bloques de la página con forma de tarjeta son la portada y
+   este; entre medias, las salas van sueltas sobre el blanco.
+
+   El titular va en Playfair, como "Elige tu espacio" justo encima. La
+   referencia usaba un sans, pero dos titulares seguidos con tipografías
+   distintas se leen como dos webs pegadas.
+   ───────────────────────────────────────────────────────────────────── */
+
+.seccion {
+  width: 100%;
+  padding: 0.75rem;
+}
+
+/* El contorno del panel va en el granate de marca, no en el gris de
+   antes.
+
+   La opacidad no baja de 0.45: el fondo del panel es un beige cálido,
+   y por debajo de ahí el granate se mezcla con él y acaba leyéndose
+   como marrón en vez de como rojo. */
+.panel {
+  padding: 2.5rem 1.25rem 2rem;
+  border: 1px solid rgba(146, 43, 33, 0.45);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, #FBFAF9 0%, #F1EEEA 100%);
+}
+
+/* ── Cabecera ── */
+
+.cabecera {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.pastilla {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid rgba(24, 18, 14, 0.1);
+  border-radius: var(--radius-full, 999px);
+  background: #fff;
+  font-size: var(--text-xs, 12px);
+  font-weight: 500;
+  color: #57534e;
+}
+
+.punto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent, #922B21);
+}
+
+.titulo {
+  margin-top: 1rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.9rem, 6.5vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: #18120E;
+  text-wrap: balance;
+}
+
+/* ── Lista ── */
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.fila {
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: rgba(24, 18, 14, 0.045);
+  transition:
+    background 0.24s var(--ease-ios, ease),
+    border-color 0.24s var(--ease-ios, ease),
+    box-shadow 0.24s var(--ease-ios, ease);
+}
+.fila:hover { background: rgba(24, 18, 14, 0.075); }
+
+/* La pregunta abierta también se contornea en granate, un punto más
+   marcado que el panel para que se vea cuál está desplegada. Aquí el
+   fondo es blanco puro, así que el color sale limpio y no hace falta
+   subir tanto como en el panel. La sombra se tiñe del mismo color en
+   vez de gris: con un borde de color y una sombra neutra el borde
+   parece pegado encima. */
+.filaAbierta,
+.filaAbierta:hover {
+  border-color: rgba(146, 43, 33, 0.55);
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(146, 43, 33, 0.07), 0 8px 24px rgba(146, 43, 33, 0.12);
+}
+
+/* ── Cabezal clicable ── */
+
+.cabezal {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.9rem 0.9rem 0.9rem 1rem;
+  border: none;
+  background: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.cabezal:focus-visible {
+  outline: 2px solid var(--accent, #922B21);
+  outline-offset: 2px;
+  border-radius: 16px;
+}
+
+.numero {
+  font-size: var(--text-xs, 12px);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: #a8a29e;
+}
+
+.pregunta {
+  font-size: 0.97rem;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: #18120E;
+}
+
+.boton {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 50%;
+  background: #18120E;
+  color: #fff;
+  transition: background 0.24s var(--ease-ios, ease), color 0.24s var(--ease-ios, ease);
+}
+
+.filaAbierta .boton {
+  background: #fff;
+  border: 1px solid rgba(24, 18, 14, 0.14);
+  color: #18120E;
+}
+
+/* ── Respuesta ── */
+
+.respuesta {
+  /* El texto se alinea con la pregunta, no con el número: el margen
+     izquierdo es el ancho de la columna del número más su hueco. */
+  padding: 0 1rem 1.1rem calc(1rem + 1.35rem + 0.75rem);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #57534e;
+  max-width: 62ch;
+}
+
+/* ── Pie ── */
+
+.pie {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.92rem;
+  color: #6b6560;
+}
+
+.pieEnlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: #18120E;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s var(--ease-ios, ease);
+}
+.pieEnlace:hover { color: var(--accent, #922B21); }
+
+/* ─────────────────────────────────────────────────────────────────────
+   Tablet y escritorio
+   ───────────────────────────────────────────────────────────────────── */
+
+@media (min-width: 600px) {
+  .seccion { padding: 1rem; }
+  .panel   { padding: 3.5rem 2rem 2.75rem; border-radius: 24px; }
+
+  .cabecera { margin-bottom: 2.5rem; }
+  .cabezal  { gap: 1rem; padding: 1.05rem 1.05rem 1.05rem 1.35rem; }
+  .pregunta { font-size: 1.02rem; }
+  .respuesta {
+    padding: 0 4rem 1.35rem calc(1.35rem + 1.5rem + 1rem);
+    font-size: 0.96rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .seccion { padding: 1.25rem 1.25rem 0; }
+  .panel   { padding: 4.5rem 3rem 3.25rem; border-radius: 28px; }
+  .titulo  { font-size: clamp(2.5rem, 3.2vw, 3rem); }
+}
+
+/* ── Accesibilidad ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .fila, .boton, .pieEnlace { transition: none; }
+}

@@ -2,6 +2,7 @@ import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import react from 'eslint-plugin-react'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
@@ -22,8 +23,21 @@ export default defineConfig([
         sourceType: 'module',
       },
     },
+    settings: {
+      react: { version: 'detect' },
+    },
+    plugins: { react },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      ...react.configs.flat.recommended.rules,
+
+      // Con jsx-uses-vars activo, ESLint ya sabe qué imports usa el JSX,
+      // así que el varsIgnorePattern de antes deja de hacer falta.
+      'no-unused-vars': 'error',
+
+      // El proyecto usa el JSX transform nuevo: no hay que importar React
+      // en cada archivo ni declarar propTypes.
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
     },
   },
 ])

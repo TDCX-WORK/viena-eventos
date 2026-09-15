@@ -14,17 +14,34 @@ const STEPS = [
   { id: 3, label: 'Contacto' },
 ]
 
-export default function BookingWizard({ hotel, room, onBack }) {
+export default function BookingWizard({ hotel, room, onBack, ofertasApi }) {
   const [currentStep, setCurrentStep] = useState(1)
-  const { booking, updateBooking, updateFecha, updateContacto, getTotalPrice, getJornadaLabel } = useBooking(room)
+  const { booking, updateBooking, updateFecha, updateContacto, getDesglose, getJornadaLabel } = useBooking(room)
   const [contactoStatus, setContactoStatus] = useState('idle')
+
+  /* Ofertas: las automáticas más, si el cliente escribe un código
+     válido, la suya. El motor elige la que más rebaje; aquí no se
+     decide nada.
+
+     El estado viene de PublicApp y no de un hook propio: así la portada
+     y el wizard comparten una sola consulta, y un código aplicado sigue
+     aplicado si el cliente vuelve atrás a cambiar de sala.
+
+     `registrarUso` ya no está: el contador de la oferta lo lleva ahora
+     crear_reserva, dentro de la misma transacción que la reserva. */
+  const {
+    ofertas = [], codigo, ofertaCodigo, estadoCodigo, aplicarCodigo, quitarCodigo,
+  } = ofertasApi || {}
+
+  const desglose = getDesglose(hotel, ofertas, codigo)
 
   const goNext = () => setCurrentStep(s => Math.min(s + 1, STEPS.length))
   const goPrev = () => setCurrentStep(s => Math.max(s - 1, 1))
 
   const stepProps = {
     booking, updateBooking, updateFecha, updateContacto, hotel,
-    getTotalPrice, getJornadaLabel,
+    getJornadaLabel, desglose, ofertas,
+    codigo, ofertaCodigo, estadoCodigo, aplicarCodigo, quitarCodigo,
   }
 
   const canGoNext = () => {
@@ -154,7 +171,7 @@ export default function BookingWizard({ hotel, room, onBack }) {
           <BookingSummary
             booking={booking}
             room={room}
-            getTotalPrice={getTotalPrice}
+            desglose={desglose}
             getJornadaLabel={getJornadaLabel}
             hotel={hotel}
           />

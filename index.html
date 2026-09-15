@@ -3,21 +3,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
 
     <!-- ── SEO básico ── -->
     <title>Salas de Reuniones en Madrid Centro | Suites Viena Plaza de España</title>
     <meta name="description" content="Alquiler de salas de reuniones en Madrid centro, junto a Plaza de España. 3 espacios de 27 a 61 m² con luz natural, WiFi, proyector y catering. Desde 190 €/media jornada. Reserva online." />
-    <meta name="keywords" content="salas de reuniones madrid, salas de reuniones madrid centro, alquiler sala reuniones plaza de españa, espacios para eventos madrid, sala formación madrid, sala conferencias madrid centro" />
     <meta name="author" content="Suites Viena Plaza de España" />
-    <meta name="robots" content="index, follow" />
-    <!-- TODO: Actualizar cuando se conecte el dominio oficial -->
-    <link rel="canonical" href="https://reservas.suitesviena.com/" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 
-    <!-- ── Favicon ── -->
-    <!-- TODO: Reemplazar con el logo del hotel -->
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- ── Dominio oficial ──
+         La web vive en suitesvienaeventos.com, SIN www. La versión con
+         www responde también, pero con un 301 hacia aquí: hay una regla
+         de redirección en Cloudflare que se encarga.
 
-    <!-- ── Geo tags (Madrid — C/ Mendizábal 17) ── -->
+         ATENCIÓN: robots.txt y sitemap.xml TIENEN que decir este mismo
+         dominio. Hasta ahora decían reservas.suitesviena.com y eso son
+         dos señales contradictorias: Google elige él cuál indexa. Los
+         dos ficheros van corregidos junto a este. -->
+    <link rel="canonical" href="https://suitesvienaeventos.com/" />
+
+    <!-- ── Rendimiento ──
+         La foto del hero es el elemento LCP: lo que Google cronometra
+         para decidir si la página "carga rápido". Se precarga aquí para
+         que empiece a bajar al leer la primera línea del HTML, en
+         paralelo con el bundle de React, en vez de esperar a que React
+         monte el componente.
+
+         Los nombres tienen que coincidir con los de Hero.jsx. Si se
+         cambia la foto, se sustituyen los ficheros de /public sin
+         renombrarlos y aquí no hay que tocar nada. -->
+    <link rel="preload" as="image" href="/hero-2000.webp"
+          imagesrcset="/hero-800.webp 800w, /hero-1280.webp 1280w, /hero-2000.webp 2000w"
+          imagesizes="100vw" fetchpriority="high" />
+
+    <!-- ── Tipografías ──
+         Antes esto era un @import en la primera línea de index.css. Un
+         @import dentro de una hoja de estilos es lo peor que se puede
+         hacer con una fuente: el navegador tiene que bajar y parsear
+         index.css ENTERO antes de descubrir siquiera que existe una
+         petición a fonts.googleapis.com, y hasta que esa segunda
+         petición termina no pinta texto. Son dos viajes en cadena.
+
+         Aquí van los dos dominios abiertos por adelantado (el CSS vive
+         en googleapis, los .woff2 en gstatic, y gstatic necesita
+         crossorigin porque las fuentes se piden en modo anónimo) y la
+         hoja pedida desde el HTML, en paralelo con todo lo demás.
+
+         IMPORTANTE: al usar esto hay que borrar la línea 1 de
+         src/index.css (el @import url('https://fonts.googleapis.com...')
+         entero). Si se queda, la fuente se pide dos veces. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" media="print" onload="this.media='all'"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" />
+    <noscript>
+      <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" />
+    </noscript>
+
+    <!-- ── Favicon ──
+         Apuntaba a /vite.svg, que no existe en /public: daba 404 en cada
+         visita y la pestaña salía con el icono genérico. El fichero que
+         sí está es favicon.svg. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- ── Geo tags (Madrid — C/ Juan Álvarez Mendizábal 17) ── -->
     <meta name="geo.region" content="ES-MD" />
     <meta name="geo.placename" content="Madrid" />
     <meta name="geo.position" content="40.4235;-3.7138" />
@@ -27,9 +78,12 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Salas de Reuniones en Madrid Centro | Suites Viena" />
     <meta property="og:description" content="3 espacios únicos junto a Plaza de España. De 27 a 61 m², luz natural, equipamiento completo y catering. Desde 190 €. Reserva online." />
-    <!-- TODO: Añadir imagen real del hotel (1200x630px recomendado) -->
-    <meta property="og:image" content="https://reservas.suitesviena.com/og-image.jpg" />
-    <meta property="og:url" content="https://reservas.suitesviena.com/" />
+    <meta property="og:image" content="https://suitesvienaeventos.com/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Sala de reuniones de Suites Viena Plaza de España, en Madrid centro" />
+    <meta property="og:url" content="https://suitesvienaeventos.com/" />
     <meta property="og:site_name" content="Suites Viena Plaza de España" />
     <meta property="og:locale" content="es_ES" />
 
@@ -37,20 +91,56 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Salas de Reuniones en Madrid Centro | Suites Viena" />
     <meta name="twitter:description" content="3 espacios únicos junto a Plaza de España. Desde 190 €. Reserva online." />
-    <!-- TODO: Misma imagen que og:image -->
-    <meta name="twitter:image" content="https://reservas.suitesviena.com/og-image.jpg" />
+    <meta name="twitter:image" content="https://suitesvienaeventos.com/og-image.jpg" />
+    <meta name="twitter:image:alt" content="Sala de reuniones de Suites Viena Plaza de España, en Madrid centro" />
 
-    <!-- ── Datos estructurados JSON-LD ── -->
+    <!-- ── Datos estructurados: el negocio y sus salas ──
+
+         OJO: aquí NO va el marcado de preguntas frecuentes. Lo genera el
+         componente Faq a partir de lo que haya en la tabla `faqs`, o de
+         las preguntas automáticas si está vacía. Si se duplicara aquí,
+         Google leería dos FAQPage en la misma página y una de las dos
+         diría cosas que no aparecen en pantalla, que es justo lo que
+         invalida el marcado.
+
+         `sameAs` lleva la web del hotel: le dice a Google que este
+         dominio y suitesviena.com son el mismo negocio, no dos sitios
+         distintos compitiendo por las mismas búsquedas. Importa, porque
+         el dominio es nuevo y no tiene ninguna autoridad todavía.
+
+         Cambios respecto a la versión anterior:
+
+         · Tipo doble LocalBusiness + EventVenue. "Espacio donde se
+           celebran eventos" es literalmente lo que es, y EventVenue es
+           el tipo que Google asocia a las búsquedas de sala.
+         · Los precios ahora son UnitPriceSpecification con `unitText`.
+           Un PriceSpecification suelto con el nombre "Media jornada" no
+           le dice nada a Google: sabe que cuesta 350 € pero no 350 € de
+           qué. Con unitText sí puede enseñar "desde 190 €" en el
+           resultado.
+         · openingHoursSpecification: sin horario, una ficha de negocio
+           local está incompleta y Google lo nota.
+         · hasMap: enlaza la ficha con el punto real del mapa.
+
+         Si cambian los precios en el panel, esto se queda desfasado: es
+         un fichero estático. Repasarlo cuando se toque una tarifa. -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "LocalBusiness",
+      "@type": ["LocalBusiness", "EventVenue"],
+      "@id": "https://suitesvienaeventos.com/#negocio",
       "name": "Suites Viena Plaza de España",
+      "alternateName": "Salas de reuniones Suites Viena Plaza de España",
       "description": "Alquiler de salas de reuniones en Madrid centro, junto a Plaza de España. Espacios equipados con WiFi, proyector, pantalla y servicio de catering.",
-      "url": "https://reservas.suitesviena.com",
+      "url": "https://suitesvienaeventos.com",
       "telephone": "+34917583605",
       "email": "reservas@suitesviena.es",
-      "image": "https://reservas.suitesviena.com/og-image.jpg",
+      "image": [
+        "https://suitesvienaeventos.com/og-image.jpg",
+        "https://suitesvienaeventos.com/hero-2000.webp"
+      ],
+      "logo": "https://suitesvienaeventos.com/favicon.svg",
+      "sameAs": ["https://www.suitesviena.com"],
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "C/ Juan Álvarez Mendizábal, 17",
@@ -64,29 +154,42 @@
         "latitude": 40.4235,
         "longitude": -3.7138
       },
+      "hasMap": "https://www.google.com/maps/search/?api=1&query=40.4235,-3.7138",
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          "opens": "00:00",
+          "closes": "23:59"
+        }
+      ],
       "priceRange": "190 € – 450 €",
       "currenciesAccepted": "EUR",
       "paymentAccepted": "Transferencia, Tarjeta",
-      "areaServed": {
-        "@type": "City",
-        "name": "Madrid"
-      },
+      "areaServed": { "@type": "City", "name": "Madrid" },
+      "amenityFeature": [
+        { "@type": "LocationFeatureSpecification", "name": "WiFi de alta velocidad", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Proyector y pantalla", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Catering propio", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Luz natural", "value": true }
+      ],
+      "maximumAttendeeCapacity": 40,
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
         "name": "Salas de reuniones",
         "itemListElement": [
           {
             "@type": "Offer",
+            "price": 350,
+            "priceCurrency": "EUR",
+            "availability": "https://schema.org/InStock",
+            "url": "https://suitesvienaeventos.com/#salas",
             "itemOffered": {
               "@type": "MeetingRoom",
               "name": "Viena + Capellanes",
               "description": "El espacio más amplio del hotel. Superficie diáfana de 61 m² con luz natural. Ideal para convenciones, presentaciones y eventos de hasta 40 personas.",
               "maximumAttendeeCapacity": 40,
-              "floorSize": {
-                "@type": "QuantitativeValue",
-                "value": 61,
-                "unitCode": "MTK"
-              },
+              "floorSize": { "@type": "QuantitativeValue", "value": 61, "unitCode": "MTK" },
               "amenityFeature": [
                 { "@type": "LocationFeatureSpecification", "name": "WiFi", "value": true },
                 { "@type": "LocationFeatureSpecification", "name": "Proyector", "value": true },
@@ -95,22 +198,22 @@
               ]
             },
             "priceSpecification": [
-              { "@type": "PriceSpecification", "name": "Media jornada", "price": 350, "priceCurrency": "EUR" },
-              { "@type": "PriceSpecification", "name": "Jornada completa", "price": 450, "priceCurrency": "EUR" }
+              { "@type": "UnitPriceSpecification", "name": "Media jornada", "price": 350, "priceCurrency": "EUR", "valueAddedTaxIncluded": true, "unitText": "media jornada" },
+              { "@type": "UnitPriceSpecification", "name": "Jornada completa", "price": 450, "priceCurrency": "EUR", "valueAddedTaxIncluded": true, "unitText": "jornada completa" }
             ]
           },
           {
             "@type": "Offer",
+            "price": 250,
+            "priceCurrency": "EUR",
+            "availability": "https://schema.org/InStock",
+            "url": "https://suitesvienaeventos.com/#salas",
             "itemOffered": {
               "@type": "MeetingRoom",
               "name": "Sala Viena",
               "description": "Sala versátil de 34 m² con luz natural en la 1ª planta. Ideal para reuniones de equipo y presentaciones de hasta 25 personas.",
               "maximumAttendeeCapacity": 25,
-              "floorSize": {
-                "@type": "QuantitativeValue",
-                "value": 34,
-                "unitCode": "MTK"
-              },
+              "floorSize": { "@type": "QuantitativeValue", "value": 34, "unitCode": "MTK" },
               "amenityFeature": [
                 { "@type": "LocationFeatureSpecification", "name": "WiFi", "value": true },
                 { "@type": "LocationFeatureSpecification", "name": "Proyector", "value": true },
@@ -119,22 +222,22 @@
               ]
             },
             "priceSpecification": [
-              { "@type": "PriceSpecification", "name": "Media jornada", "price": 250, "priceCurrency": "EUR" },
-              { "@type": "PriceSpecification", "name": "Jornada completa", "price": 350, "priceCurrency": "EUR" }
+              { "@type": "UnitPriceSpecification", "name": "Media jornada", "price": 250, "priceCurrency": "EUR", "valueAddedTaxIncluded": true, "unitText": "media jornada" },
+              { "@type": "UnitPriceSpecification", "name": "Jornada completa", "price": 350, "priceCurrency": "EUR", "valueAddedTaxIncluded": true, "unitText": "jornada completa" }
             ]
           },
           {
             "@type": "Offer",
+            "price": 190,
+            "priceCurrency": "EUR",
+            "availability": "https://schema.org/InStock",
+            "url": "https://suitesvienaeventos.com/#salas",
             "itemOffered": {
               "@type": "MeetingRoom",
               "name": "Sala Capellanes",
               "description": "Sala íntima y funcional de 27 m² en la 1ª planta. Perfecta para reuniones pequeñas y sesiones de trabajo de hasta 20 personas.",
               "maximumAttendeeCapacity": 20,
-              "floorSize": {
-                "@type": "QuantitativeValue",
-                "value": 27,
-                "unitCode": "MTK"
-              },
+              "floorSize": { "@type": "QuantitativeValue", "value": 27, "unitCode": "MTK" },
               "amenityFeature": [
                 { "@type": "LocationFeatureSpecification", "name": "WiFi", "value": true },
                 { "@type": "LocationFeatureSpecification", "name": "Proyector", "value": true },
@@ -142,8 +245,8 @@
               ]
             },
             "priceSpecification": [
-              { "@type": "PriceSpecification", "name": "Media jornada", "price": 190, "priceCurrency": "EUR" },
-              { "@type": "PriceSpecification", "name": "Jornada completa", "price": 290, "priceCurrency": "EUR" }
+              { "@type": "UnitPriceSpecification", "name": "Media jornada", "price": 190, "priceCurrency": "EUR", "valueAddedTaxIncluded": true, "unitText": "media jornada" },
+              { "@type": "UnitPriceSpecification", "name": "Jornada completa", "price": 290, "priceCurrency": "EUR", "valueAddedTaxIncluded": true, "unitText": "jornada completa" }
             ]
           }
         ]
@@ -151,26 +254,90 @@
     }
     </script>
 
-    <!-- ── Estilos base ── -->
+    <!-- ── Estilos base y pantalla de carga ──
+         Dentro de #root van dos cosas: el texto SEO (.seo-shell) y la
+         pantalla de carga (.boot-splash).
+
+         · .seo-shell se oculta VISUALMENTE (técnica sr-only), no con
+           display:none. Sigue en el HTML, así que lo leen Bing, los
+           rastreadores de IA y cualquier bot sin JavaScript (que tampoco
+           aplican CSS). Google indexa el DOM ya renderizado por React,
+           donde este bloque ya no existe. El visitante no lo ve nunca.
+         · .boot-splash es lo que se ve mientras baja el JavaScript
+           (normalmente una fracción de segundo). React ya no tiene
+           pantalla de carga propia: pinta el hero al instante con datos
+           estáticos y un esqueleto en las salas mientras responde
+           Supabase.
+         React vacía #root al montar, así que ambos desaparecen solos. -->
     <style>
       html, body, #root {
         background-color: #ffffff;
         min-height: 100vh;
+        margin: 0;
+      }
+      .boot-splash {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-family: 'Playfair Display', Georgia, serif;
+        color: #3D3530;
+      }
+      .boot-splash p { margin: 0; }
+      .boot-splash .t1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+      .boot-splash .t2 { font-size: 0.9rem; color: #78716c; font-weight: 400; }
+
+      .seo-shell {
+        position: absolute !important;
+        width: 1px; height: 1px;
+        padding: 0; margin: -1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
       }
     </style>
+    <!-- Sin JavaScript: se quita el splash y se muestra el texto normal. -->
+    <noscript>
+      <style>
+        .boot-splash { display: none; }
+        .seo-shell {
+          position: static !important;
+          width: auto; height: auto; margin: 0 auto; overflow: visible;
+          clip: auto; clip-path: none; white-space: normal;
+          font-family: Georgia, 'Times New Roman', serif;
+          max-width: 760px; padding: 3rem 1.5rem;
+          color: #3D3530; line-height: 1.6;
+        }
+        .seo-shell a { color: #A07848; }
+      </style>
+    </noscript>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
 
-    <!-- ── Contenido estático para crawlers sin JavaScript ── -->
-    <noscript>
-      <div style="font-family: Georgia, serif; max-width: 800px; margin: 0 auto; padding: 2rem; color: #3D3530;">
-        <h1>Salas de Reuniones en Madrid Centro — Suites Viena Plaza de España</h1>
+    <!-- ── #root arranca con el splash y el texto SEO ──
+         El texto SEO está en el HTML del servidor para que lo lean los
+         bots sin JavaScript, pero oculto a la vista (ver <style>).
+
+         CUIDADO CON LOS PRECIOS: son estáticos y las tarifas reales
+         salen de Supabase. Si se cambian en el panel, actualizar aquí y
+         en el JSON-LD del <head>. -->
+    <div id="root">
+      <main class="boot-splash" aria-hidden="true">
+        <div>
+          <p class="t1">Suites Viena</p>
+          <p class="t2">Salas de reuniones · Madrid</p>
+        </div>
+      </main>
+      <div class="seo-shell">
+        <h1>Salas de reuniones en Madrid centro, junto a Plaza de España</h1>
         <p>
           Alquiler de salas de reuniones equipadas en el corazón de Madrid,
           a un paso de Plaza de España. Espacios versátiles para reuniones,
-          formaciones, presentaciones y eventos corporativos.
+          formaciones, presentaciones y eventos corporativos, en el hotel
+          Suites Viena Plaza de España (C/ Juan Álvarez Mendizábal, 17).
         </p>
 
         <h2>Nuestras salas</h2>
@@ -208,6 +375,13 @@
           Servicio propio de Suites Viena.
         </p>
 
+        <h2>Cómo llegar</h2>
+        <p>
+          En pleno Madrid centro, a cinco minutos andando de Plaza de España
+          y del Templo de Debod. Metro Ventura Rodríguez (línea 3), Plaza de
+          España (líneas 3 y 10) y Argüelles (líneas 3, 4 y 6).
+        </p>
+
         <h2>Contacto</h2>
         <p>
           <strong>Suites Viena Plaza de España</strong><br />
@@ -218,6 +392,8 @@
           Web: <a href="https://www.suitesviena.com">www.suitesviena.com</a>
         </p>
       </div>
-    </noscript>
+    </div>
+
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

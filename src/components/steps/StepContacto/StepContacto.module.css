@@ -171,7 +171,12 @@
 .privacyText a:hover { color: #A07848; }
 
 /* ── Error ── */
+/* ── Error ── */
 .errorMsg {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+
   padding: 1rem 1.25rem;
   background: rgba(220,38,38,0.06);
   backdrop-filter: blur(8px);
@@ -244,6 +249,26 @@
 }
 
 .successNote { font-size: 0.82rem; color: #8a8480; font-weight: 400; }
+
+/* ── Validación por campo ── */
+.inputError,
+.inputError:focus {
+  border-color: rgba(220,38,38,0.45);
+  background: rgba(220,38,38,0.03);
+}
+
+.fieldError {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #b91c1c;
+  line-height: 1.4;
+}
+
+.privacyCardError {
+  border-color: rgba(220,38,38,0.35);
+}
 
 @media (min-width: 600px) {
   .title { font-size: 1.65rem; }

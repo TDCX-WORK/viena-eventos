@@ -1,0 +1,42 @@
+.pista {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--border-strong);
+  cursor: pointer;
+  transition: background 200ms var(--ease-ios);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.encendida { background: var(--accent); }
+
+.bolita {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  /* Curva con rebote: el interruptor es de las pocas cosas que se
+     pulsan a menudo y agradece tener algo de vida. */
+  transition: transform 220ms var(--ease-spring);
+}
+
+.encendida .bolita { transform: translateX(18px); }
+
+.pista:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.pista:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pista, .bolita { transition-duration: 1ms; }
+}

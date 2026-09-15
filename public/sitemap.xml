@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.w3.org/2000/svg/sitemap/0.9">
+<!--
+  El namespace anterior era http://www.w3.org/2000/svg/sitemap/0.9 — un
+  copia y pega con el esquema de los SVG dentro. Con ese xmlns, Google
+  Search Console rechaza el fichero entero con "error de análisis": no
+  es que indexara mal, es que no leía ni una URL.
+
+  El bueno es el de sitemaps.org, el de abajo.
+
+  Solo hay una URL porque la web es una sola página. En cuanto se creen
+  las páginas por sala (ver el plan), se añaden aquí.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://reservas.suitesviena.com/</loc>
+    <loc>https://suitesvienaeventos.com/</loc>
+    <lastmod>2026-09-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>

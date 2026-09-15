@@ -1,4 +1,65 @@
+# Cloudflare Pages — cabeceras
+#
+# Por defecto Pages sirve TODO con "max-age=0, must-revalidate", o sea
+# que el navegador vuelve a preguntar por cada fichero en cada visita.
+# Para el index.html está bien —es justo lo que queremos— pero para los
+# assets es tirar el rendimiento a la basura.
+
+# ── Bundle de Vite ──
+# Vite les mete un hash en el nombre (index-B8Wv0HtR.css). Si el
+# contenido cambia, cambia el nombre, así que el fichero viejo nunca
+# sirve contenido equivocado: se puede cachear un año y marcarlo
+# immutable para que el navegador ni siquiera revalide.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# ── Fotos del hero ──
+# Estas NO llevan hash: hero-2000.webp se llama igual para siempre, que
+# es justo lo que permite precargarlas desde el index.html. Por eso se
+# cachean 30 días y no un año: si algún día se sustituye la foto sin
+# renombrarla, en un mes como mucho la ve todo el mundo.
+#
+# Si hace falta cambiarla YA, se purga la caché desde el panel de
+# Cloudflare (Caching > Configuration > Purge Everything).
+/hero-*.webp
+  Cache-Control: public, max-age=2592000
+
+# ── Imagen de compartir y favicon ──
+# Mismo caso que el hero: nombre fijo, sin hash. WhatsApp y LinkedIn
+# cachean og-image.jpg por su cuenta durante semanas; si se cambia la
+# foto hay que forzar el refresco desde el depurador de Facebook
+# (developers.facebook.com/tools/debug).
+/og-image.jpg
+  Cache-Control: public, max-age=2592000
+/favicon.svg
+  Cache-Control: public, max-age=2592000
+
+# ── robots.txt y sitemap.xml ──
+# Cachearlos mucho es contraproducente: cuando se añade una URL al
+# sitemap interesa que Google vea el fichero nuevo el mismo día.
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+/robots.txt
+  Cache-Control: public, max-age=3600
+
+# ── El HTML, nunca ──
+# Es el que apunta a los assets con hash. Si se cachea, el navegador
+# sigue pidiendo el bundle viejo después de un despliegue.
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# ── Panel: fuera de Google ──
+# robots.txt impide RASTREAR /admin, pero no impide INDEXAR la URL si
+# alguien la enlaza. Esta cabecera sí. El panel además lleva un
+# <meta name="robots"> desde React, por si acaso.
+/admin
+  X-Robots-Tag: noindex, nofollow
+/admin/*
+  X-Robots-Tag: noindex, nofollow
+
+# ── Cabeceras de seguridad, para todo ──
 /*
-  X-Frame-Options: ALLOWALL
-  Content-Security-Policy: frame-ancestors https://www.suitesviena.com https://suitesviena.com
-  Access-Control-Allow-Origin: *
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: geolocation=(), microphone=(), camera=()

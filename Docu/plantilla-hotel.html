@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <meta name="supported-color-schemes" content="light" />
+  <!--[if gte mso 9]>
+  <xml>
+    <o:OfficeDocumentSettings>
+      <o:AllowPNG/>
+      <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+  </xml>
+  <![endif]-->
+  <title>Nueva Solicitud de Reserva</title>
+
+  <style type="text/css">
+    /* Los estilos inline mandan en todos los clientes; esto solo ajusta
+       el móvil. Gmail, Apple Mail y Outlook.com respetan las media
+       queries en el head. Outlook de escritorio las ignora, pero ahí
+       siempre se ve a 600 px, que es la anchura para la que está hecho. */
+    @media only screen and (max-width: 620px) {
+      .px         { padding-left: 20px !important; padding-right: 20px !important; }
+      .wrapPad    { padding: 16px 8px !important; }
+      .stack      { display: block !important; width: 100% !important; }
+      .stackLeft  { padding-right: 0 !important; padding-bottom: 20px !important; }
+      .stackRight { padding-left: 0 !important; text-align: left !important; }
+      .tCell      { padding-left: 8px !important; padding-right: 8px !important; font-size: 12px !important; }
+      .tHead      { padding-left: 8px !important; padding-right: 8px !important; font-size: 9px !important; letter-spacing: 0.5px !important; }
+      .labelCell  { width: 90px !important; font-size: 11px !important; }
+      .bigPrice   { font-size: 24px !important; }
+      .refNum     { font-size: 19px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background-color:#F9F9F9;font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+
+<!-- Wrapper -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F9F9F9;">
+  <tr>
+    <td align="center" class="wrapPad" style="padding:32px 16px;">
+
+      <!-- Container 600px -->
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;width:100%;background-color:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #E5E5E5;">
+
+        <tr>
+          <td style="background-color:#922B21;font-size:0;line-height:0;height:4px;">&nbsp;</td>
+        </tr>
+
+        <!-- Header -->
+        <tr>
+          <td class="px" style="background-color:#FFFFFF;border-bottom:1px solid #E5E5E5;padding:32px 40px;text-align:center;">
+            <h1 style="margin:0 0 6px;font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:700;color:#111111;letter-spacing:-0.5px;">Suites Viena</h1>
+            <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#922B21;">Nueva Solicitud de Reserva</p>
+          </td>
+        </tr>
+
+        <!-- Ref badge -->
+        <tr>
+          <td class="px" style="padding:28px 40px 0;text-align:center;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+              <tr>
+                <td style="background-color:#FDF2F2;border:1px solid #F5C6C6;border-radius:8px;padding:10px 24px;">
+                  <p style="margin:0 0 2px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#922B21;">Referencia</p>
+                  <p class="refNum" style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:700;color:#922B21;letter-spacing:1px;">{{referencia}}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Aviso de oferta. La sección solo se pinta si la reserva llevaba
+             una: oferta_nombre llega vacío cuando no hay. -->
+        {{#oferta_nombre}}
+        <tr>
+          <td class="px" style="padding:20px 40px 0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;">
+              <tr>
+                <td style="padding:12px 16px;">
+                  <p style="margin:0 0 2px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#166534;">Oferta aplicada</p>
+                  <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:700;color:#166534;">
+                    {{oferta_nombre}}{{#oferta_codigo}} &nbsp;·&nbsp; código {{oferta_codigo}}{{/oferta_codigo}}
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        {{/oferta_nombre}}
+
+        <!-- Datos contacto -->
+        <tr>
+          <td class="px" style="padding:28px 40px 0;">
+            <p style="margin:0 0 12px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#922B21;">Datos de contacto</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F4F4F4;border:1px solid #E5E5E5;border-radius:8px;">
+              <tr>
+                <td class="labelCell" style="padding:14px 16px;border-bottom:1px solid #E5E5E5;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#6B6B6B;text-transform:uppercase;letter-spacing:0.5px;width:110px;">Nombre</td>
+                <td style="padding:14px 16px;border-bottom:1px solid #E5E5E5;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:600;color:#111111;">{{nombre}}</td>
+              </tr>
+              <tr>
+                <td class="labelCell" style="padding:14px 16px;border-bottom:1px solid #E5E5E5;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#6B6B6B;text-transform:uppercase;letter-spacing:0.5px;">Email</td>
+                <td style="padding:14px 16px;border-bottom:1px solid #E5E5E5;font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#111111;word-break:break-all;"><a href="mailto:{{email}}" style="color:#111111;text-decoration:underline;">{{email}}</a></td>
+              </tr>
+              <tr>
+                <td class="labelCell" style="padding:14px 16px;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#6B6B6B;text-transform:uppercase;letter-spacing:0.5px;">Teléfono</td>
+                <td style="padding:14px 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#111111;"><a href="tel:{{telefono}}" style="color:#111111;text-decoration:underline;">{{telefono}}</a></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Sala -->
+        <tr>
+          <td class="px" style="padding:24px 40px 0;">
+            <p style="margin:0 0 12px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#922B21;">Sala reservada</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F4F4F4;border:1px solid #E5E5E5;border-radius:8px;">
+              <tr>
+                <td style="padding:20px 20px;">
+                  <p style="margin:0 0 4px;font-family:Georgia,'Times New Roman',serif;font-size:18px;font-weight:700;color:#111111;">{{sala_nombre}}</p>
+                  <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6B6B;">{{sala_metros}} m² &nbsp;·&nbsp; Hasta {{sala_capacidad}} personas</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Fechas tabla -->
+        <tr>
+          <td class="px" style="padding:24px 40px 0;">
+            <p style="margin:0 0 12px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#922B21;">Detalle de fechas</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F4F4F4;border:1px solid #E5E5E5;border-radius:8px;">
+              <tr>
+                <td class="tHead" style="padding:10px 12px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;color:#922B21;letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid #E5E5E5;">Fecha</td>
+                <td class="tHead" style="padding:10px 12px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;color:#922B21;letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid #E5E5E5;">Jornada</td>
+                <td class="tHead" style="padding:10px 12px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;color:#922B21;letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid #E5E5E5;">Layout</td>
+                <td class="tHead" style="padding:10px 12px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;color:#922B21;letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid #E5E5E5;text-align:center;">Pax</td>
+              </tr>
+              {{{fechas_html}}}
+            </table>
+          </td>
+        </tr>
+
+        <!-- Extras -->
+        <tr>
+          <td class="px" style="padding:24px 40px 0;">
+            <p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#922B21;">Extras</p>
+            <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111111;line-height:22px;">{{extras}}</p>
+          </td>
+        </tr>
+
+        <!-- Desglose de precio.
+             Antes iba en dos columnas junto a los extras y en el móvil se
+             quedaba estrecho. Ahora ocupa el ancho completo, que además
+             hace falta para que quepan las líneas del descuento. -->
+        <tr>
+          <td class="px" style="padding:24px 40px 0;">
+            <p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#922B21;">Desglose</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F4F4F4;border:1px solid #E5E5E5;border-radius:8px;">
+              <tr>
+                <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#6B6B6B;">Salas</td>
+                <td style="padding:12px 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111111;text-align:right;white-space:nowrap;">{{precio_base}} €</td>
+              </tr>
+              <tr>
+                <td style="padding:0 16px 12px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#6B6B6B;">Extras</td>
+                <td style="padding:0 16px 12px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111111;text-align:right;white-space:nowrap;">{{precio_extras}} €</td>
+              </tr>
+              {{#oferta_nombre}}
+              <tr>
+                <td style="padding:0 16px 12px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#166534;">{{oferta_nombre}}</td>
+                <td style="padding:0 16px 12px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#166534;text-align:right;white-space:nowrap;">−{{descuento}} €</td>
+              </tr>
+              {{/oferta_nombre}}
+              <tr>
+                <td style="padding:14px 16px;border-top:2px solid #E5E5E5;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;color:#6B6B6B;text-transform:uppercase;letter-spacing:0.5px;vertical-align:middle;">Total</td>
+                <td style="padding:14px 16px;border-top:2px solid #E5E5E5;text-align:right;vertical-align:middle;">
+                  <p class="bigPrice" style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:700;color:#111111;white-space:nowrap;">{{precio_total}} €</p>
+                  <p style="margin:4px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#ABABAB;">IVA no incluido</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Comentarios -->
+        <tr>
+          <td class="px" style="padding:24px 40px 0;">
+            <p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#922B21;">Comentarios</p>
+            <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#6B6B6B;line-height:22px;white-space:pre-wrap;">{{comentarios}}</p>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td class="px" style="padding:32px 40px 28px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+              <tr>
+                <td style="border-top:1px solid #E5E5E5;padding-top:20px;text-align:center;">
+                  <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#ABABAB;">Este email se ha generado automáticamente desde el sistema de reservas.</p>
+                  <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#ABABAB;">Suites Viena · Plaza de España, Madrid</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+      </table>
+      <!-- /Container -->
+
+    </td>
+  </tr>
+</table>
+<!-- /Wrapper -->
+
+</body>
+</html>

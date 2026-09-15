@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <meta name="supported-color-schemes" content="light" />
+  <!--[if gte mso 9]>
+  <xml>
+    <o:OfficeDocumentSettings>
+      <o:AllowPNG/>
+      <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+  </xml>
+  <![endif]-->
+  <title>Confirmación de Solicitud - Suites Viena</title>
+
+  <style type="text/css">
+    /* Solo ajustes de móvil. Los estilos inline siguen mandando en los
+       clientes que ignoran el <style> del head, como Outlook de
+       escritorio, donde siempre se ve a 600 px. */
+    @media only screen and (max-width: 620px) {
+      .px        { padding-left: 20px !important; padding-right: 20px !important; }
+      .wrapPad   { padding: 16px 8px !important; }
+      .labelCell { width: 90px !important; font-size: 11px !important; }
+      .bigPrice  { font-size: 22px !important; }
+      .refNum    { font-size: 24px !important; letter-spacing: 1px !important; }
+      .greet     { font-size: 18px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background-color:#F9F9F9;font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+
+<!-- Wrapper -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F9F9F9;">
+  <tr>
+    <td align="center" class="wrapPad" style="padding:32px 16px;">
+
+      <!-- Container -->
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;width:100%;background-color:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #E5E5E5;">
+
+        <tr>
+          <td style="background-color:#922B21;font-size:0;line-height:0;height:4px;">&nbsp;</td>
+        </tr>
+
+        <!-- Header -->
+        <tr>
+          <td class="px" style="background-color:#FFFFFF;border-bottom:1px solid #E5E5E5;padding:36px 40px;text-align:center;">
+            <h1 style="margin:0 0 6px;font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:700;color:#111111;letter-spacing:-0.5px;">Suites Viena</h1>
+            <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#922B21;">Confirmación de Solicitud</p>
+          </td>
+        </tr>
+
+        <!-- Greeting -->
+        <tr>
+          <td class="px" style="padding:32px 40px 0;">
+            <p class="greet" style="margin:0 0 6px;font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:700;color:#111111;">Hola, {{nombre}}</p>
+            <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#6B6B6B;line-height:24px;">Hemos recibido tu solicitud de reserva. Nuestro equipo la revisará y te contactará en las próximas horas para confirmar todos los detalles.</p>
+          </td>
+        </tr>
+
+        <!-- Referencia -->
+        <tr>
+          <td class="px" style="padding:28px 40px 0;" align="center">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="background-color:#FDF2F2;border:1px solid #F5C6C6;border-radius:10px;width:100%;max-width:340px;">
+              <tr>
+                <td style="padding:22px 28px;text-align:center;">
+                  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#922B21;">Tu número de referencia</p>
+                  <p class="refNum" style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:700;color:#922B21;letter-spacing:1.5px;">{{referencia}}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Oferta aplicada. Solo se pinta si la hubo: oferta_nombre llega
+             vacío cuando la reserva no llevaba ninguna. -->
+        {{#oferta_nombre}}
+        <tr>
+          <td class="px" style="padding:22px 40px 0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;">
+              <tr>
+                <td style="padding:14px 18px;text-align:center;">
+                  <p style="margin:0 0 3px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#166534;">Oferta aplicada</p>
+                  <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:700;color:#166534;">{{oferta_nombre}}</p>
+                  <p style="margin:4px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#166534;">Has ahorrado {{descuento}} €</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        {{/oferta_nombre}}
+
+        <!-- Resumen -->
+        <tr>
+          <td class="px" style="padding:28px 40px 0;">
+            <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#922B21;">Resumen de tu solicitud</p>
+
+            <!-- Sala card -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F4F4F4;border:1px solid #E5E5E5;border-radius:8px;margin-bottom:16px;">
+              <tr>
+                <td style="padding:16px 18px;">
+                  <p style="margin:0 0 4px;font-family:Georgia,'Times New Roman',serif;font-size:17px;font-weight:700;color:#111111;">{{sala_nombre}}</p>
+                  <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6B6B;">{{sala_metros}} m² &nbsp;·&nbsp; Hasta {{sala_capacidad}} personas</p>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Info grid -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F4F4F4;border:1px solid #E5E5E5;border-radius:8px;margin-bottom:16px;">
+              <tr>
+                <td class="labelCell" style="padding:14px 18px;border-bottom:1px solid #E5E5E5;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#6B6B6B;text-transform:uppercase;letter-spacing:0.5px;width:110px;">Jornada</td>
+                <td style="padding:14px 18px;border-bottom:1px solid #E5E5E5;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:#111111;">{{jornada}}</td>
+              </tr>
+              <tr>
+                <td class="labelCell" style="padding:14px 18px;border-bottom:1px solid #E5E5E5;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#6B6B6B;text-transform:uppercase;letter-spacing:0.5px;">Layout</td>
+                <td style="padding:14px 18px;border-bottom:1px solid #E5E5E5;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:#111111;">{{layout}}</td>
+              </tr>
+              <tr>
+                <td class="labelCell" style="padding:14px 18px;border-bottom:1px solid #E5E5E5;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#6B6B6B;text-transform:uppercase;letter-spacing:0.5px;">Asistentes</td>
+                <td style="padding:14px 18px;border-bottom:1px solid #E5E5E5;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:#111111;">{{asistentes}}</td>
+              </tr>
+              <tr>
+                <td class="labelCell" style="padding:14px 18px;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#6B6B6B;text-transform:uppercase;letter-spacing:0.5px;">Extras</td>
+                <td style="padding:14px 18px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111111;">{{extras}}</td>
+              </tr>
+            </table>
+
+            <!-- Precio, ahora desglosado.
+                 Con oferta hay que enseñar de dónde sale el número: un
+                 total más bajo sin explicación se lee como un error. -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F4F4F4;border:1px solid #E5E5E5;border-radius:8px;">
+              <tr>
+                <td style="padding:14px 20px 10px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#6B6B6B;">Salas</td>
+                <td style="padding:14px 20px 10px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111111;text-align:right;white-space:nowrap;">{{precio_base}} €</td>
+              </tr>
+              <tr>
+                <td style="padding:0 20px 10px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#6B6B6B;">Extras</td>
+                <td style="padding:0 20px 10px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111111;text-align:right;white-space:nowrap;">{{precio_extras}} €</td>
+              </tr>
+              {{#oferta_nombre}}
+              <tr>
+                <td style="padding:0 20px 10px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#166534;">{{oferta_nombre}}</td>
+                <td style="padding:0 20px 10px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#166534;text-align:right;white-space:nowrap;">−{{descuento}} €</td>
+              </tr>
+              {{/oferta_nombre}}
+              <tr>
+                <td style="padding:14px 20px;border-top:2px solid #E5E5E5;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;color:#6B6B6B;text-transform:uppercase;letter-spacing:0.5px;vertical-align:middle;">Precio estimado</td>
+                <td style="padding:14px 20px;border-top:2px solid #E5E5E5;text-align:right;vertical-align:middle;">
+                  <p class="bigPrice" style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:700;color:#111111;white-space:nowrap;">{{precio_total}} €</p>
+                  <p style="margin:2px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#ABABAB;">IVA no incluido</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- CTA / Info -->
+        <tr>
+          <td class="px" style="padding:28px 40px 0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F4F4F4;border:1px solid #E5E5E5;border-radius:8px;">
+              <tr>
+                <td style="padding:20px 22px;text-align:center;">
+                  <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:#111111;">¿Tienes alguna pregunta?</p>
+                  <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#6B6B6B;line-height:20px;">Puedes responder directamente a este email o llamarnos.<br/>Estaremos encantados de ayudarte.</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td class="px" style="padding:32px 40px 28px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+              <tr>
+                <td style="border-top:1px solid #E5E5E5;padding-top:20px;text-align:center;">
+                  <p style="margin:0 0 4px;font-family:Georgia,'Times New Roman',serif;font-size:16px;font-weight:700;color:#111111;">Suites Viena</p>
+                  <p style="margin:0 0 2px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#ABABAB;">Plaza de España, Madrid</p>
+                  <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#ABABAB;">
+                    <a href="https://www.suitesviena.com" style="color:#922B21;text-decoration:underline;">suitesviena.com</a>
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+      </table>
+      <!-- /Container -->
+
+    </td>
+  </tr>
+</table>
+<!-- /Wrapper -->
+
+</body>
+</html>

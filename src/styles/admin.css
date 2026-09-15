@@ -1,0 +1,22 @@
+@import './variables.css';
+
+/* ─────────────────────────────────────────────────────────────────────
+   index.css pinta en el <body> tres degradados radiales con
+   background-attachment: fixed y un fondo #EDE5D8. Eso es la identidad
+   de la web pública y ahí se queda.
+
+   El panel necesita el gris liso #F9F9F9. Como el body es uno solo y lo
+   comparten los dos, AdminLayout añade y quita esta clase al montarse y
+   desmontarse. Nada de esto toca a la web pública.
+
+   Se resetea también el font-size: el body público está a 17px y el
+   panel trabaja a 18px, que es la base del sistema de diseño.
+   ───────────────────────────────────────────────────────────────────── */
+body.admin-activo {
+  background-color: var(--bg-page);
+  background-image: none;
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: var(--text-md);
+  line-height: var(--leading-normal);
+}

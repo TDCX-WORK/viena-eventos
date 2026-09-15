@@ -1,0 +1,72 @@
+/* ─────────────────────────────────────────────────────────────────────
+   Tokens del sistema de diseño del panel.
+
+   Van en :root a propósito, no dentro del contenedor del admin: el
+   componente Modal se monta por portal en document.body, o sea FUERA
+   del árbol del panel, y si los tokens estuvieran acotados al panel el
+   modal saldría sin colores.
+
+   No colisiona con la web pública: su CSS no usa ninguna de estas
+   variables (solo --card-color y --badge-color, que son locales).
+
+   OJO CON LOS rem. El MD del sistema asume html { font-size: 18px }.
+   Aquí NO se puede poner: index.css es compartido con la web pública y
+   ahí hay 486 valores en rem que se inflarían un 12,5%. Por eso el CSS
+   del panel está escrito en px, ya convertidos a base 18:
+      1rem = 18px · 1.25rem = 22px · 1.5rem = 27px · 2rem = 36px
+   Cuando se rediseñe la parte pública, se sube la base y se unifica.
+   ───────────────────────────────────────────────────────────────────── */
+
+:root {
+  --white:      #FFFFFF;
+  --bg-page:    #F9F9F9;
+  --bg-surface: #FFFFFF;
+  --bg-subtle:  #F4F4F4;
+
+  --border:        #E5E5E5;
+  --border-strong: #D0D0D0;
+
+  --text-primary:   #111111;
+  --text-secondary: #6B6B6B;
+  --text-hint:      #ABABAB;
+
+  --accent:        #922B21;
+  --accent-hover:  #7B241C;
+  --accent-light:  #FDF2F2;
+  --accent-border: #F5C6C6;
+
+  --success:    #166534;
+  --success-bg: #F0FDF4;
+  --warning:    #92400E;
+  --warning-bg: #FFFBEB;
+  --danger:     #922B21;
+  --danger-bg:  #FDF2F2;
+
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   22px;
+  --radius-full: 999px;
+
+  --font: 'Inter', system-ui, sans-serif;
+
+  /* Escala tipográfica — base 18px */
+  --text-xs:   12px;
+  --text-sm:   14px;
+  --text-base: 16px;
+  --text-md:   18px;
+  --text-lg:   22px;
+  --text-xl:   26px;
+  --text-2xl:  32px;
+
+  --font-normal:   400;
+  --font-medium:   500;
+  --font-semibold: 600;
+
+  --leading-tight:  1.2;
+  --leading-normal: 1.5;
+  --leading-loose:  1.7;
+
+  --ease-ios:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}

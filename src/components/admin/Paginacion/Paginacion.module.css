@@ -1,0 +1,84 @@
+/* Deliberadamente discreta: es una ayuda de navegación, no un elemento
+   protagonista. */
+
+.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 4px 2px;
+}
+
+.info {
+  font-size: var(--text-xs);
+  color: var(--text-hint);
+  /* Cifras de ancho fijo: sin esto los números bailan al cambiar de
+     página. Va en todo lo que sean números que se actualizan. */
+  font-variant-numeric: tabular-nums;
+}
+
+.controles {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.numero,
+.flecha {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 150ms, background 150ms, color 150ms;
+}
+
+.numero:hover:not(.activo),
+.flecha:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+.activo {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: var(--font-medium);
+  cursor: default;
+}
+
+.flecha:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.hueco {
+  padding: 0 4px;
+  color: var(--text-hint);
+  font-size: var(--text-sm);
+  user-select: none;
+}
+
+.numero:focus-visible,
+.flecha:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .wrap      { justify-content: center; }
+  .controles { margin-left: 0; }
+  .info      { width: 100%; text-align: center; }
+}

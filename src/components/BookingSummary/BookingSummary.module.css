@@ -198,3 +198,104 @@
   border-radius: 999px;
   padding: 0.25rem 0.7rem;
 }
+
+/* ── Oferta aplicada ────────────────────────────────────────────────
+   Solo aparece cuando hay descuento de verdad. */
+
+.ofertaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  background: #F0FDF4;
+}
+
+/* Nombre de la oferta y, debajo, sobre que se ha calculado el importe.
+   El porcentaje se aplica al precio de sala, no al total con extras.
+   Decirlo evita que el cliente divida y le salga otro numero. */
+.ofertaCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.ofertaBase {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: #3F8A5C;
+  padding-left: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ofertaName {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #166534;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ofertaAmount {
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #166534;
+  font-variant-numeric: tabular-nums;
+}
+
+.totalPriceWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+}
+
+.totalAntes {
+  font-size: 0.85rem;
+  color: #a8a29e;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Suplemento de fin de semana ────────────────────────────────────
+   Ya va sumado en el precio de los días; esto solo lo explica. Sin
+   suplemento configurado no se pinta nada. */
+
+.suplementoRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  background: rgba(160,120,72,0.08);
+}
+
+.suplementoLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 0;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #8a6a3f;
+}
+
+.suplementoAmount {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #8a6a3f;
+  font-variant-numeric: tabular-nums;
+}

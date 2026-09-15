@@ -1,6 +1,16 @@
+# ── Suites Viena Eventos — robots.txt ──
+#
+# El panel no se indexa: no tiene contenido público y las URLs de
+# /admin en los resultados solo confunden. Todo lo demás, abierto.
+#
+# La línea Sitemap es la que estaba mal: apuntaba a
+# reservas.suitesviena.com, un dominio distinto del canonical del
+# index.html. Google descarta un sitemap alojado en otro dominio, así
+# que hasta ahora era como no tener ninguno.
+
 User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /admin/
 
-Sitemap: https://reservas.suitesviena.com/sitemap.xml
+Sitemap: https://suitesvienaeventos.com/sitemap.xml

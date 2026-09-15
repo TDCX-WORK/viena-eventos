@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { salasRelacionadas } from '../lib/constants'
 
 export function useHotelData() {
   const [hotel, setHotel] = useState(null)
@@ -45,11 +46,32 @@ export function useHotelData() {
           .eq('hotel_id', hotelRow.id)
           .order('sort_order')
 
-        // 4) Fechas bloqueadas
+        // 4) Fechas bloqueadas a mano desde el panel
         const { data: blocked, error: bErr } = await supabase
           .from('blocked_dates')
           .select('*')
         if (bErr) throw bErr
+
+        // 4b) Huecos ocupados por reservas ya CONFIRMADAS.
+        //
+        // Viene de la vista occupied_slots, que expone únicamente sala,
+        // día y jornada: ni nombres ni emails, así que se puede leer sin
+        // sesión. Sin esto, confirmar una reserva no impedía que otro
+        // cliente reservara exactamente el mismo hueco.
+        //
+        // Si la vista todavía no existe, se sigue adelante con lo que
+        // haya: es preferible un calendario incompleto a una web caída.
+        const { data: ocupados, error: oErr } = await supabase
+          .from('occupied_slots')
+          .select('room_id, date, jornada')
+        if (oErr) {
+          console.warn(
+            'No se ha podido leer occupied_slots. El calendario solo tendrá en cuenta ' +
+            'los bloqueos manuales, no las reservas confirmadas. Revisa que la vista ' +
+            'exista y tenga grant select para anon.',
+            oErr
+          )
+        }
 
         // Transformar al formato que esperan los componentes
         const formattedRooms = rooms.map(r => {
@@ -106,18 +128,69 @@ export function useHotelData() {
           isActive: e.is_active ?? true,
         }))
 
-        // Agrupar fechas bloqueadas por room slug con info de jornada
-        const blockedByRoom = {}
-        blocked.forEach(b => {
-          const room = rooms.find(r => r.id === b.room_id)
-          if (room) {
-            if (!blockedByRoom[room.slug]) blockedByRoom[room.slug] = []
-            blockedByRoom[room.slug].push({
-              date: new Date(b.date + 'T00:00:00'),
-              dateStr: b.date,
-              jornada: b.jornada || 'completo',
+        /* ── Ocupación por sala ─────────────────────────────────────
+           Se juntan las dos fuentes (bloqueos manuales y reservas
+           confirmadas) en una sola lista por slug, y después se propaga
+           entre salas combinadas. */
+
+        const porSala = {}
+        const vistos = {}   // slug -> Set('fecha|jornada'), para no duplicar
+
+        const idASlug = {}
+        rooms.forEach(r => { idASlug[r.id] = r.slug })
+
+        function anadir(slug, dateStr, jornada, origen) {
+          if (!slug || !dateStr) return
+          const j = jornada || 'completo'
+          const clave = `${dateStr}|${j}`
+
+          if (!porSala[slug]) { porSala[slug] = []; vistos[slug] = new Set() }
+          // El mismo hueco puede llegar por varios caminos: un bloqueo
+          // manual, una reserva y la propagación desde la sala hermana.
+          // Solo se guarda una vez.
+          if (vistos[slug].has(clave)) return
+
+          vistos[slug].add(clave)
+          porSala[slug].push({
+            date: new Date(dateStr + 'T00:00:00'),
+            dateStr,
+            jornada: j,
+            origen,
+          })
+        }
+
+        ;(blocked || []).forEach(b => {
+          anadir(idASlug[b.room_id], b.date, b.jornada, 'bloqueo')
+        })
+
+        ;(ocupados || []).forEach(o => {
+          anadir(idASlug[o.room_id], o.date, o.jornada, 'reserva')
+        })
+
+        /* Propagación entre salas combinadas.
+
+           En los dos sentidos y para las dos fuentes: si el espacio
+           unido no está disponible, ninguna de sus partes lo está, y si
+           una parte está ocupada, el espacio unido es imposible. Da
+           igual que venga de una reserva o de un bloqueo manual.
+
+           Se recorre una copia de las listas ya construidas, no las que
+           se están modificando: si no, lo propagado se volvería a
+           propagar en la misma pasada. Con una combinación de dos partes
+           basta una pasada. */
+        const base = Object.fromEntries(
+          Object.entries(porSala).map(([slug, lista]) => [slug, [...lista]])
+        )
+
+        Object.entries(base).forEach(([slug, lista]) => {
+          const destinos = salasRelacionadas(slug)
+          if (destinos.length === 0) return
+
+          lista.forEach(item => {
+            destinos.forEach(otra => {
+              anadir(otra, item.dateStr, item.jornada, `heredado:${slug}`)
             })
-          }
+          })
         })
 
         // Gallery: combinar fotos de todas las salas + galería general
@@ -142,7 +215,7 @@ export function useHotelData() {
           gallery,
           rooms: formattedRooms,
           extras: formattedExtras,
-          blockedDates: blockedByRoom,
+          blockedDates: porSala,
         })
       } catch (err) {
         console.error('Error cargando datos del hotel:', err)
