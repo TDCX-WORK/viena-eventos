@@ -6,7 +6,7 @@ import react from 'eslint-plugin-react'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'dist-server', '.wrangler']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
@@ -39,5 +39,16 @@ export default defineConfig([
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
     },
+  },
+  // Entrada del prerender: no es un módulo de componentes, Fast Refresh
+  // no pinta nada aquí.
+  {
+    files: ['src/entry-server.jsx'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
+  // Scripts de build: se ejecutan en Node, no en el navegador.
+  {
+    files: ['scripts/**/*.js'],
+    languageOptions: { globals: globals.node },
   },
 ])

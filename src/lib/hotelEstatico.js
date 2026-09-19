@@ -1,16 +1,12 @@
 /* ─────────────────────────────────────────────────────────────────────
-   Datos de respaldo para pintar el hero ANTES de que responda Supabase.
+   Datos de respaldo del hero.
 
-   El hero es lo primero que se ve y su foto es el LCP de la página. Si
-   esperara a la base de datos, Google cronometraría la consulta además
-   de la foto. Con esto el hero se pinta en cuanto carga el JavaScript y,
-   cuando llegan los datos reales, las cifras se sustituyen sin mover
-   nada de sitio (mismo texto, mismo hueco).
+   En producción ya no se usan: la portada llega prerenderizada con los
+   datos reales de Supabase (ver scripts/prerender.js). Solo entran en
+   juego en `npm run dev`, donde no hay prerender, y en el aviso de error
+   de la sección de salas (email y teléfono).
 
-   MANTENER SINCRONIZADO con Supabase y con index.html (texto SEO y
-   JSON-LD). Si se cambia una tarifa, una capacidad o un teléfono en el
-   panel, actualizar aquí también. Si no, durante medio segundo se verá
-   la cifra vieja y después saltará a la nueva.
+   Si cambian el teléfono o el email, actualizarlos aquí.
    ───────────────────────────────────────────────────────────────────── */
 
 export const HOTEL_ESTATICO = {

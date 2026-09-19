@@ -1,0 +1,467 @@
+/* ─────────────────────────────────────────────────────────────────────
+   FICHA DE SALA
+   Misma paleta que la portada (index.css): tinta #18120E, marrón
+   #3D3530, dorado #A07848, tarjetas #FDFCFB. Playfair en titulares,
+   Inter en el texto.
+   ───────────────────────────────────────────────────────────────────── */
+
+.pagina {
+  min-height: 100vh;
+  color: var(--color-body, #44403c);
+  padding-bottom: 5rem;               /* hueco para la barra fija en móvil */
+}
+
+.estado {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: #78716c;
+  font-size: 0.95rem;
+}
+
+/* ── Barra superior ── */
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid rgba(160, 120, 72, 0.15);
+}
+
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  color: #18120E;
+  text-decoration: none;
+}
+
+.marcaSello {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: #3D3530;
+  color: #FAF8F5;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+}
+
+.barraTel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #3D3530;
+  text-decoration: none;
+}
+.barraTel:hover { color: #A07848; }
+
+/* ── Contenedor ── */
+.contenedor {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 0;
+}
+
+.migas ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  font-size: 0.85rem;
+  color: #6b6560;
+}
+.migas li + li::before { content: '›'; margin-right: 0.4rem; color: #a8a29e; }
+.migas a { color: #6b6560; text-decoration: underline; text-underline-offset: 3px; }
+.migas a:hover { color: #A07848; }
+.migas [aria-current] { color: #18120E; font-weight: 500; }
+
+/* ── Titular ── */
+.cabecera { margin: 1.5rem 0 1.75rem; max-width: 46rem; }
+
+.antetitulo {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #A07848;
+  margin-bottom: 0.5rem;
+}
+
+.titulo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: #18120E;
+}
+
+.subtitulo {
+  margin-top: 0.75rem;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: #57534e;
+}
+
+.datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.1rem;
+  list-style: none;
+}
+.datos li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(160, 120, 72, 0.25);
+  background: #FDFCFB;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #3D3530;
+}
+.datos svg { color: #A07848; }
+
+/* ── Fotos ── */
+.fotos {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.fotos img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #f0ede8;
+}
+
+.fotoPrincipal { aspect-ratio: 4 / 3; }
+.fotoSecundaria { display: none !important; }
+
+.verFotos {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(24, 18, 14, 0.15);
+  background: rgba(255, 255, 255, 0.94);
+  font: 600 0.85rem 'Inter', system-ui, sans-serif;
+  color: #3D3530;
+  cursor: pointer;
+}
+.verFotos:hover { background: #3D3530; color: #fff; }
+
+/* ── Cuerpo ── */
+.cuerpo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.bloque + .bloque {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(160, 120, 72, 0.15);
+}
+
+.bloque h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: #18120E;
+  margin-bottom: 0.75rem;
+}
+
+.bloque p { line-height: 1.7; }
+
+.montajes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+  list-style: none;
+}
+.montajes li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 1rem 0.75rem;
+  border-radius: 14px;
+  border: 1px solid rgba(160, 120, 72, 0.2);
+  background: #FDFCFB;
+  text-align: center;
+}
+.montajes img { width: 64px; height: 64px; margin-bottom: 0.4rem; }
+.montajes strong { color: #18120E; font-size: 1rem; }
+.montajes span { font-size: 0.85rem; color: #6b6560; }
+
+.tarifas {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tarifas th,
+.tarifas td {
+  padding: 0.9rem 0;
+  border-bottom: 1px solid rgba(160, 120, 72, 0.15);
+  vertical-align: top;
+}
+.tarifas th {
+  text-align: left;
+  font-weight: 600;
+  color: #18120E;
+}
+.tarifas th small {
+  display: block;
+  margin-top: 0.15rem;
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: #6b6560;
+}
+.tarifas td {
+  text-align: right;
+  white-space: nowrap;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #18120E;
+}
+
+.nota { margin-top: 0.75rem; font-size: 0.88rem; color: #6b6560; }
+
+.incluido {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0.6rem 1.25rem;
+  list-style: none;
+}
+.incluido li { display: flex; align-items: center; gap: 0.5rem; }
+.incluido svg { color: #A07848; flex-shrink: 0; }
+
+.usos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+}
+.usos a {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(160, 120, 72, 0.25);
+  background: #FDFCFB;
+  color: #3D3530;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.usos a:hover { border-color: #A07848; color: #A07848; }
+
+/* ── Tarjeta de reserva ── */
+.reserva {
+  padding: 1.5rem;
+  border-radius: 20px;
+  border: 1.5px solid rgba(160, 120, 72, 0.25);
+  background: #FDFCFB;
+  box-shadow: var(--shadow-card);
+}
+
+.reservaDesde {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  color: #6b6560;
+}
+.reservaDesde strong {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2rem;
+  color: #18120E;
+}
+.reservaDesde span { font-size: 0.9rem; }
+
+.reservaBoton {
+  width: 100%;
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 1.25rem;
+  border: none;
+  border-radius: 999px;
+  background: #3D3530;
+  color: #fff;
+  font: 600 1rem 'Inter', system-ui, sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.reservaBoton:hover { background: #18120E; }
+
+.reservaNota {
+  margin-top: 0.6rem;
+  text-align: center;
+  font-size: 0.82rem;
+  color: #6b6560;
+}
+
+.reservaContacto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(160, 120, 72, 0.15);
+  font-size: 0.9rem;
+}
+.reservaContacto a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #3D3530;
+  text-underline-offset: 3px;
+}
+.reservaContacto a:hover { color: #A07848; }
+
+/* ── Otras salas ── */
+.otras {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(160, 120, 72, 0.15);
+}
+.otras h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: #18120E;
+  margin-bottom: 1rem;
+}
+.otras ul {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  list-style: none;
+}
+
+.otraSala {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.6rem 0.6rem 1rem;
+  border-radius: 18px;
+  border: 1.5px solid rgba(160, 120, 72, 0.2);
+  background: #FDFCFB;
+  text-decoration: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.otraSala:hover { border-color: rgba(160, 120, 72, 0.5); box-shadow: var(--shadow-card-hover); }
+.otraSala img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+  background: #f0ede8;
+}
+.otraNombre {
+  padding: 0 0.4rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #18120E;
+}
+.otraDatos { padding: 0 0.4rem; font-size: 0.88rem; color: #6b6560; }
+
+.volver { margin: 2rem 0 1rem; }
+.volver a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: #3D3530;
+  text-underline-offset: 3px;
+}
+.volver a:hover { color: #A07848; }
+
+/* ── Barra fija móvil ── */
+.barraMovil {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+  background: #FFFFFF;
+  border-top: 1px solid rgba(160, 120, 72, 0.2);
+  box-shadow: 0 -6px 20px rgba(24, 18, 14, 0.06);
+}
+.barraMovil strong { font-family: 'Playfair Display', Georgia, serif; font-size: 1.2rem; color: #18120E; }
+.barraMovil button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 999px;
+  background: #3D3530;
+  color: #fff;
+  font: 600 0.95rem 'Inter', system-ui, sans-serif;
+  cursor: pointer;
+}
+
+/* ── Tablet ── */
+@media (min-width: 600px) {
+  .barra, .contenedor { padding-left: 1.75rem; padding-right: 1.75rem; }
+  .titulo { font-size: 2.75rem; }
+  .otras ul { grid-template-columns: repeat(2, 1fr); }
+
+  .fotos { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; }
+  .fotoPrincipal { grid-row: span 2; aspect-ratio: auto; min-height: 380px; }
+  .fotoSecundaria { display: block !important; }
+  /* Una sola foto: a todo el ancho. Dos fotos: la segunda ocupa la
+     columna entera. (El botón "Ver fotos" es el último hijo.) */
+  .fotoPrincipal:only-child { grid-column: 1 / -1; aspect-ratio: 16 / 9; min-height: 0; }
+  .fotoSecundaria:nth-child(2):nth-last-child(2) { grid-row: span 2; }
+}
+
+/* ── Escritorio ── */
+@media (min-width: 1024px) {
+  .pagina { padding-bottom: 0; }
+  .barraMovil { display: none; }
+  .barra, .contenedor { padding-left: 3rem; padding-right: 3rem; }
+  .contenedor { padding-bottom: 3rem; }
+  .titulo { font-size: 3.25rem; }
+
+  .fotoPrincipal { min-height: 460px; }
+
+  .cuerpo { grid-template-columns: minmax(0, 1fr) 340px; gap: 3.5rem; }
+  .lateral { position: relative; }
+  .reserva { position: sticky; top: 1.5rem; }
+}

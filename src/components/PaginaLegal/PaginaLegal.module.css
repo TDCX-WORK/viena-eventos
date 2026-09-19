@@ -1,0 +1,184 @@
+/* ─────────────────────────────────────────────────────────────────────
+   PÁGINAS LEGALES
+
+   Una columna estrecha y mucho interlineado: son documentos largos que
+   nadie lee por gusto, así que al menos que se lean sin esfuerzo.
+   El ancho se limita a 68 caracteres, que es donde el ojo salta de
+   línea sin perderse.
+   ───────────────────────────────────────────────────────────────────── */
+
+.documento {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding: 1.5rem 0 3rem;
+  color: var(--color-body, #44403c);
+}
+
+/* ── Cartel de borrador ── */
+
+.borrador {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid rgba(146, 43, 33, 0.35);
+  border-left-width: 4px;
+  border-radius: 12px;
+  background: #FDF2F2;
+  color: #7B241C;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.borrador svg { flex-shrink: 0; margin-top: 2px; }
+
+/* ── Cabecera del documento ── */
+
+.titulo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #18120E;
+}
+
+.actualizado {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #8a8480;
+}
+
+.entradilla {
+  margin-top: 1.5rem;
+  padding-left: 1rem;
+  border-left: 3px solid rgba(160, 120, 72, 0.35);
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: #3D3530;
+}
+
+/* ── Secciones ── */
+
+.seccion {
+  margin-top: 2.75rem;
+}
+
+.seccion h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #18120E;
+}
+
+.sub {
+  margin-top: 1.75rem;
+  padding-left: 1rem;
+  border-left: 1px solid rgba(160, 120, 72, 0.22);
+}
+
+.sub h3 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b6560;
+}
+
+.parrafo {
+  margin-top: 1rem;
+  font-size: 0.97rem;
+  line-height: 1.75;
+}
+
+.lista {
+  margin-top: 1rem;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 0.97rem;
+  line-height: 1.7;
+}
+
+.lista li::marker { color: #A07848; }
+
+/* ── Tablas de datos ── */
+
+.tablaScroll {
+  margin-top: 1.25rem;
+  overflow-x: auto;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.tabla th,
+.tabla td {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(160, 120, 72, 0.18);
+  text-align: left;
+  vertical-align: top;
+}
+
+.tabla th {
+  width: 34%;
+  min-width: 150px;
+  background: #FBF9F6;
+  font-weight: 600;
+  color: #3D3530;
+}
+
+/* ── Huecos pendientes ── */
+
+.hueco {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #FEF3C7;
+  box-shadow: inset 0 0 0 1px #FCD34D;
+  color: #78350F;
+  font-size: 0.93em;
+  font-style: italic;
+}
+
+/* ── Otros documentos ── */
+
+.otros {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(160, 120, 72, 0.15);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: #6b6560;
+}
+
+.otros ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.otros a {
+  color: #3D3530;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.otros a:hover { color: #A07848; }
+
+@media (min-width: 600px) {
+  .documento { padding: 2.5rem 0 4rem; }
+  .seccion h2 { font-size: 1.55rem; }
+}

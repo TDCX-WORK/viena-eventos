@@ -57,11 +57,12 @@ export default function BookingWizard({ hotel, room, onBack, ofertasApi }) {
     document.dispatchEvent(new CustomEvent('viena:submit-contacto'))
   }, [])
 
+  /* El teléfono NO está aquí: es opcional. Si se escribe, lo valida
+     StepContacto al enviar (validacionContacto.js). */
   const submitDisabled =
     contactoStatus === 'loading' ||
     !(booking.contacto?.nombre &&
       booking.contacto?.email &&
-      booking.contacto?.telefono &&
       booking.contacto?.privacidad)
 
   return (

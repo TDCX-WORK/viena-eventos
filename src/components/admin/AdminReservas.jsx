@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import {
@@ -53,8 +54,18 @@ export default function AdminReservas() {
     cargando, error, actualizando, recargar, cambiarEstado,
   } = useReservas()
 
+  /* El correo de aviso enlaza a /admin/reservas?ref=SV-0000. La referencia
+     entra como término de búsqueda inicial, así la directora abre el
+     enlace y ve esa reserva sola en pantalla. El buscador sigue siendo
+     suyo: en cuanto escribe, manda lo que teclee.
+
+     Se lee una sola vez, al montar. No se sincroniza con la URL después
+     porque entonces borrar el buscador tendría que reescribir la ruta y
+     no aporta nada. */
+  const [params] = useSearchParams()
+
   const [filtro, setFiltro] = useState('all')
-  const [busqueda, setBusqueda] = useState('')
+  const [busqueda, setBusqueda] = useState(() => params.get('ref') || '')
   const [pagina, setPagina] = useState(1)
   const [abierta, setAbierta] = useState(null)
   const [confirmacion, setConfirmacion] = useState(null)
@@ -197,8 +208,9 @@ export default function AdminReservas() {
         <div className={styles.aviso}>
           <IconAlertTriangle size={16} stroke={1.75} />
           <span>
-            Hay {totalConflictos} reserva(s) que se solapan con otra ya confirmada
-            en la misma sala y jornada. Están marcadas en la lista.
+            Hay {totalConflictos} reserva(s) que coinciden con otra confirmada en la
+            misma sala y jornada. Es solo un aviso: las reservas no bloquean fechas.
+            Están marcadas en la lista.
           </span>
         </div>
       )}
@@ -301,7 +313,7 @@ export default function AdminReservas() {
                       {choques.length > 0 && (
                         <span className={styles.badgeConflicto}>
                           <IconAlertTriangle size={11} stroke={2} />
-                          Se solapa
+                          Coincide
                         </span>
                       )}
                       <span className={styles.recibida}>{recibida(r.created_at)}</span>
@@ -527,7 +539,7 @@ export default function AdminReservas() {
             <div className={styles.modalIcono}>
               <IconAlertTriangle size={26} stroke={1.75} />
             </div>
-            <h2 className={styles.modalTitulo}>La sala ya está ocupada</h2>
+            <h2 className={styles.modalTitulo}>Coincide con otra reserva</h2>
             <p className={styles.modalTexto}>
               {confirmacion.reserva.rooms?.name} ya tiene una reserva confirmada en:
             </p>
@@ -540,7 +552,8 @@ export default function AdminReservas() {
               ))}
             </ul>
             <p className={styles.modalTexto}>
-              Si la confirmas, quedarán dos reservas para el mismo espacio.
+              Puedes confirmarla igualmente: las reservas no bloquean fechas. Solo
+              ten en cuenta que habrá dos confirmadas para el mismo espacio.
             </p>
           </>
         ) : confirmacion ? (
@@ -550,9 +563,9 @@ export default function AdminReservas() {
             </div>
             <h2 className={styles.modalTitulo}>Cancelar {confirmacion.reserva.reference}</h2>
             <p className={styles.modalTexto}>
-              La reserva de {confirmacion.reserva.contact_name} pasará a cancelada y su
-              sala quedará libre. No se envía ningún aviso al cliente: hay que
-              escribirle aparte.
+              La reserva de {confirmacion.reserva.contact_name} pasará a cancelada y
+              desaparecerá del calendario. No se envía ningún aviso al cliente: hay
+              que escribirle aparte.
             </p>
           </>
         ) : null}

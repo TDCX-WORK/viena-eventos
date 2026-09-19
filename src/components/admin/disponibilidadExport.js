@@ -15,10 +15,12 @@ import { es } from 'date-fns/locale'
    se generó y qué salas incluye. Un listado de ocupación sin fecha de
    generación no vale para nada: mañana ya es otro.
 
-   LO HEREDADO SE INCLUYE Y SE MARCA. Si Viena está ocupada, la
+   LO HEREDADO SE INCLUYE Y SE MARCA. Si Viena está bloqueada, la
    combinada no se puede vender: eso tiene que salir en el papel, o
-   quien lo lea creerá que estaba libre. Pero se marca como heredado
-   para que no parezca una reserva más.
+   quien lo lea creerá que estaba libre. Se marca como heredado para
+   que no parezca un bloqueo propio.
+
+   Las reservas confirmadas salen, pero NO bloquean: son agenda.
    ───────────────────────────────────────────────────────────────────── */
 
 const JORNADA = { completo: 'Día completo', manana: 'Mañana', tarde: 'Tarde' }
@@ -26,9 +28,9 @@ const HORARIO = { completo: '9:00–20:00', manana: '9:00–14:00', tarde: '15:0
 
 const TIPO_TEXTO = {
   bloqueo:   'Bloqueo manual',
-  reserva:   'Reserva confirmada',
+  reserva:   'Reserva confirmada (no bloquea)',
   solicitud: 'Solicitud sin contestar',
-  heredado:  'Ocupada por otra sala',
+  heredado:  'Bloqueada por otra sala',
 }
 
 // Los mismos colores de la interfaz, en el formato de cada librería.
@@ -159,7 +161,6 @@ export async function exportarExcel({ filas, periodo, salas }) {
     `Total: ${filas.length} hueco(s) ocupado(s) · ` +
     `${filas.filter(f => f.tipo === 'bloqueo').length} bloqueos · ` +
     `${filas.filter(f => f.tipo === 'reserva').length} reservas · ` +
-    `${filas.filter(f => f.tipo === 'solicitud').length} solicitudes · ` +
     `${filas.filter(f => f.tipo === 'heredado').length} heredados`
   ])
   resumen.font = { bold: true, size: 10, color: { argb: ACENTO_HEX } }
@@ -244,13 +245,12 @@ export function exportarPDF({ filas, periodo, salas }) {
     `Total: ${filas.length} hueco(s) · ` +
     `${filas.filter(f => f.tipo === 'bloqueo').length} bloqueos · ` +
     `${filas.filter(f => f.tipo === 'reserva').length} reservas · ` +
-    `${filas.filter(f => f.tipo === 'solicitud').length} solicitudes · ` +
     `${filas.filter(f => f.tipo === 'heredado').length} heredados`,
     14, finY
   )
   doc.text(
-    'Los huecos heredados no son reservas: la sala no se puede alquilar porque otra ' +
-    'que la comparte está ocupada.',
+    'Solo los bloqueos cierran fechas en la web. Heredado: la sala comparte espacio con otra ' +
+    'bloqueada. Las reservas confirmadas son informativas.',
     14, finY + 5
   )
 

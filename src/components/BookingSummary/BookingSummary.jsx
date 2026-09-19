@@ -189,7 +189,8 @@ export default function BookingSummary({ booking, room, desglose, hotel }) {
       )}
 
       <div className={styles.nota}>
-        Recibirás un email de confirmación con tu número de referencia.
+        Es una solicitud: queda pendiente hasta que el hotel te contacte y la confirme.
+        Recibirás un email con el resumen y tu número de referencia.
       </div>
     </aside>
   )

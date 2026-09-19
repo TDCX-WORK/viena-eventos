@@ -1,0 +1,65 @@
+/* ─────────────────────────────────────────────────────────────────────
+   TIPOGRAFÍAS AUTOALOJADAS
+
+   Las familias se llaman 'Inter' y 'Playfair Display', exactamente
+   igual que cuando venían de Google. Así no hay que tocar ni una de
+   las declaraciones `font-family` repartidas por el proyecto: el
+   navegador simplemente encuentra la fuente en nuestro dominio en vez
+   de en el suyo.
+
+   Los ficheros los descarga `npm run fuentes` (ver scripts/fuentes.js)
+   y viven en public/fonts, sin hash en el nombre. Eso es lo que permite
+   precargarlos desde el index.html; a cambio, si algún día se
+   sustituyen, hay que purgar la caché de Cloudflare.
+
+   SON FUENTES VARIABLES: un solo fichero por familia cubre todo el
+   rango de pesos. De ahí el `font-weight: 300 600` en vez de un número
+   suelto. Si se pide un peso fuera del rango, el navegador lo simula y
+   se nota; los rangos de aquí son los que ya pedía el index.html.
+
+   `font-display: swap`: el texto se pinta desde el primer momento con
+   la fuente del sistema y cambia a la definitiva al llegar. Es lo
+   contrario de lo que hace `block`, que deja la página en blanco
+   esperando. Para una web cuya prioridad es el LCP, swap siempre.
+
+   El `unicode-range` es el subconjunto latino, el único que se
+   descarga. Si la página tuviera texto en cirílico o vietnamita, el
+   navegador no encontraría fuente y caería al respaldo del sistema,
+   que es justo lo que queremos.
+   ───────────────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url('/fonts/inter-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/playfair-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url('/fonts/playfair-latin-italic.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}

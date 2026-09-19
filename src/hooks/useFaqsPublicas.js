@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { useDatosIniciales } from '../lib/datosIniciales'
 
 /* ─────────────────────────────────────────────────────────────────────
    Preguntas frecuentes en la web pública.
@@ -14,29 +15,41 @@ import { supabase } from '../lib/supabase'
    puede tumbar la portada.
    ───────────────────────────────────────────────────────────────────── */
 
+/** Consulta sin estado. La usa el hook y también el prerender. */
+export async function cargarFaqs(hotelId) {
+  let consulta = supabase
+    .from('faqs')
+    .select('id, question, answer, sort_order')
+    .eq('is_active', true)
+    .order('sort_order')
+
+  if (hotelId) consulta = consulta.eq('hotel_id', hotelId)
+
+  const { data, error } = await consulta
+  if (error) throw error
+  return data || []
+}
+
 export function useFaqsPublicas(hotelId) {
-  const [faqs, setFaqs] = useState([])
-  const [cargando, setCargando] = useState(true)
+  /* Con prerender, las preguntas ya vienen en el HTML: se arranca con
+     ellas y sin estado de carga, para que el primer render coincida con
+     el del servidor. Luego se refrescan igual que siempre. */
+  const iniciales = useDatosIniciales()?.faqs
+
+  const [faqs, setFaqs] = useState(() => iniciales ?? [])
+  const [cargando, setCargando] = useState(!iniciales)
 
   useEffect(() => {
     let vivo = true
 
     async function cargar() {
       try {
-        let consulta = supabase
-          .from('faqs')
-          .select('id, question, answer, sort_order')
-          .eq('is_active', true)
-          .order('sort_order')
-
-        if (hotelId) consulta = consulta.eq('hotel_id', hotelId)
-
-        const { data, error } = await consulta
-        if (error) throw error
-        if (vivo) setFaqs(data || [])
+        const data = await cargarFaqs(hotelId)
+        if (vivo) setFaqs(data)
       } catch (err) {
         console.warn('No se han podido cargar las preguntas frecuentes:', err)
-        if (vivo) setFaqs([])
+        // Si ya había preguntas del prerender, se quedan.
+        if (vivo && !iniciales) setFaqs([])
       } finally {
         if (vivo) setCargando(false)
       }
@@ -44,6 +57,8 @@ export function useFaqsPublicas(hotelId) {
 
     cargar()
     return () => { vivo = false }
+    // iniciales no cambia durante la vida de la página.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hotelId])
 
   return { faqs, cargando }

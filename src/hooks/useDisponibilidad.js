@@ -5,25 +5,23 @@ import { salasRelacionadas } from '../lib/constants'
 /* ─────────────────────────────────────────────────────────────────────
    Datos de la pantalla de Disponibilidad.
 
-   La pantalla vieja solo conocía blocked_dates, así que enseñaba
-   "Disponible" en días que tenían una reserva confirmada encima. Aquí se
-   juntan las tres cosas que ocupan una sala:
+   CÓMO FUNCIONA EL HOTEL: una solicitud de la web no reserva nada. La
+   directora la recibe, habla con el cliente y, si sale adelante, la
+   confirma. Aun confirmada, NO cierra la fecha: otros clientes pueden
+   seguir pidiendo ese día.
 
-     1. bloqueo   — alguien lo bloqueó a mano desde el panel
-     2. reserva   — hay una reserva confirmada
-     3. solicitud — hay una petición sin contestar sobre ese hueco
-     4. heredado  — otra sala relacionada está ocupada
+   Por eso aquí hay dos cosas distintas:
 
-   Solo el primero se puede desbloquear desde aquí. Una reserva o una
-   solicitud se gestionan en Reservas, y lo heredado desaparece cuando
-   se libera la sala de la que viene.
+     1. bloqueo  — bloqueo manual. Es lo ÚNICO que cierra un hueco en
+                   la web. Se crea y se quita desde esta pantalla.
+     2. heredado — la sala combinada (o una de sus partes) está
+                   bloqueada, así que esta tampoco se puede vender.
+                   Solo sale de bloqueos, nunca de reservas.
+     3. reserva  — reserva CONFIRMADA. Solo informativa: sale en el
+                   calendario para que la directora vea su agenda,
+                   pero no bloquea nada ni se propaga.
 
-   LAS SOLICITUDES SE VEN PERO NO OCUPAN. La web pública inserta las
-   reservas con status 'pending', así que si solo se pintara lo
-   confirmado, una petición recién llegada no saldría por ningún lado y
-   se podría bloquear ese día sin enterarse. Se pintan, pero NO se
-   propagan a las salas hermanas ni bloquean nada: hasta que no se
-   confirman, no ocupan el espacio.
+   Las solicitudes sin contestar no se pintan: se gestionan en Reservas.
    ───────────────────────────────────────────────────────────────────── */
 
 export const TIPOS = {
@@ -62,17 +60,11 @@ export function useDisponibilidad() {
           .select('id, room_id, date, jornada, reason')
           .order('date'),
 
-        // El admin sí puede leer booking_dates, así que aquí no hace
-        // falta la vista occupied_slots: se lee directo y además se
-        // consigue la referencia, para poder decir QUÉ reserva ocupa.
-        //
-        // Se piden las confirmadas Y las pendientes. Solo con las
-        // confirmadas, una solicitud recién llegada de la web no
-        // aparecía en el calendario, que es justo cuando más falta hace
-        // verla.
+        // Solo las confirmadas: son la agenda de la directora. Las
+        // pendientes se ven en Reservas.
         supabase.from('booking_dates')
           .select('id, date, jornada, bookings!inner(id, reference, room_id, status, contact_name)')
-          .in('bookings.status', ['confirmed', 'pending'])
+          .eq('bookings.status', 'confirmed')
           .order('date'),
       ])
 
@@ -130,7 +122,7 @@ export function useDisponibilidad() {
       const sala = porId[r.bookings?.room_id]
       if (!sala) return
       anadir(sala.slug, r.date, r.jornada, {
-        tipo: r.bookings?.status === 'confirmed' ? TIPOS.reserva : TIPOS.solicitud,
+        tipo: TIPOS.reserva,
         referencia: r.bookings?.reference,
         cliente: r.bookings?.contact_name,
       })
@@ -142,17 +134,17 @@ export function useDisponibilidad() {
     Object.entries(base).forEach(([slug, porFecha]) => {
       Object.entries(porFecha).forEach(([fecha, items]) => {
         items.forEach(item => {
-          // Las solicitudes no se propagan: todavía no ocupan nada.
-          if (item.tipo === TIPOS.solicitud) return
+          // Solo los bloqueos se propagan. Una reserva no cierra nada,
+          // así que tampoco cierra la sala hermana.
+          if (item.tipo !== TIPOS.bloqueo) return
 
-          // El resto sí, en los dos sentidos: si el espacio unido no
-          // está libre, ninguna de sus partes lo está.
+          // En los dos sentidos: si el espacio unido está bloqueado,
+          // ninguna de sus partes está libre, y al revés.
           salasRelacionadas(slug).forEach(otra => {
             anadir(otra, fecha, item.jornada, {
               tipo: TIPOS.heredado,
               desde: slug,
               motivoOriginal: item.tipo,
-              referencia: item.referencia || null,
             })
           })
         })
@@ -234,6 +226,26 @@ export function useDisponibilidad() {
     }
   }, [bloqueos])
 
+  /** Quita varios bloqueos de una vez (el botón Desbloquear del
+   *  calendario). Recibe los ids de blocked_dates. */
+  const desbloquearVarios = useCallback(async (ids) => {
+    if (!ids || ids.length === 0) return true
+    setGuardando(true)
+    try {
+      const { error: err } = await supabase.from('blocked_dates').delete().in('id', ids)
+      if (err) throw err
+      await cargar({ silencioso: true })
+      setError(null)
+      return true
+    } catch (err) {
+      console.error('Error desbloqueando fechas:', err)
+      setError('No se han podido quitar los bloqueos. Vuelve a intentarlo.')
+      return false
+    } finally {
+      setGuardando(false)
+    }
+  }, [cargar])
+
   return {
     salas,
     bloqueos,
@@ -245,6 +257,7 @@ export function useDisponibilidad() {
     recargar: cargar,
     bloquear,
     desbloquear,
+    desbloquearVarios,
   }
 }
 

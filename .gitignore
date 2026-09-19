@@ -10,6 +10,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist-server
 *.local
 
 # Editor directories and files
@@ -25,3 +26,10 @@ dist-ssr
 
 # Environment variables
 .env
+.env.*
+!.env.example
+
+# Cloudflare
+.dev.vars
+.dev.vars.*
+.wrangler/Docu/brevo/ 

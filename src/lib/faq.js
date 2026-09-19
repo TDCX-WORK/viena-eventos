@@ -151,7 +151,8 @@ export function construirFaq(hotel) {
     pregunta: '¿Cómo se reserva?',
     respuesta:
       'Desde esta misma página: eliges la sala, el día y la jornada, añades el catering ' +
-      'si lo quieres y dejas tus datos. Recibirás la confirmación por email. ' +
+      'si lo quieres y dejas tus datos. Te llegará un email con el resumen y, como cada ' +
+      'solicitud queda pendiente de confirmación, te escribiremos para cerrar los detalles. ' +
       (hotel?.phone
         ? `Si prefieres hablarlo antes, llámanos al ${hotel.phone}.`
         : 'Si prefieres hablarlo antes, llámanos.'),

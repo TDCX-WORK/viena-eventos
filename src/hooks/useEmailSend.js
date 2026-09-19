@@ -1,5 +1,3 @@
-import emailjs from '@emailjs/browser'
-import { EMAILJS_CONFIG } from '../config/emailjs'
 import { supabase } from '../lib/supabase'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -23,49 +21,31 @@ import { explicarDescuento } from '../lib/ofertas'
    transacción, y es quien genera la referencia. Aquí ya no se inventa
    ningún número: la de antes eran cuatro dígitos al azar contra una
    columna UNIQUE.
+
+   EL CORREO YA NO SALE DE AQUÍ. Antes este hook llamaba a EmailJS desde
+   el navegador: la clave viajaba dentro del bundle (cualquiera podía
+   leerla y gastar la cuota) y la IP de cada visitante llegaba a un
+   tercero. Ahora se hace un POST a /api/reserva y el envío ocurre en una
+   Cloudflare Pages Function, con la clave de Brevo en un secret que el
+   navegador no ve. Ver functions/api/reserva.js.
    ───────────────────────────────────────────────────────────────────── */
+
+const ENDPOINT_CORREO = '/api/reserva'
+
+/* Se aborta si la Function tarda demasiado. La reserva ya está guardada,
+   así que dejar al cliente mirando una rueda diez segundos por un correo
+   no compensa: mejor enseñarle la referencia y avisar de que el email
+   puede tardar. */
+const TIEMPO_MAXIMO = 8000
 
 const formatFechas = (booking) => {
   const fechas = booking.fechas || []
-  if (fechas.length === 0) return '—'
-  return fechas
-    .map(f => {
-      const fecha   = format(f.date, "d 'de' MMMM", { locale: es })
-      const jornada = JORNADA_LABELS[f.jornada] || f.jornada
-      const layout  = LAYOUT_LABELS[f.layout] || '—'
-      const pax     = f.asistentes || '—'
-      return `${fecha} — ${jornada} — ${layout} — ${pax} pax`
-    })
-    .join('\n')
-}
-
-const formatFechasHtml = (booking) => {
-  const fechas = booking.fechas || []
-  if (fechas.length === 0) return '<em>—</em>'
-  return fechas
-    .map(f => {
-      const fecha   = format(f.date, "EEEE d 'de' MMMM", { locale: es })
-      const jornada = JORNADA_LABELS[f.jornada] || f.jornada
-      const layout  = LAYOUT_LABELS[f.layout] || '—'
-      const pax     = f.asistentes || '—'
-      return `<tr>
-        <td style="padding:8px 12px;border-bottom:1px solid #e8e4df;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#3D3530;text-transform:capitalize;">${fecha}</td>
-        <td style="padding:8px 12px;border-bottom:1px solid #e8e4df;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#57534e;">${jornada}</td>
-        <td style="padding:8px 12px;border-bottom:1px solid #e8e4df;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#57534e;">${layout}</td>
-        <td style="padding:8px 12px;border-bottom:1px solid #e8e4df;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#57534e;text-align:center;">${pax}</td>
-      </tr>`
-    })
-    .join('')
-}
-
-const formatJornada = (booking) => {
-  const fechas = booking.fechas || []
-  if (fechas.length === 0) return '—'
-  if (fechas.length === 1) return JORNADA_LABELS[fechas[0].jornada] || '—'
-  const allSame = fechas.every(f => f.jornada === fechas[0].jornada)
-  return allSame
-    ? JORNADA_LABELS[fechas[0].jornada] || '—'
-    : 'Mixta (ver detalle de fechas)'
+  return fechas.map(f => ({
+    fecha:      format(f.date, "EEEE d 'de' MMMM", { locale: es }),
+    jornada:    JORNADA_LABELS[f.jornada] || f.jornada || '—',
+    layout:     LAYOUT_LABELS[f.layout] || '—',
+    asistentes: f.asistentes || '—',
+  }))
 }
 
 /* Guarda la reserva y devuelve la referencia que ha generado Postgres.
@@ -113,6 +93,51 @@ async function guardarReserva(booking, hotel, desglose) {
   return data
 }
 
+/* Lo que se le manda a la Function. Las etiquetas legibles (jornada,
+   montaje) se resuelven aquí porque los diccionarios viven en el
+   cliente; la Function solo escapa y maqueta, no traduce nada. */
+function prepararAviso(booking, hotel, desglose, referencia) {
+  const basePrice   = desglose?.base ?? 0
+  const extrasPrice = desglose?.extras ?? 0
+  const descuento   = desglose?.descuento ?? 0
+  const totalPrice  = desglose?.total ?? (basePrice + extrasPrice)
+  const oferta      = desglose?.oferta || null
+
+  return {
+    referencia,
+    contacto: {
+      nombre:      booking.contacto.nombre,
+      email:       booking.contacto.email,
+      telefono:    booking.contacto.telefono,
+      comentarios: booking.contacto.comentarios || '',
+    },
+    sala: {
+      nombre: booking.room.name,
+      metros: booking.room.size,
+      // El mismo cálculo que hacía el hook antiguo para {{sala_capacidad}}:
+      // el aforo mayor de todos los montajes posibles de la sala.
+      capacidad: Math.max(...booking.room.layouts.map(l => l.max)),
+    },
+    fechas: formatFechas(booking),
+    extras: (booking.extras || [])
+      .map(id => hotel.extras.find(e => e.id === id)?.name)
+      .filter(Boolean),
+    precios: {
+      base:      basePrice,
+      extras:    extrasPrice,
+      descuento: descuento,
+      total:     totalPrice,
+    },
+    oferta: oferta
+      ? {
+          nombre:  oferta.name,
+          codigo:  oferta.code || '',
+          detalle: explicarDescuento(oferta, { dias: (desglose?.dias || []).length }),
+        }
+      : null,
+  }
+}
+
 export function useEmailSend() {
 
   /**
@@ -134,80 +159,44 @@ export function useEmailSend() {
     const referencia = await guardarReserva(booking, hotel, desglose)
 
     // ── 2 · Los emails ──
-    const basePrice   = desglose?.base ?? 0
-    const extrasPrice = desglose?.extras ?? 0
-    const descuento   = desglose?.descuento ?? 0
-    const totalPrice  = desglose?.total ?? (basePrice + extrasPrice)
-    const oferta      = desglose?.oferta || null
-
-    const extras = (booking.extras || [])
-      .map(id => hotel.extras.find(e => e.id === id)?.name)
-      .filter(Boolean)
-      .join(', ') || 'Ninguno'
-
-    const maxCapacity = Math.max(...booking.room.layouts.map(l => l.max))
-
-    const allPax = (booking.fechas || []).map(f => f.asistentes).filter(Boolean)
-    const asistentesStr = allPax.length === 0
-      ? '—'
-      : [...new Set(allPax)].length === 1
-        ? `${allPax[0]}`
-        : allPax.join(', ')
-
-    const allLayouts = [...new Set((booking.fechas || []).map(f => LAYOUT_LABELS[f.layout]).filter(Boolean))]
-    const layoutStr = allLayouts.length === 0 ? '—' : allLayouts.join(', ')
-
-    const templateParams = {
-      referencia,
-      sala_nombre:    booking.room.name,
-      sala_metros:    booking.room.size,
-      sala_capacidad: maxCapacity,
-      fecha:          formatFechas(booking),
-      fechas_html:    formatFechasHtml(booking),
-      jornada:        formatJornada(booking),
-      asistentes:     asistentesStr,
-      layout:         layoutStr,
-      extras,
-      precio_base:    basePrice,
-      precio_extras:  extrasPrice,
-      descuento:      descuento,
-      oferta_nombre:  oferta ? oferta.name : '',
-      oferta_codigo:  oferta?.code || '',
-      // Sobre qué se ha calculado el descuento. Si no se usa en la
-      // plantilla de EmailJS no molesta, pero evita que el cliente
-      // reciba un importe suelto que no le cuadra con el total.
-      oferta_detalle: oferta ? explicarDescuento(oferta, { dias: (desglose?.dias || []).length }) : '',
-      precio_total:   totalPrice,
-      nombre:         booking.contacto.nombre,
-      email:          booking.contacto.email,
-      email_cliente:  booking.contacto.email,
-      telefono:       booking.contacto.telefono,
-      comentarios:    booking.contacto.comentarios || '—',
-    }
-
     /* El fallo de email NO tumba la operación. La reserva ya está
-       guardada y visible en el panel; hacer fallar esto solo
-       conseguiría que el cliente le diera a enviar otra vez y entraran
-       dos reservas iguales.
+       guardada y visible en el panel; hacer fallar esto solo conseguiría
+       que el cliente le diera a enviar otra vez y entraran dos reservas
+       iguales.
 
-       Se avisa por consola y se devuelve el flag. Si EmailJS agota la
-       cuota mensual del plan gratis (200 correos, o sea 100 reservas),
-       este es el camino por el que se va a enterar alguien. */
+       Se avisa por consola y se devuelve el flag. Si Brevo agota la
+       cuota diaria del plan gratis (300 correos, o sea 150 reservas en
+       un mismo día), este es el camino por el que se va a enterar
+       alguien. */
     let emailOk = true
 
     try {
-      emailjs.init(EMAILJS_CONFIG.publicKey)
-      await Promise.all([
-        emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateHotel, templateParams),
-        emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateCliente, templateParams),
-      ])
+      const corte = AbortSignal.timeout(TIEMPO_MAXIMO)
+
+      const respuesta = await fetch(ENDPOINT_CORREO, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(prepararAviso(booking, hotel, desglose, referencia)),
+        signal:  corte,
+      })
+
+      /* La Function devuelve 200 con ok:false cuando la reserva está bien
+         pero Brevo ha fallado, así que no basta con mirar respuesta.ok. */
+      const resultado = await respuesta.json().catch(() => null)
+
+      if (!respuesta.ok || !resultado?.ok) {
+        emailOk = false
+        console.error(
+          `Reserva ${referencia} guardada, pero los correos no han salido del todo.`,
+          resultado || `HTTP ${respuesta.status}`
+        )
+      }
     } catch (err) {
+      emailOk = false
       console.error(
-        `Reserva ${referencia} guardada, pero los emails no han salido. ` +
-        'Revisa la cuota de EmailJS y los dominios permitidos.',
+        `Reserva ${referencia} guardada, pero no se ha podido contactar con /api/reserva.`,
         err
       )
-      emailOk = false
     }
 
     return { referencia, emailOk }

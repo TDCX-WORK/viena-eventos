@@ -1,0 +1,12 @@
+Inter y Playfair Display se distribuyen bajo la SIL Open Font
+License, versión 1.1, que permite alojar los ficheros en el propio servidor.
+
+  Inter            — Copyright The Inter Project Authors
+                     https://github.com/rsms/inter
+  Playfair Display — Copyright The Playfair Display Project Authors
+                     https://github.com/clauseggers/Playfair-Display
+
+Texto completo de la licencia: https://openfontlicense.org
+
+Los ficheros .woff2 de esta carpeta los descarga scripts/fuentes.js
+(npm run fuentes) desde la API de Google Fonts. No se editan a mano.

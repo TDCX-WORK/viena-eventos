@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Phone, ArrowUpRight, Menu, X, Ticket } from 'lucide-react'
 import { estadoOferta, etiquetaDescuento } from '../../lib/ofertas'
 import { HOTEL_ESTATICO, DATOS_HERO_ESTATICOS } from '../../lib/hotelEstatico'
@@ -27,10 +28,9 @@ const HERO_SRCSET_VERT = '/hero-vert-500.webp 500w, /hero-vert-760.webp 760w'
 
 const ID_SALAS = 'salas'
 
-/* Los enlaces del menú apuntan a secciones de esta misma página.
-   `faq` todavía no existe: el bloque de preguntas frecuentes está
-   pendiente. Mientras no exista, el enlace no hace nada en lugar de
-   llevarte a ninguna parte. */
+/* Los enlaces del menú apuntan a secciones de esta misma página
+   (#salas, #faq y #contacto). Si una sección no está pintada todavía,
+   el enlace no hace nada en lugar de llevarte a ninguna parte. */
 const ENLACES = [
   { id: ID_SALAS,  label: 'Reserva' },
   { id: 'faq',      label: 'Dudas frecuentes' },
@@ -113,14 +113,21 @@ export default function Hero({ hotel: hotelReal, ofertas = [] }) {
 
           {/* ── Navegación ── */}
           <nav className={styles.nav} aria-label="Principal">
-            <a
+            {/* El logo lleva a la portada de ESTA web, no a la del hotel.
+                Como el hero solo está en la portada, además sube arriba
+                del todo (Link a la misma ruta no hace scroll solo). */}
+            <Link
+              to="/"
               className={styles.brand}
-              href={hotel.website || HOTEL_ESTATICO.website}
-              aria-label="Ir a la web de Suites Viena Plaza de España"
+              aria-label="Suites Viena: inicio"
+              onClick={() => {
+                const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' })
+              }}
             >
               <span className={styles.brandMark} aria-hidden="true">SV</span>
               <span className={styles.brandText}>Suites Viena</span>
-            </a>
+            </Link>
 
             <ul className={styles.navLinks}>
               {ENLACES.map(l => (

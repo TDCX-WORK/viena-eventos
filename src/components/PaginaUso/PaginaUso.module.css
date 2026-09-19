@@ -1,0 +1,147 @@
+/* ─────────────────────────────────────────────────────────────────────
+   PÁGINA POR USO — solo lo propio. Lo común (barra, migas, titulares,
+   bloques, "incluido"…) viene de PaginaSala.module.css.
+   ───────────────────────────────────────────────────────────────────── */
+
+.portada {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.portada .foto {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 20px;
+  background: #f0ede8;
+}
+
+.botonPrincipal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 0.9rem 1.5rem;
+  border-radius: 999px;
+  background: #3D3530;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.botonPrincipal:hover { background: #18120E; }
+
+/* ── Tabla de salas ── */
+.tablaScroll {
+  overflow-x: auto;
+  margin-top: 1rem;
+  border-radius: 16px;
+  border: 1.5px solid rgba(160, 120, 72, 0.2);
+  background: #FDFCFB;
+}
+
+.tabla {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.tabla th,
+.tabla td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(160, 120, 72, 0.13);
+}
+.tabla tbody tr:last-child th,
+.tabla tbody tr:last-child td { border-bottom: none; }
+
+.tabla thead th {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b6560;
+}
+
+.tabla tbody th {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #18120E;
+}
+.tabla tbody th small {
+  display: block;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #6b6560;
+}
+
+.tabla td { color: #3D3530; white-space: nowrap; }
+
+.enlaceSala {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 600;
+  color: #A07848;
+  text-decoration: none;
+}
+.enlaceSala:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.oculto {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Bloques de texto ── */
+.dosColumnas {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(160, 120, 72, 0.15);
+  margin-bottom: 2rem;
+}
+
+/* ── Preguntas ── */
+.preguntas { display: grid; gap: 1.1rem; }
+.preguntas dt { font-weight: 600; color: #18120E; }
+.preguntas dd { margin-top: 0.25rem; line-height: 1.7; }
+
+/* ── Otros usos ── */
+.otrosUsos {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.6rem !important;
+}
+.otrosUsos a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(160, 120, 72, 0.25);
+  background: #FDFCFB;
+  color: #3D3530;
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+.otrosUsos a:hover { border-color: #A07848; color: #A07848; }
+
+@media (min-width: 900px) {
+  .portada { grid-template-columns: 1.1fr 1fr; gap: 3rem; }
+  .dosColumnas { grid-template-columns: 1fr 1fr; column-gap: 3rem; }
+  /* En dos columnas, la raya entre bloques solo tiene sentido en la
+     segunda fila. */
+  .dosColumnas > :nth-child(2) { margin-top: 0; padding-top: 0; border-top: none; }
+}

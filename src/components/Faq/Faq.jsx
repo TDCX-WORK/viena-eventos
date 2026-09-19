@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, X, ArrowUpRight } from 'lucide-react'
 import { construirFaq, faqJsonLd } from '../../lib/faq'
 import { useFaqsPublicas } from '../../hooks/useFaqsPublicas'
+import { serializarParaScript } from '../../lib/datosIniciales'
 import styles from './Faq.module.css'
 
 export default function Faq({ hotel }) {
@@ -108,8 +109,7 @@ export default function Faq({ hotel }) {
           listas separadas. */}
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(preguntas)) }}
+        dangerouslySetInnerHTML={{ __html: serializarParaScript(faqJsonLd(preguntas)) }}
       />
     </section>
   )

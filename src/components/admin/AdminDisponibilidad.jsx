@@ -19,11 +19,16 @@ import {
   IconHourglass,
   IconFileSpreadsheet,
   IconFileTypePdf,
+  IconLockOpen,
 } from '@tabler/icons-react'
 import useDisponibilidad, { TIPOS, aplanarOcupacion } from '../../hooks/useDisponibilidad'
 import { partesDe, esCompuesta, colorSala } from '../../lib/constants'
 import Modal from './Modal/Modal'
 import styles from './AdminDisponibilidad.module.css'
+
+/* Los puntos de la leyenda de TIPO no son de ninguna sala: gris neutro.
+   Sin esto el cuadrado y el círculo relleno salían sin color. */
+const LEYENDA_NEUTRA = { background: '#6B6B6B', borderColor: '#6B6B6B' }
 
 const DIAS_SEMANA = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
 
@@ -52,17 +57,16 @@ const TIPO_LABEL = {
   [TIPOS.bloqueo]:   'Bloqueo',
   [TIPOS.reserva]:   'Reserva',
   [TIPOS.solicitud]: 'Sin contestar',
-  [TIPOS.heredado]:  'Heredada',
+  [TIPOS.heredado]:  'Por otra sala',
 }
 
 /* Filtro de la lista de ocupación. La cuenta de cada uno se calcula
    sobre el mes que se está mirando. */
 const FILTROS_TIPO = [
   { id: 'todo',             label: 'Todo' },
-  { id: TIPOS.reserva,      label: 'Reservas' },
-  { id: TIPOS.solicitud,    label: 'Sin contestar' },
   { id: TIPOS.bloqueo,      label: 'Bloqueos' },
-  { id: TIPOS.heredado,     label: 'Heredadas' },
+  { id: TIPOS.heredado,     label: 'Por otra sala' },
+  { id: TIPOS.reserva,      label: 'Reservas' },
 ]
 
 /* Color por tipo para el resumen del día plegado. El color de sala se
@@ -113,7 +117,7 @@ const hoyClave = () => {
 export default function AdminDisponibilidad() {
   const {
     salas, ocupacion, cargando, error, guardando, borrando,
-    recargar, bloquear, desbloquear,
+    recargar, bloquear, desbloquear, desbloquearVarios,
   } = useDisponibilidad()
 
   const hoy = new Date()
@@ -126,6 +130,9 @@ export default function AdminDisponibilidad() {
   const [motivo, setMotivo] = useState('')
   const [formAbierto, setFormAbierto] = useState(false)
   const [aQuitar, setAQuitar] = useState(null)
+  const [desbloqueoAbierto, setDesbloqueoAbierto] = useState(false)
+  // Salas que NO se van a desbloquear (por defecto se desbloquean todas).
+  const [salasExcluidas, setSalasExcluidas] = useState({})
   const [exportando, setExportando] = useState(null)
 
   const tabsRef = useRef(null)
@@ -224,7 +231,34 @@ export default function AdminDisponibilidad() {
   const clavesSeleccionadas = Object.keys(seleccion).sort()
   const hoyStr = hoyClave()
 
-  const salasOcupadasEsteMes = new Set(filasDelMes.map(f => f.slug)).size
+  const salasBloqueadasEsteMes = new Set(
+    filasDelMes.filter(f => f.tipo !== TIPOS.reserva).map(f => f.slug)
+  ).size
+
+  /* ── Bloqueos dentro de la selección ──────────────────────────────
+     Solo los bloqueos PROPIOS (los heredados se van solos al quitar el
+     original). Se miran en todos los meses, no solo en el visible: la
+     selección puede abarcar varios. Agrupados por sala para el modal
+     de desbloqueo. */
+  const bloqueosSeleccion = useMemo(() => {
+    const elegidos = new Set(Object.keys(seleccion))
+    const grupos = new Map()
+    todasLasFilas.forEach(f => {
+      if (f.tipo !== TIPOS.bloqueo || !elegidos.has(f.fecha)) return
+      if (!grupos.has(f.slug)) grupos.set(f.slug, { slug: f.slug, nombre: f.nombreSala, filas: [] })
+      grupos.get(f.slug).filas.push(f)
+    })
+    return [...grupos.values()]
+  }, [todasLasFilas, seleccion])
+
+  const diasConBloqueo = new Set(bloqueosSeleccion.flatMap(g => g.filas.map(f => f.fecha)))
+  const hayBloqueosEnSeleccion = bloqueosSeleccion.length > 0
+  const todosBloqueados =
+    clavesSeleccionadas.length > 0 && clavesSeleccionadas.every(c => diasConBloqueo.has(c))
+
+  const idsADesbloquear = bloqueosSeleccion
+    .filter(g => !salasExcluidas[g.slug])
+    .flatMap(g => g.filas.map(f => f.id))
 
   /* Para el botón de plegar/desplegar todo. Sin días no hay nada que
      plegar, así que cuenta como cerrado. */
@@ -305,6 +339,19 @@ export default function AdminDisponibilidad() {
     }
   }
 
+  function abrirDesbloqueo() {
+    setSalasExcluidas({})
+    setDesbloqueoAbierto(true)
+  }
+
+  async function hacerDesbloqueo() {
+    const ok = await desbloquearVarios(idsADesbloquear)
+    if (ok) {
+      setSeleccion({})
+      setDesbloqueoAbierto(false)
+    }
+  }
+
   async function confirmarQuitar() {
     const item = aQuitar
     setAQuitar(null)
@@ -346,7 +393,8 @@ export default function AdminDisponibilidad() {
         <div>
           <h1 className={styles.title}>Disponibilidad</h1>
           <p className={styles.subtitle}>
-            Pulsa los días que quieras bloquear. Puedes elegir varios y darle a cada uno su jornada.
+            Pulsa los días que quieras bloquear o desbloquear. Solo los bloqueos cierran fechas
+            en la web; las reservas confirmadas se muestran como agenda y no bloquean nada.
           </p>
         </div>
 
@@ -391,9 +439,9 @@ export default function AdminDisponibilidad() {
               {MESES[mes]} <span className={styles.calAnio}>{anio}</span>
             </h2>
             <span className={styles.calResumen}>
-              {salasOcupadasEsteMes === 0
-                ? 'Ninguna sala ocupada este mes'
-                : `${salasOcupadasEsteMes} ${salasOcupadasEsteMes === 1 ? 'sala ocupada' : 'salas ocupadas'} este mes`}
+              {salasBloqueadasEsteMes === 0
+                ? 'Ninguna sala bloqueada este mes'
+                : `${salasBloqueadasEsteMes} ${salasBloqueadasEsteMes === 1 ? 'sala con bloqueos' : 'salas con bloqueos'} este mes`}
             </span>
           </div>
 
@@ -541,13 +589,26 @@ export default function AdminDisponibilidad() {
             <span className={styles.flotanteCuenta}>
               {clavesSeleccionadas.length} día{clavesSeleccionadas.length > 1 ? 's' : ''}
             </span>
+            {/* Si todos los días elegidos ya tienen algún bloqueo, lo
+                principal es desbloquear; bloquear sigue disponible por si
+                se quiere cerrar otra sala esos mismos días. */}
+            {hayBloqueosEnSeleccion && (
+              <button
+                type="button"
+                className={todosBloqueados ? styles.flotantePrimario : styles.flotanteSecundario}
+                onClick={abrirDesbloqueo}
+              >
+                <IconLockOpen size={15} stroke={2} />
+                Desbloquear
+              </button>
+            )}
             <button
               type="button"
-              className={styles.flotantePrimario}
+              className={todosBloqueados ? styles.flotanteSecundario : styles.flotantePrimario}
               onClick={() => setFormAbierto(true)}
             >
               <IconLock size={15} stroke={2} />
-              Bloquear
+              {todosBloqueados ? 'Bloquear otra sala' : 'Bloquear'}
             </button>
             <button
               type="button"
@@ -575,20 +636,16 @@ export default function AdminDisponibilidad() {
           })}
           <span className={styles.leyendaSep} aria-hidden="true" />
           <span className={styles.leyendaItem}>
-            <span className={`${styles.leyendaDot} ${styles.calDotReserva}`} />
-            Reserva
-          </span>
-          <span className={styles.leyendaItem}>
-            <span className={`${styles.leyendaDot} ${styles.calDotBloqueo}`} />
+            <span className={`${styles.leyendaDot} ${styles.calDotBloqueo}`} style={LEYENDA_NEUTRA} />
             Bloqueo
           </span>
           <span className={styles.leyendaItem}>
-            <span className={`${styles.leyendaDot} ${styles.calDotSolicitud}`} />
-            Sin contestar
+            <span className={`${styles.leyendaDot} ${styles.calDotHeredado}`} style={LEYENDA_NEUTRA} />
+            Bloqueada por otra sala
           </span>
           <span className={styles.leyendaItem}>
-            <span className={`${styles.leyendaDot} ${styles.calDotHeredado}`} />
-            Ocupada por otra sala
+            <span className={`${styles.leyendaDot} ${styles.calDotReserva}`} style={LEYENDA_NEUTRA} />
+            Reserva confirmada (no bloquea)
           </span>
         </div>
       </div>
@@ -738,7 +795,7 @@ export default function AdminDisponibilidad() {
                 <p>
                   <IconLink size={14} stroke={1.75} />
                   <span>
-                    También quedará ocupada <b>{efecto.arrastra.map(s => s.name).join(' y ')}</b>,
+                    También quedará bloqueada <b>{efecto.arrastra.map(s => s.name).join(' y ')}</b>,
                     porque comparten el mismo espacio.
                   </span>
                 </p>
@@ -747,13 +804,102 @@ export default function AdminDisponibilidad() {
                 <p className={styles.efectoAviso}>
                   <IconAlertTriangle size={14} stroke={1.75} />
                   <span>
-                    Alguno de esos huecos ya tiene una reserva confirmada
-                    ({efecto.conReserva.join(', ')}). Bloquearlo no la cancela.
+                    Alguno de esos huecos tiene una reserva confirmada
+                    ({efecto.conReserva.join(', ')}). El bloqueo solo cierra la web: la
+                    reserva sigue igual.
                   </span>
                 </p>
               )}
             </div>
           )}
+        </div>
+      </Modal>
+
+      {/* ── Desbloqueo de la selección ──────────────────────────────── */}
+      <Modal
+        abierto={desbloqueoAbierto}
+        onCerrar={() => setDesbloqueoAbierto(false)}
+        ancho={560}
+        titulo={
+          <>
+            <IconLockOpen size={20} stroke={1.75} />
+            Desbloquear {clavesSeleccionadas.length} día{clavesSeleccionadas.length > 1 ? 's' : ''}
+          </>
+        }
+        pie={
+          <>
+            <button type="button" className={styles.btnSecundario} onClick={() => setDesbloqueoAbierto(false)}>
+              Volver
+            </button>
+            <button
+              type="button"
+              className={styles.btnPrimario}
+              onClick={hacerDesbloqueo}
+              disabled={guardando || idsADesbloquear.length === 0}
+            >
+              <IconLockOpen size={16} stroke={2} />
+              {guardando
+                ? 'Quitando…'
+                : `Quitar ${idsADesbloquear.length} bloqueo${idsADesbloquear.length === 1 ? '' : 's'}`}
+            </button>
+          </>
+        }
+      >
+        <div className={styles.form}>
+          <div className={styles.campo}>
+            <span className={styles.campoLabel}>
+              Salas bloqueadas en esos días
+              <em className={styles.campoNota}>Desmarca las que quieras dejar como están</em>
+            </span>
+
+            <ul className={styles.desbloqLista}>
+              {bloqueosSeleccion.map(g => {
+                const c = colorSala(g.slug)
+                const marcada = !salasExcluidas[g.slug]
+                return (
+                  <li key={g.slug}>
+                    <label className={`${styles.desbloqItem} ${marcada ? styles.desbloqItemActivo : ''}`}>
+                      <input
+                        type="checkbox"
+                        className={styles.desbloqCheck}
+                        checked={marcada}
+                        onChange={() =>
+                          setSalasExcluidas(prev => ({ ...prev, [g.slug]: marcada }))
+                        }
+                      />
+                      <span className={styles.celdaDot} style={{ background: c.color }} />
+                      <span className={styles.desbloqNombre}>{g.nombre}</span>
+                      <span className={styles.desbloqDias}>
+                        {g.filas.map(f => {
+                          const [, m, d] = f.fecha.split('-')
+                          return `${Number(d)} ${MESES[Number(m) - 1].slice(0, 3).toLowerCase()} (${JORNADA_LABEL[f.jornada].toLowerCase()})`
+                        }).join(' · ')}
+                      </span>
+                    </label>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+
+          {clavesSeleccionadas.some(c => !diasConBloqueo.has(c)) && (
+            <div className={styles.efecto}>
+              <p>
+                <IconAlertTriangle size={14} stroke={1.75} />
+                <span>Algunos de los días elegidos no tienen ningún bloqueo propio; esos no cambian.</span>
+              </p>
+            </div>
+          )}
+
+          <div className={styles.efecto}>
+            <p>
+              <IconLink size={14} stroke={1.75} />
+              <span>
+                Las salas que comparten espacio con estas también quedarán libres, salvo que
+                tengan un bloqueo propio. Las fechas volverán a aparecer disponibles en la web.
+              </span>
+            </p>
+          </div>
         </div>
       </Modal>
 
@@ -811,7 +957,7 @@ export default function AdminDisponibilidad() {
             <IconCalendarOff size={36} stroke={1.25} />
             <p>
               {filasDelMes.length === 0
-                ? 'Nada ocupado este mes. Ni bloqueos ni reservas confirmadas.'
+                ? 'Nada este mes. Ni bloqueos ni reservas confirmadas.'
                 : 'Ningún hueco de ese tipo este mes.'}
             </p>
           </div>
@@ -921,8 +1067,8 @@ export default function AdminDisponibilidad() {
                             </span>
 
                             {/* Solo los bloqueos manuales se quitan desde aquí. Una
-                                reserva se cancela en Reservas; lo heredado se va
-                                solo al liberar la sala de origen. */}
+                                reserva se gestiona en Reservas; lo heredado se va
+                                solo al quitar el bloqueo de la sala de origen. */}
                             {f.tipo === TIPOS.bloqueo ? (
                               <button
                                 type="button"

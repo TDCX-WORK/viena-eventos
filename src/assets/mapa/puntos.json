@@ -1,0 +1,253 @@
+{
+  "generado": "2026-09-17T00:02:47.135Z",
+  "atribucion": "© colaboradores de OpenStreetMap",
+  "viewBox": {
+    "ancho": 1200,
+    "alto": 800
+  },
+  "cobertura": {
+    "anchoMetros": 1800,
+    "altoMetros": 1200
+  },
+  "hotel": {
+    "nombre": "Suites Viena Plaza de España",
+    "direccion": "C/ Juan Álvarez Mendizábal, 17 · 28008 Madrid",
+    "lat": 40.425055,
+    "lon": -3.714941,
+    "x": 600,
+    "y": 400
+  },
+  "metros": [
+    {
+      "tipo": "metro",
+      "nombre": "Ventura Rodríguez",
+      "lineas": [],
+      "lat": 40.426761,
+      "lon": -3.713295,
+      "x": 693.1,
+      "y": 273.7,
+      "dentro": true,
+      "metros": 235,
+      "minutos": 4
+    },
+    {
+      "tipo": "metro",
+      "nombre": "Plaza de España",
+      "lineas": [],
+      "lat": 40.423449,
+      "lon": -3.710881,
+      "x": 829.6,
+      "y": 518.9,
+      "dentro": true,
+      "metros": 387,
+      "minutos": 6
+    },
+    {
+      "tipo": "metro",
+      "nombre": "Príncipe Pío",
+      "lineas": [],
+      "lat": 40.420962,
+      "lon": -3.719333,
+      "x": 351.6,
+      "y": 703,
+      "dentro": true,
+      "metros": 588,
+      "minutos": 10
+    },
+    {
+      "tipo": "metro",
+      "nombre": "Argüelles",
+      "lineas": [],
+      "lat": 40.430727,
+      "lon": -3.716172,
+      "x": 530.4,
+      "y": -19.9,
+      "dentro": false,
+      "metros": 639,
+      "minutos": 10
+    },
+    {
+      "tipo": "metro",
+      "nombre": "Noviciado",
+      "lineas": [],
+      "lat": 40.424773,
+      "lon": -3.707385,
+      "x": 1027.2,
+      "y": 420.9,
+      "dentro": true,
+      "metros": 640,
+      "minutos": 10
+    },
+    {
+      "tipo": "metro",
+      "nombre": "Santo Domingo",
+      "lineas": [],
+      "lat": 40.420426,
+      "lon": -3.708572,
+      "x": 960.1,
+      "y": 742.7,
+      "dentro": true,
+      "metros": 745,
+      "minutos": 12
+    },
+    {
+      "tipo": "metro",
+      "nombre": "Ópera",
+      "lineas": [],
+      "lat": 40.417983,
+      "lon": -3.709415,
+      "x": 912.5,
+      "y": 923.6,
+      "dentro": false,
+      "metros": 915,
+      "minutos": 15
+    },
+    {
+      "tipo": "metro",
+      "nombre": "Callao",
+      "lineas": [],
+      "lat": 40.420294,
+      "lon": -3.705912,
+      "x": 1110.5,
+      "y": 752.5,
+      "dentro": true,
+      "metros": 930,
+      "minutos": 15
+    },
+    {
+      "tipo": "metro",
+      "nombre": "San Bernardo",
+      "lineas": [],
+      "lat": 40.429772,
+      "lon": -3.705761,
+      "x": 1119.1,
+      "y": 50.8,
+      "dentro": true,
+      "metros": 937,
+      "minutos": 15
+    },
+    {
+      "tipo": "metro",
+      "nombre": "Moncloa",
+      "lineas": [],
+      "lat": 40.43502,
+      "lon": -3.719236,
+      "x": 357.2,
+      "y": -337.7,
+      "dentro": false,
+      "metros": 1166,
+      "minutos": 19
+    },
+    {
+      "tipo": "metro",
+      "nombre": "Tribunal",
+      "lineas": [],
+      "lat": 40.426242,
+      "lon": -3.701094,
+      "x": 1382.9,
+      "y": 312.2,
+      "dentro": false,
+      "metros": 1179,
+      "minutos": 19
+    },
+    {
+      "tipo": "metro",
+      "nombre": "Bilbao",
+      "lineas": [],
+      "lat": 40.429271,
+      "lon": -3.701929,
+      "x": 1335.7,
+      "y": 87.9,
+      "dentro": false,
+      "metros": 1197,
+      "minutos": 19
+    },
+    {
+      "tipo": "metro",
+      "nombre": "Gran Vía",
+      "lineas": [],
+      "lat": 40.419912,
+      "lon": -3.701619,
+      "x": 1353.3,
+      "y": 780.7,
+      "dentro": false,
+      "metros": 1264,
+      "minutos": 21
+    },
+    {
+      "tipo": "metro",
+      "nombre": "Quevedo",
+      "lineas": [],
+      "lat": 40.433181,
+      "lon": -3.704493,
+      "x": 1190.7,
+      "y": -201.6,
+      "dentro": false,
+      "metros": 1264,
+      "minutos": 21
+    },
+    {
+      "tipo": "metro",
+      "nombre": "Sol",
+      "lineas": [],
+      "lat": 40.416938,
+      "lon": -3.70339,
+      "x": 1253.1,
+      "y": 1000.9,
+      "dentro": false,
+      "metros": 1331,
+      "minutos": 22
+    }
+  ],
+  "referencias": [
+    {
+      "tipo": "referencia",
+      "id": "debod",
+      "nombre": "Templo de Debod",
+      "lat": 40.42389,
+      "lon": -3.71778,
+      "x": 439.5,
+      "y": 486.2,
+      "dentro": true,
+      "metros": 273,
+      "minutos": 4,
+      "corregido": "Posición real del templo; OSM devolvía una esquina del parque"
+    },
+    {
+      "tipo": "referencia",
+      "id": "plaza-espana",
+      "nombre": "Plaza de España",
+      "lat": 40.423118,
+      "lon": -3.71283,
+      "x": 719.4,
+      "y": 543.4,
+      "dentro": true,
+      "metros": 280,
+      "minutos": 5
+    },
+    {
+      "tipo": "referencia",
+      "id": "palacio-real",
+      "nombre": "Palacio Real",
+      "lat": 40.41674,
+      "lon": -3.713622,
+      "x": 674.6,
+      "y": 1015.5,
+      "dentro": false,
+      "metros": 931,
+      "minutos": 15
+    },
+    {
+      "tipo": "referencia",
+      "id": "principe-pio",
+      "nombre": "Príncipe Pío",
+      "lat": 40.420962,
+      "lon": -3.719333,
+      "x": 351.6,
+      "y": 703,
+      "dentro": true,
+      "metros": 588,
+      "minutos": 10
+    }
+  ]
+}

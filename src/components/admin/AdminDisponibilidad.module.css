@@ -531,6 +531,26 @@
 .flotantePrimario:hover  { background: var(--accent-hover); }
 .flotantePrimario:active { transform: scale(0.97); }
 
+.flotanteSecundario {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 150ms, transform 120ms var(--ease-ios);
+}
+
+.flotanteSecundario:hover  { background: var(--bg-subtle); }
+.flotanteSecundario:active { transform: scale(0.97); }
+
 .flotanteCerrar {
   width: 34px;
   height: 34px;
@@ -1271,4 +1291,61 @@
   .puntos span { animation: none; }
   .flotante { animation: none; }
   .salaIndicator, .calTooltip { transition: none; }
+}
+
+
+/* ── Modal de desbloqueo ────────────────────────────────────────────── */
+
+.desbloqLista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.desbloqItem {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 2px;
+  padding: 12px 14px;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 150ms, border-color 150ms, background 150ms;
+}
+
+.desbloqItem:hover { background: var(--bg-subtle); }
+
+.desbloqItemActivo {
+  opacity: 1;
+  border-color: var(--accent-border);
+}
+
+.desbloqCheck {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.desbloqNombre {
+  font-size: 16px;
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+}
+
+.desbloqDias {
+  grid-column: 3;
+  font-size: 13px;
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+  white-space: normal;
+}
+
+@media (max-width: 600px) {
+  .flotanteSecundario { padding: 0 10px; font-size: 14px; }
 }

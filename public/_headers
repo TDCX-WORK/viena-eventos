@@ -24,6 +24,14 @@
 /hero-*.webp
   Cache-Control: public, max-age=2592000
 
+# ── Tipografías ──
+# Autoalojadas desde que se quitó Google Fonts. Tampoco llevan hash,
+# pero un fichero de fuente no cambia nunca: si algún día se sustituye
+# una familia, lo normal es que cambie también el nombre del fichero.
+# Por eso aquí sí va el año completo con immutable.
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
 # ── Imagen de compartir y favicon ──
 # Mismo caso que el hero: nombre fijo, sin hash. WhatsApp y LinkedIn
 # cachean og-image.jpg por su cuenta durante semanas; si se cambia la

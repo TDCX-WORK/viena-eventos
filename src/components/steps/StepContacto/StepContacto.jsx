@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { CheckCircle, User, Mail, Phone, MessageSquare, Shield, AlertTriangle } from 'lucide-react'
+import { CheckCircle, User, Mail, Phone, MessageSquare, Shield, AlertTriangle, Clock } from 'lucide-react'
 import { useEmailSend } from '../../../hooks/useEmailSend'
 import { validarContacto, validarCampo } from '../../../lib/validacionContacto'
+import { CAPA_1 } from '../../../lib/legal'
 import styles from './StepContacto.module.css'
 
 export default function StepContacto({ booking, updateContacto, hotel, desglose, onStatusChange }) {
@@ -156,23 +157,24 @@ export default function StepContacto({ booking, updateContacto, hotel, desglose,
         <div className={styles.successIcon}>
           <CheckCircle size={44} color="#5B8C5A" />
         </div>
-        <h2 className={styles.successTitle}>¡Solicitud enviada!</h2>
+        <h2 className={styles.successTitle}>¡Solicitud recibida!</h2>
+
+        {/* Que quede claro que NO es una reserva cerrada: la directora la
+            revisa y habla con el cliente antes de confirmarla. */}
+        <span className={styles.estadoPendiente}>
+          <Clock size={14} strokeWidth={2.4} />
+          Pendiente de confirmación
+        </span>
 
         {/* El texto cambia según hayan salido los correos o no. Prometer
             un email que no se ha mandado es peor que no prometer nada:
             el cliente se queda esperando y no llama. */}
         <p className={styles.successSub}>
-          {emailOk ? (
-            <>
-              Hemos recibido tu solicitud y te hemos enviado un email de confirmación.
-              Nos pondremos en contacto contigo en las próximas horas.
-            </>
-          ) : (
-            <>
-              Hemos recibido y registrado tu solicitud. Nos pondremos en contacto
-              contigo en las próximas horas.
-            </>
-          )}
+          Tu reserva <strong>todavía no está confirmada</strong>. Revisaremos tu solicitud
+          y te escribiremos en las próximas horas para cerrar los detalles.
+          {emailOk
+            ? ' Te hemos enviado un email con el resumen.'
+            : ''}
         </p>
 
         <div className={styles.successRef}>
@@ -185,7 +187,7 @@ export default function StepContacto({ booking, updateContacto, hotel, desglose,
             <>Si no recibes el email en los próximos minutos, revisa tu carpeta de spam.</>
           ) : (
             <>
-              Guarda este número: no hemos podido enviarte el email de confirmación,
+              Guarda este número: no hemos podido enviarte el email con el resumen,
               pero tu solicitud está registrada.
               {hotel?.phone && <> Si tienes dudas, llámanos al {hotel.phone}.</>}
             </>
@@ -205,7 +207,8 @@ export default function StepContacto({ booking, updateContacto, hotel, desglose,
       <div className={styles.header}>
         <h2 className={styles.title}>Datos de contacto</h2>
         <p className={styles.subtitle}>
-          Déjanos tus datos y te contactamos para confirmar todos los detalles
+          Esto es una solicitud, no una reserva cerrada: la revisamos y te contactamos
+          para confirmar disponibilidad y detalles.
         </p>
       </div>
 
@@ -312,19 +315,52 @@ export default function StepContacto({ booking, updateContacto, hotel, desglose,
             }))
           }}
         />
+        {/* Enlaces con <a> y no con <Link>: abrir el documento en una
+            pestaña nueva con una carga completa deja intacto el wizard
+            de esta pestaña. Con react-router, navegar desmontaría el
+            formulario y el cliente perdería lo que lleva escrito. */}
         <label className={styles.privacyText} htmlFor="privacidad">
           He leído y acepto la{' '}
-          <a
-            href="https://www.suitesviena.com/politica-privacidad/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="/politica-privacidad" target="_blank" rel="noopener noreferrer">
             política de privacidad
+          </a>
+          {' '}y las{' '}
+          <a href="/condiciones-reserva" target="_blank" rel="noopener noreferrer">
+            condiciones de reserva
           </a>
           {' '}de Suites Viena
         </label>
       </div>
       {aviso('privacidad')}
+
+      {/* Información básica de protección de datos.
+
+          El RGPD pide que lo esencial esté a la vista en el momento de
+          recoger los datos, no solo detrás de un enlace. Va plegado
+          para no romper el formulario, pero es HTML de verdad: se ve
+          sin JavaScript y el buscador del navegador lo encuentra.
+
+          El contenido sale de CAPA_1 (lib/legal.js), la misma fuente
+          que la política completa, para que no puedan decir cosas
+          distintas. */}
+      <details className={styles.infoDatos}>
+        <summary>Información básica sobre protección de datos</summary>
+        <dl>
+          {CAPA_1.map(([clave, valor]) => (
+            <div key={clave}>
+              <dt>{clave}</dt>
+              <dd>{valor}</dd>
+            </div>
+          ))}
+        </dl>
+        <p>
+          Puedes consultar la{' '}
+          <a href="/politica-privacidad" target="_blank" rel="noopener noreferrer">
+            información adicional y detallada
+          </a>
+          {' '}en nuestra política de privacidad.
+        </p>
+      </details>
 
       {error !== null && (
         <div className={styles.errorMsg} role="alert">

@@ -1,0 +1,602 @@
+/* ─────────────────────────────────────────────────────────────────────
+   CONTACTO — mapa de calles en grises con instrumentos encima.
+
+   Móvil: mapa arriba (400 px) e información debajo.
+   Escritorio (≥ 900 px): el mapa ocupa todo el panel, la información
+   va encima a la izquierda y el botón abajo a la derecha. El hotel se
+   desplaza a la derecha para dejar sitio al texto.
+   ───────────────────────────────────────────────────────────────────── */
+
+/* El margen exterior es EL MISMO que el del hero y el de la FAQ:
+   0.75rem de base, 1rem a partir de 600 px y 1.25rem a partir de
+   1024 px. Antes se quedaba en 0.75rem siempre, y por eso este panel
+   se veía más ancho que el de preguntas frecuentes justo encima.
+   Si se toca aquí, hay que tocarlo también en Hero.module.css y en
+   Faq.module.css. */
+.seccion {
+  width: 100%;
+  padding: 0.75rem;
+}
+
+.panel {
+  --fondo: #F2F1EF;
+  --tinta: #18120E;
+  --suave: #6b6560;
+  --alto: 400px;
+  --centro-x: 50%;
+  /* Zoom del escenario respecto al mínimo que cubre el panel. En el
+     móvil hace falta acercar para que las etiquetas no se pisen. */
+  --zoom: 1.3;
+
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(146, 43, 33, 0.45);
+  border-radius: 20px;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Mapa ─────────────────────────────────────────────────────────── */
+
+.mapa {
+  position: relative;
+  height: var(--alto);
+  overflow: hidden;
+}
+
+/* Bordes: el recorte del escenario no debe verse como un corte seco. */
+.mapa::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, var(--fondo) 0%, transparent 14%, transparent 86%, var(--fondo) 100%),
+    linear-gradient(90deg, var(--fondo) 0%, transparent 10%, transparent 90%, var(--fondo) 100%);
+}
+
+.escenario {
+  position: absolute;
+  left: var(--centro-x);
+  top: 50%;
+  width: calc(max(100%, var(--alto) * 1.5) * var(--zoom));
+  aspect-ratio: 3 / 2;
+  transform: translate(-50%, -50%);
+}
+
+.calles {
+  display: block;
+  width: 100%;
+  height: 100%;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 45%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 45%, transparent 100%);
+  user-select: none;
+}
+
+/* ── Marcas (metro y referencias) ── */
+
+.marca {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transform: translate(-7px, -50%);
+  white-space: nowrap;
+}
+
+.marcaIzq {
+  flex-direction: row-reverse;
+  transform: translate(calc(-100% + 7px), -50%);
+  text-align: right;
+}
+
+.marcaAbajo {
+  flex-direction: column;
+  gap: 3px;
+  transform: translate(-50%, -7px);
+  text-align: center;
+}
+
+.soloAncho { display: none; }
+
+.puntoMetro,
+.puntoRef {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.puntoMetro {
+  background: var(--tinta);
+  color: #fff;
+}
+
+.puntoRef {
+  background: #fff;
+  color: var(--tinta);
+  box-shadow: inset 0 0 0 1.5px var(--tinta);
+}
+
+.marcaTexto {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  /* Halo del color del fondo: se lee aunque pase una calle por debajo. */
+  text-shadow:
+    0 0 2px var(--fondo), 0 0 4px var(--fondo), 0 0 6px var(--fondo);
+}
+
+.marcaNombre {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.marcaDato {
+  font-size: 10px;
+  color: var(--suave);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Lupa del hotel ── */
+
+.lupa {
+  position: absolute;
+  z-index: 3;
+  width: 14%;
+  min-width: 84px;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(24, 18, 14, 0.35);
+  /* Cristal: deja ver las calles de debajo, algo más marcadas. */
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.08) 40%, rgba(24, 18, 14, 0.07) 100%);
+  box-shadow:
+    0 12px 28px rgba(24, 18, 14, 0.10),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    inset 0 -6px 14px rgba(24, 18, 14, 0.06);
+  backdrop-filter: contrast(1.35) saturate(0);
+  -webkit-backdrop-filter: contrast(1.35) saturate(0);
+}
+
+.lupaPulso {
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 1px solid rgba(146, 43, 33, 0.5);
+  animation: pulso 2.8s ease-out infinite;
+}
+
+@keyframes pulso {
+  from { transform: scale(1);   opacity: 0.9; }
+  to   { transform: scale(1.45); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lupaPulso { animation: none; opacity: 0; }
+}
+
+.lupaCentro {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  color: #922B21;
+  box-shadow: 0 0 0 1px rgba(24, 18, 14, 0.15), 0 4px 10px rgba(24, 18, 14, 0.12);
+}
+
+.lupaNombre {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 0 3px var(--fondo), 0 0 6px var(--fondo);
+}
+
+/* ── Instrumentos ── */
+
+.ubicacion {
+  position: absolute;
+  z-index: 4;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: max-content;
+  padding: 7px 12px;
+  border: 1px solid rgba(24, 18, 14, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 12px;
+  overflow: hidden;
+}
+
+.ubicacionEtiqueta {
+  font-weight: 700;
+}
+
+.ubicacionValor {
+  color: var(--suave);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brujula {
+  position: absolute;
+  z-index: 4;
+  right: 14px;
+  bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--tinta);
+}
+
+.brujulaN {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.escala {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: 6px;
+  font-size: 9px;
+  color: var(--suave);
+}
+
+/* 100 m reales: fracción del ancho del escenario, que es el máximo
+   entre el panel y alto × 1,5. */
+.escalaBarra {
+  display: block;
+  width: calc(max(100cqw, var(--alto) * 1.5) * var(--zoom) * var(--escala));
+  height: 5px;
+  border: 1px solid var(--tinta);
+  border-top: none;
+}
+
+.coordenadas {
+  position: absolute;
+  z-index: 4;
+  left: 14px;
+  bottom: 12px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--suave);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Información ──────────────────────────────────────────────────── */
+
+.info {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1.25rem 1.25rem;
+}
+
+/* Bloque de "Cómo llegar". En escritorio se centra a media altura del
+   panel con márgenes automáticos (ver el bloque de 900 px). */
+.infoPrincipal {
+  display: block;
+}
+
+/* Bloque de contacto: pastilla + enlaces. Va siempre al final de la
+   columna. En móvil lo separa una línea; en escritorio no hace falta,
+   porque lo separa el hueco vacío que deja el centrado de arriba. */
+.infoContacto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.9rem;
+  margin-top: 2rem;
+  padding-top: 1.35rem;
+  border-top: 1px solid rgba(24, 18, 14, 0.1);
+}
+
+.pastilla {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid rgba(24, 18, 14, 0.1);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  color: #57534e;
+}
+
+.pastillaPunto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #922B21;
+}
+
+.titulo {
+  margin-top: 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.9rem, 6.5vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.direccion {
+  margin-top: 0.7rem;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #44403c;
+}
+
+.subtitulo {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--suave);
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lista li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.listaM,
+.listaRef {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.listaM {
+  background: var(--tinta);
+  color: #fff;
+}
+
+.listaRef {
+  background: #fff;
+  color: var(--tinta);
+  box-shadow: inset 0 0 0 1.5px var(--tinta);
+}
+
+.listaNombre {
+  font-weight: 600;
+}
+
+.lineas {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.linea {
+  padding: 1px 5px;
+  border: 1px solid rgba(24, 18, 14, 0.2);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #57534e;
+}
+
+.listaMin {
+  margin-left: auto;
+  padding-left: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--suave);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* El margen superior lo pone ahora el `gap` de .infoContacto. */
+.contactos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.4rem;
+}
+
+.contactos a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--tinta);
+  text-decoration: underline;
+  text-decoration-color: rgba(24, 18, 14, 0.25);
+  text-underline-offset: 3px;
+  transition: color 0.2s, text-decoration-color 0.2s;
+}
+
+.contactos a:hover {
+  color: #922B21;
+  text-decoration-color: currentColor;
+}
+
+/* ── Acción ── */
+
+.accion {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.25rem 1.25rem 1.5rem;
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.2rem;
+  border-radius: 999px;
+  background: var(--tinta);
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.boton:hover  { background: #922B21; }
+.boton:active { transform: scale(0.98); }
+
+.atribucion {
+  font-size: 10px;
+  color: var(--suave);
+  text-decoration: none;
+}
+
+.atribucion:hover { text-decoration: underline; }
+
+/* ── Escritorio ───────────────────────────────────────────────────── */
+
+@media (min-width: 900px) {
+  .panel {
+    --alto: 640px;
+    --centro-x: 62%;
+    container-type: inline-size;
+    height: var(--alto);
+  }
+
+  .mapa {
+    position: absolute;
+    inset: 0;
+    height: auto;
+  }
+
+  /* Velo a la izquierda para que el texto se lea sobre el mapa. */
+  .mapa::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(90deg, var(--fondo) 0%, var(--fondo) 24%, rgba(242, 241, 239, 0) 46%);
+  }
+
+  .panel { --zoom: 1; }
+
+  .soloAncho { display: flex; }
+
+  .lupaNombre { display: block; }
+
+  .ubicacion {
+    top: 24px;
+    left: 24px;
+    padding: 8px 14px;
+  }
+
+  .brujula {
+    bottom: auto;
+    top: 60px;
+    right: 30px;
+  }
+
+  .coordenadas {
+    left: auto;
+    right: 28px;
+    bottom: auto;
+    top: 30px;
+  }
+
+  /* La columna ocupa todo el alto del panel: el bloque de "Cómo
+     llegar" se centra con márgenes automáticos y el de contacto cae
+     al fondo, a la altura del botón de Google Maps. */
+  .info {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: min(430px, 40%);
+    padding: 2rem 0 2.25rem 2.25rem;
+  }
+
+  .infoPrincipal {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .infoContacto {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .accion {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    align-items: flex-end;
+    padding: 0 1.75rem 1.75rem 0;
+  }
+
+  .marcaNombre { font-size: 12px; }
+  .marcaDato   { font-size: 11px; }
+}
+
+/* ── Márgenes y radios, al compás del hero y de la FAQ ────────────── */
+
+@media (min-width: 600px) {
+  .seccion { padding: 1rem; }
+  .panel   { border-radius: 24px; }
+}
+
+@media (min-width: 1024px) {
+  .seccion { padding: 1.25rem; }
+  .panel   { border-radius: 28px; }
+}
+
+/* Sin container queries (navegadores muy antiguos) la barra de escala
+   no sabe su ancho: mejor no enseñarla que enseñarla mal. */
+@supports not (width: 1cqw) {
+  .escala { display: none; }
+}

@@ -7,11 +7,10 @@ import { supabase } from '../lib/supabase'
    Misma convención que useDashboard: una sola consulta con los join, los
    cálculos en memoria y la pantalla solo pinta.
 
-   LO NUEVO AQUÍ: la detección de solapamientos. El sistema permite
-   confirmar dos reservas de la misma sala, el mismo día y la misma
-   jornada sin decir nada. Arreglarlo del todo es cosa de la base de
-   datos (ver el SQL que acompaña a esta pantalla), pero el panel puede
-   al menos avisar antes de que ocurra, que es donde se toma la decisión.
+   Coincidencias: las reservas NO bloquean fechas (varios clientes
+   pueden pedir el mismo día y la directora decide). Aun así, al
+   confirmar una que coincide con otra ya confirmada en la misma sala y
+   jornada, el panel lo avisa. Es un aviso, no un bloqueo.
    ───────────────────────────────────────────────────────────────────── */
 
 /** Dos jornadas del mismo día chocan si son la misma o si alguna ocupa

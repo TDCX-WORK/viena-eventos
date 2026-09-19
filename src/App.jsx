@@ -1,12 +1,24 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import NoEncontrada from './components/NoEncontrada/NoEncontrada'
 
 // Público
 import Hero from './components/Hero/Hero'
 import RoomSelector, { SalasCargando } from './components/RoomSelector/RoomSelector'
+// Fichas de sala. Sin lazy: se prerenderizan y el HTML tiene que
+// coincidir con el primer render del navegador.
+import PaginaSala from './components/PaginaSala/PaginaSala'
+import PaginaUso from './components/PaginaUso/PaginaUso'
+// Aviso legal, privacidad, cookies y condiciones. Un solo componente
+// para los cuatro: el texto vive en lib/legal.js.
+import PaginaLegal from './components/PaginaLegal/PaginaLegal'
+import { USOS } from './lib/usos'
+import { LEGALES } from './lib/legal'
 import { useHotelData } from './hooks/useHotelData'
+import { useCabecera } from './hooks/useCabecera'
+import { cabeceraPortada } from './lib/seo'
 import { useOfertasPublicas } from './hooks/useOfertasPublicas'
 
 /* El wizard de reserva también va aparte. Se lleva el calendario,
@@ -85,6 +97,9 @@ function PublicApp() {
      condicional. Mientras no haya hotel no consulta nada. */
   const ofertasApi = useOfertasPublicas(hotel?._dbId)
 
+  // Título y metas de la portada al volver aquí desde una ficha de sala.
+  useCabecera(cabeceraPortada(hotel))
+
   /* Precarga del wizard.
   
      Sin esto, separarlo tiene un coste visible: al pulsar una sala hay
@@ -143,74 +158,61 @@ function PublicApp() {
   )
 }
 
-/* 404 dentro de React.
-   Solo se ve si se navega a una ruta inexistente sin recargar: las
-   entradas directas ya las corta Cloudflare con public/404.html (con
-   estado 404 de verdad). Lleva noindex por si acaso. */
-function NoEncontrada() {
+
+/* Rutas sin router. El router lo pone quien monta la app:
+   BrowserRouter en el navegador (main.jsx) y StaticRouter en el build
+   (entry-server.jsx), que no tiene barra de direcciones. */
+export function AppRutas() {
   return (
-    <main style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontFamily: "'Inter', system-ui, sans-serif",
-      color: '#3D3530',
-      padding: '2rem',
-      textAlign: 'center',
-    }}>
-      <meta name="robots" content="noindex" />
-      <div>
-        <p style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.5rem', fontWeight: 700, margin: '0 0 0.5rem' }}>
-          Página no encontrada
-        </p>
-        <p style={{ fontSize: '0.9rem', color: '#78716c', margin: '0 0 1.2rem' }}>
-          La dirección no existe o ha cambiado.
-        </p>
-        <Link to="/" style={{ color: '#A07848' }}>Ver las salas de reuniones</Link>
-      </div>
-    </main>
+    <AuthProvider>
+      <Routes>
+        {/* Rutas públicas */}
+        <Route path="/" element={<PublicApp />} />
+        <Route path="/salas/:slug" element={<PaginaSala />} />
+        {USOS.map(u => (
+          <Route key={u.slug} path={u.ruta} element={<PaginaUso />} />
+        ))}
+        {LEGALES.map(d => (
+          <Route key={d.slug} path={d.ruta} element={<PaginaLegal />} />
+        ))}
+
+        {/* Rutas admin protegidas — login aparece como modal.
+
+            El Suspense envuelve al layout, no a cada pantalla: como es
+            antepasado de todas, también cubre las de dentro cuando se
+            navega entre secciones del panel. Una sola pantalla de
+            carga en lugar de nueve. */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<PantallaCarga texto="Cargando panel..." fondo="#f1f0f0" />}>
+                <AdminLayout />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminDashboard />} />
+          <Route path="precios" element={<AdminPrecios />} />
+          <Route path="ofertas" element={<AdminOfertas />} />
+          <Route path="faq" element={<AdminFaq />} />
+          <Route path="disponibilidad" element={<AdminDisponibilidad />} />
+          <Route path="reservas" element={<AdminReservas />} />
+          <Route path="fotos" element={<AdminFotos />} />
+          <Route path="config" element={<AdminConfig />} />
+        </Route>
+
+        {/* Cualquier otra ruta */}
+        <Route path="*" element={<NoEncontrada />} />
+      </Routes>
+    </AuthProvider>
   )
 }
 
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          {/* Rutas públicas */}
-          <Route path="/" element={<PublicApp />} />
-
-          {/* Rutas admin protegidas — login aparece como modal.
-
-              El Suspense envuelve al layout, no a cada pantalla: como es
-              antepasado de todas, también cubre las de dentro cuando se
-              navega entre secciones del panel. Una sola pantalla de
-              carga en lugar de nueve. */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <Suspense fallback={<PantallaCarga texto="Cargando panel..." fondo="#f1f0f0" />}>
-                  <AdminLayout />
-                </Suspense>
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<AdminDashboard />} />
-            <Route path="precios" element={<AdminPrecios />} />
-            <Route path="ofertas" element={<AdminOfertas />} />
-            <Route path="faq" element={<AdminFaq />} />
-            <Route path="disponibilidad" element={<AdminDisponibilidad />} />
-            <Route path="reservas" element={<AdminReservas />} />
-            <Route path="fotos" element={<AdminFotos />} />
-            <Route path="config" element={<AdminConfig />} />
-          </Route>
-
-          {/* Cualquier otra ruta */}
-          <Route path="*" element={<NoEncontrada />} />
-        </Routes>
-      </AuthProvider>
+      <AppRutas />
     </BrowserRouter>
   )
 }

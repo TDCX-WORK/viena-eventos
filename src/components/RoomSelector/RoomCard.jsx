@@ -90,6 +90,10 @@ export default function RoomCard({ room, onSelect, index = 0, oferta = null }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.28 }}
+              /* lazy: sin esto, el prerender de React 19 mete un preload
+                 de cada foto de sala delante del HTML, y compiten con la
+                 foto del hero, que es la que mide Google. */
+              loading="lazy"
               decoding="async"
               onLoad={() => setImgLoaded(prev => ({ ...prev, [photoIdx]: true }))}
             />

@@ -74,45 +74,13 @@
   box-shadow: 0 4px 16px rgba(24,18,14,0.15);
 }
 
-.footer {
-  margin-top: 3.5rem;
-  padding-top: 1.75rem;
-  border-top: 1px solid rgba(160,120,72,0.15);
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  font-size: 0.95rem;
-  color: #6b6560;
-}
-
-.footer a {
-  color: #3D3530;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 0.2s;
-}
-.footer a:hover { color: #A07848; }
-
-.adminLink {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #c4bfba;
-  opacity: 0.4;
-  transition: opacity 0.3s, color 0.3s;
-  margin-left: auto;
-}
-.adminLink:hover {
-  opacity: 1;
-  color: #A07848;
-  text-decoration: none;
-}
-
+/* El pie se ha mudado a components/Footer: tiene que salir también en
+   las fichas de sala, en las páginas de uso y en las legales. Sus
+   estilos están ahora en Footer.module.css. */
 @media (min-width: 600px) {
   .wrapper { padding: 2.5rem 1.75rem; }
   .title   { font-size: 2.75rem; }
   .grid    { grid-template-columns: repeat(2, 1fr); gap: 1.75rem; }
-  .footer  { flex-direction: row; gap: 1.5rem; }
 }
 
 @media (min-width: 1024px) {
@@ -126,17 +94,6 @@
   .wrapper { padding: 5rem 8rem; }
   .grid    { gap: 2.5rem; }
 }
-/* ─────────────────────────────────────────────────────────────────────
-   El pie vive fuera de .wrapper desde que la FAQ se cuela entre medias.
-   Este contenedor le devuelve el mismo margen lateral que tenía dentro;
-   el espacio de arriba lo sigue poniendo .footer con su margin-top.
-   ───────────────────────────────────────────────────────────────────── */
-.footerWrapper { padding: 0 1rem 2rem; }
-
-@media (min-width: 600px)  { .footerWrapper { padding: 0 1.75rem 2.5rem; } }
-@media (min-width: 1024px) { .footerWrapper { padding: 0 5rem 4rem; } }
-@media (min-width: 1280px) { .footerWrapper { padding: 0 8rem 5rem; } }
-
 /* ── Esqueleto de carga (SalasCargando) ──
    Imita el tamaño de RoomCard cerrada: imagen 4/3 con 10 px de margen y
    la cabecera con nombre y datos. */
@@ -175,3 +132,59 @@
 .errorTitulo { font-weight: 600; color: #3D3530; margin: 0 0 0.4rem; }
 .errorTexto { font-size: 0.9rem; color: #78716c; margin: 0; line-height: 1.6; }
 .errorTexto a { color: #A07848; }
+
+/* ── Enlaces a las fichas de sala ── */
+.fichas + .fichas { margin-top: 0.6rem; }
+.fichas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem 0.9rem;
+  margin-top: 1.75rem;
+  font-size: 0.92rem;
+  color: #6b6560;
+}
+.fichas ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 0.9rem;
+  list-style: none;
+}
+.fichas a {
+  color: #3D3530;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(160,120,72,0.45);
+  text-underline-offset: 4px;
+}
+.fichas a:hover { color: #A07848; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   Aparición al entrar en pantalla, sin JavaScript.
+
+   Sustituye al whileInView de framer-motion, que dejaba estos bloques
+   con opacity:0 escrito en el HTML prerenderizado: sin JS (o mientras
+   carga) la cabecera, el botón de galería y el contacto no se veían.
+
+   Ahora el HTML sale visible siempre. La animación la hace el propio
+   navegador ligada al scroll (animation-timeline: view()). Donde no
+   está soportado (Firefox, Safari antiguo) simplemente aparece sin
+   animar, que es lo correcto. Tampoco se anima con "reducir
+   movimiento" activado.
+   ───────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .aparece {
+      animation: aparecer linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}

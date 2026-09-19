@@ -1,0 +1,13 @@
+{
+  "routes": [
+    {
+      "routePath": "/admin/:path*",
+      "mountPath": "/admin",
+      "method": "",
+      "module": [
+        "admin/[[path]].js:onRequest"
+      ]
+    }
+  ],
+  "baseURL": "/"
+}

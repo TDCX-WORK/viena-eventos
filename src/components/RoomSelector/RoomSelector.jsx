@@ -1,13 +1,17 @@
 import { useState, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Images, Settings } from 'lucide-react'
+import { AnimatePresence } from 'framer-motion'
+import { Images } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import RoomCard from './RoomCard'
 import { ID_SALAS } from '../Hero/Hero'
 import Faq from '../Faq/Faq'
+import Contacto from '../Contacto/Contacto'
 import { ofertaEscaparate } from '../../lib/ofertas'
 import Gallery from '../Gallery/Gallery'
+import Footer from '../Footer/Footer'
 import { HOTEL_ESTATICO } from '../../lib/hotelEstatico'
+import { rutaSala } from '../../lib/seo'
+import { USOS } from '../../lib/usos'
 import styles from './RoomSelector.module.css'
 
 /* Compartida con el esqueleto de carga, para que el texto sea el mismo
@@ -107,17 +111,15 @@ export default function RoomSelector({ hotel, onSelectRoom, ofertas = [] }) {
 
       <section className={styles.wrapper} id={ID_SALAS}>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-          className={styles.header}
-        >
+        {/* Aparición al hacer scroll: CSS puro (clase .aparece), ver
+            RoomSelector.module.css. Con framer-motion el HTML
+            prerenderizado salía con opacity:0 y sin JavaScript no se
+            veía nada. */}
+        <div className={`${styles.header} ${styles.aparece}`}>
           {/* h2, no h1: el h1 de la página es el titular del hero. Dos
               h1 compitiendo por la misma keyword es peor que ninguno. */}
           <CabeceraSalas />
-        </motion.div>
+        </div>
 
         <div className={styles.grid}>
           {hotel.rooms.map((room, index) => (
@@ -131,19 +133,38 @@ export default function RoomSelector({ hotel, onSelectRoom, ofertas = [] }) {
           ))}
         </div>
 
+        {/* Enlaces a las fichas de cada sala. Además de servir al
+            cliente, son el camino por el que Google descubre esas
+            páginas: tienen que ser <a> reales y estar siempre en el
+            HTML, no dentro de un acordeón. */}
+        <nav className={styles.fichas} aria-label="Fichas de las salas">
+          <span>Ficha completa de cada sala:</span>
+          <ul>
+            {hotel.rooms.map(room => (
+              <li key={room.slug}>
+                <Link to={rutaSala(room.slug)}>{room.name}</Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <nav className={styles.fichas} aria-label="Salas por tipo de evento">
+          <span>Ideal para:</span>
+          <ul>
+            {USOS.map(u => (
+              <li key={u.slug}>
+                <Link to={u.ruta}>{u.etiqueta}</Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
         {/* Botón ver galería */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className={styles.galleryRow}
-        >
+        <div className={`${styles.galleryRow} ${styles.aparece}`}>
           <button className={styles.galleryBtn} onClick={() => setShowGallery(true)}>
             <Images size={18} />
             Ver galería de fotos
           </button>
-        </motion.div>
+        </div>
 
         {/* Modal galería */}
         <AnimatePresence>
@@ -162,30 +183,15 @@ export default function RoomSelector({ hotel, onSelectRoom, ofertas = [] }) {
           de padding lateral en pantallas grandes. */}
       <Faq hotel={hotel} />
 
-      {/* id="contacto": destino del enlace del mismo nombre en la barra
-          del hero. */}
-      <div className={styles.footerWrapper}>
-        <motion.footer
-          id="contacto"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className={styles.footer}
-        >
-          <span>
-            ¿Dudas? Llámanos al{' '}
-            <a href={`tel:${hotel.phone}`}>{hotel.phone}</a>
-          </span>
-          <span>
-            o escríbenos a{' '}
-            <a href={`mailto:${hotel.email}`}>{hotel.email}</a>
-          </span>
-          <Link to="/admin" className={styles.adminLink} aria-label="Panel de administración">
-            <Settings size={15} />
-          </Link>
-        </motion.footer>
-      </div>
+      {/* id="contacto" lo pone la propia sección: es el destino del
+          enlace del mismo nombre en la barra del hero. */}
+      <Contacto hotel={hotel} />
+
+      {/* El pie ya no se escribe aquí: es un componente, porque tiene
+          que estar también en las fichas de sala, en las páginas de uso
+          y en las legales. Los enlaces a aviso legal, privacidad,
+          cookies y condiciones salen de lib/legal.js. */}
+      <Footer />
     </>
   )
 }

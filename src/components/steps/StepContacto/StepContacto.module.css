@@ -170,6 +170,89 @@
 }
 .privacyText a:hover { color: #A07848; }
 
+/* ── Información básica de protección de datos (capa 1) ──
+   Plegada por defecto: el formulario ya es largo y esto solo lo abre
+   quien quiere leerlo. El triángulo nativo se sustituye por un signo
+   propio para que no desentone con el resto de la interfaz. */
+.infoDatos {
+  margin-top: 0.75rem;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid rgba(24,18,14,0.08);
+  border-radius: 0.9rem;
+  background: rgba(255,255,255,0.35);
+  font-size: 0.82rem;
+  color: #6b6560;
+}
+
+.infoDatos summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #57534e;
+}
+
+.infoDatos summary::-webkit-details-marker { display: none; }
+
+.infoDatos summary::before {
+  content: '+';
+  width: 1.05rem;
+  height: 1.05rem;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba(160,120,72,0.15);
+  color: #A07848;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.infoDatos[open] summary::before { content: "\2212"; }   /* menos */
+
+.infoDatos dl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.85rem 0 0;
+}
+
+.infoDatos dl > div {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 0.6rem;
+  align-items: baseline;
+}
+
+.infoDatos dt {
+  font-weight: 700;
+  color: #57534e;
+}
+
+.infoDatos dd {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.infoDatos p {
+  margin-top: 0.75rem;
+  line-height: 1.55;
+}
+
+.infoDatos a {
+  color: #3D3530;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.infoDatos a:hover { color: #A07848; }
+
+@media (max-width: 420px) {
+  .infoDatos dl > div { grid-template-columns: 1fr; gap: 0.15rem; }
+}
+
 /* ── Error ── */
 /* ── Error ── */
 .errorMsg {
@@ -206,6 +289,21 @@
   color: #18120E;
   margin: 0 0 0.75rem;
   letter-spacing: -0.02em;
+}
+
+.estadoPendiente {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 1rem;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid #FCD34D;
+  border-radius: 999px;
+  background: #FEF3C7;
+  color: #92400E;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .successSub {

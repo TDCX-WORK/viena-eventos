@@ -20,9 +20,11 @@ export default function AdminLogin() {
       await signIn(email, password)
     } catch (err) {
       setError(
-        err.message === 'Invalid login credentials'
-          ? 'Email o contraseña incorrectos'
-          : 'Error al iniciar sesión. Inténtalo de nuevo.'
+        err.code === 'SIN_PERMISO'
+          ? 'Esta cuenta no tiene acceso al panel.'
+          : err.message === 'Invalid login credentials'
+            ? 'Email o contraseña incorrectos'
+            : 'Error al iniciar sesión. Inténtalo de nuevo.'
       )
     } finally {
       setLoading(false)

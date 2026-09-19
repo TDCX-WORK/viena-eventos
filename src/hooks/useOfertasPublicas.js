@@ -16,6 +16,11 @@ import { supabase } from '../lib/supabase'
    Si esto se hiciera con un `select * from offers`, cualquiera vería
    todos los códigos promocionales abriendo las DevTools.
 
+   El contador de usos NO se toca desde aquí: lo sube el trigger
+   bookings_aplicar_oferta al guardar la reserva. La antigua función
+   registrar_uso_oferta se ha borrado: cualquiera podía llamarla y
+   agotar una oferta sin reservar nada.
+
    El hook NO calcula nada. Solo trae las ofertas; el cálculo vive en
    lib/ofertas.js, que es el mismo motor que usa el panel.
    ───────────────────────────────────────────────────────────────────── */
@@ -126,22 +131,6 @@ export function useOfertasPublicas(hotelId) {
     [automaticas, ofertaCodigo]
   )
 
-  /** Suma uno al contador de usos. Devuelve false si la oferta se agotó
-   *  entre que el cliente la vio y le dio a enviar: la función de
-   *  Postgres comprueba el cupo dentro del propio UPDATE, así que dos
-   *  reservas a la vez no se pisan. */
-  const registrarUso = useCallback(async (ofertaId) => {
-    if (!ofertaId) return false
-    try {
-      const { data, error } = await supabase.rpc('registrar_uso_oferta', { oferta: ofertaId })
-      if (error) throw error
-      return data === true
-    } catch (err) {
-      console.warn('No se ha podido registrar el uso de la oferta:', err)
-      return false
-    }
-  }, [])
-
   return {
     ofertas,
     /* Solo las automáticas, sin la del código.
@@ -160,7 +149,6 @@ export function useOfertasPublicas(hotelId) {
     estadoCodigo,
     aplicarCodigo,
     quitarCodigo,
-    registrarUso,
   }
 }
 

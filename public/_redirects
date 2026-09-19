@@ -1,17 +1,13 @@
-# Cloudflare Pages — rutas de la SPA
+# Cloudflare Pages — rutas
 #
-# Antes había un comodín (/*  /index.html  200): CUALQUIER URL devolvía
-# la portada con estado 200. Google lo detecta como "soft 404" y lo
-# marca como error en Search Console, y además /lo-que-sea competía con
-# la home como página duplicada.
+# Aquí ya no hace falta ninguna regla:
 #
-# Ahora solo se reescriben las rutas que existen de verdad. Todo lo
-# demás cae en public/404.html, que Cloudflare sirve con estado 404.
+# · La portada y las páginas públicas son HTML prerenderizado: cada una
+#   tiene su fichero en dist/ y Cloudflare las sirve solas.
+# · El panel (/admin y subrutas) lo sirve functions/admin/[[path]].js.
+#   Con una regla de rewrite aquí, Cloudflare devolvía 404 al recargar
+#   /admin/reservas.
+# · Cualquier otra URL cae en public/404.html con estado 404.
 #
-# Al crear páginas nuevas en react-router (p. ej. /salas/viena), HAY QUE
-# AÑADIRLAS AQUÍ. Si no, al entrar directo o recargar darán 404.
-# (Cuando haya prerenderizado, cada ruta tendrá su propio HTML y estas
-# líneas sobrarán.)
-
-/admin      /index.html   200
-/admin/*    /index.html   200
+# El fichero se deja para las redirecciones que hagan falta en el
+# futuro (p. ej. una URL antigua → una nueva, con 301).
