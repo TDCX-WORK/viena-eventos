@@ -552,3 +552,66 @@
 }
 
 .regaloIcon { flex-shrink: 0; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   MÓVIL (< 600 px)
+
+   · Las ilustraciones de fondo (taza, plato) se quitan: a este ancho
+     caían justo encima de las tarjetas y del texto.
+   · Tarjeta en rejilla: icono a la izquierda, nombre arriba y precio +
+     mínimo de personas debajo, en una línea. Antes iba todo en fila y
+     "mín. 8" se partía en dos renglones.
+   · Sin desenfoques: sobre el fondo fijo de la web, en un móvil, cuestan
+     cada fotograma de scroll y aquí no se aprecian.
+   ───────────────────────────────────────────────────────────────────── */
+@media (max-width: 599px) {
+  .wrapper  { gap: 1.1rem; }
+  .title    { font-size: 1.3rem; }
+  .subtitle { font-size: 0.85rem; }
+
+  .sectionBgImg { display: none; }
+  .sectionWithBg { padding: 0.9rem 0.75rem; background: rgba(255,255,255,0.5); }
+
+  .banner,
+  .includedItem,
+  .extraCard {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .banner { background: rgba(255,255,255,0.85); }
+  .extraCard { background: #fff; }
+
+  .includedGrid { gap: 0.35rem; }
+  .includedItem { padding: 0.4rem 0.7rem; font-size: 0.8rem; }
+
+  .cardGrid { gap: 0.75rem; }
+  .cardSlot { max-width: none; }
+
+  .extraCard {
+    display: grid;
+    grid-template-columns: 2.75rem auto 1fr;
+    grid-template-areas:
+      "icono nombre nombre"
+      "icono precio minimo";
+    column-gap: 0.75rem;
+    row-gap: 0.1rem;
+    align-items: center;
+    padding: 0.8rem 2.6rem 0.8rem 0.85rem;
+  }
+  .cardIcon  { grid-area: icono; width: 2.75rem; height: 2.75rem; }
+  .cardName  { grid-area: nombre; font-size: 0.98rem; }
+  .cardPrice { grid-area: precio; font-size: 1.05rem; }
+  .cardMeta  { grid-area: minimo; white-space: nowrap; font-size: 0.76rem; }
+
+  .checkBadge { top: 0.75rem; right: 0.85rem; }
+
+  /* "ver más" abajo a la derecha, lejos del círculo de selección. */
+  .seeMore { bottom: 0.5rem; right: 0.85rem; }
+}
+
+/* iPhone: Safari amplía la página al tocar cualquier campo con letra de
+   menos de 16 px, y no la vuelve a encoger al salir. El código iba a
+   14 px: cada vez que alguien lo escribía, la pantalla se descolocaba. */
+@media (max-width: 767px) {
+  .codigoInput { font-size: 16px; }
+}

@@ -18,6 +18,12 @@ import styles from './Footer.module.css'
    pero ya no es lo único que hay aquí.
    ───────────────────────────────────────────────────────────────────── */
 
+/* Precarga del panel al acercarse a la tuerca. El panel (sesión, login
+   y cliente de Supabase) ya no va en el JavaScript de la web: se baja
+   al entrar en /admin. Empezar la descarga en el hover o al tocar
+   ahorra ese tiempo de espera al hacer clic. */
+const precargarPanel = () => { import('../admin/AdminRaiz') }
+
 export default function Footer() {
   const año = 2026   // fijo a propósito: new Date() rompería la hidratación
 
@@ -42,7 +48,13 @@ export default function Footer() {
 
         <div className={styles.creditos}>
           <span>© {año} Suites Viena, S.L. · C/ Juan Álvarez Mendizábal, 17 · Madrid</span>
-          <Link to="/admin" className={styles.admin} aria-label="Panel de administración">
+          <Link
+            to="/admin"
+            className={styles.admin}
+            aria-label="Panel de administración"
+            onPointerEnter={precargarPanel}
+            onFocus={precargarPanel}
+          >
             <Settings size={15} />
           </Link>
         </div>

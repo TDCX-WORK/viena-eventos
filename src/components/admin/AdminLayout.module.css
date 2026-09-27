@@ -46,3 +46,11 @@
 @media (prefers-reduced-motion: reduce) {
   .transicion { animation: none; }
 }
+
+/* Mientras baja una pantalla del panel. */
+.cargando {
+  padding: 3rem 0;
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--text-hint);
+}

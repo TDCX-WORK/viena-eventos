@@ -70,6 +70,13 @@
   object-fit: cover;
 }
 
+/* Fundido al pasar de foto en el carrusel. La primera foto de cada
+   tarjeta NO lo lleva: viene en el HTML prerenderizado y tiene que
+   pintarse tal cual, sin esperar a ninguna animación. */
+.imageFundido { animation: fotoEntra 0.28s ease both; }
+@keyframes fotoEntra { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .imageFundido { animation: none; } }
+
 .imageGradient {
   position: absolute;
   inset: 0;
@@ -201,7 +208,29 @@
 }
 
 .metaLight { color: #A07848; font-weight: 600; }
-.chevron { flex-shrink: 0; color: #78716c; display: flex; align-items: center; }
+.chevron {
+  flex-shrink: 0; color: #78716c; display: flex; align-items: center;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.chevronAbierto { transform: rotate(180deg); }
+
+/* ── Acordeón, en CSS ──
+   grid-template-rows de 0fr a 1fr: anima hasta la altura real del
+   contenido sin medirla en JavaScript (lo que hacía framer-motion). */
+.acordeon {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.acordeonAbierto { grid-template-rows: 1fr; opacity: 1; }
+.acordeonRecorte { min-height: 0; overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron, .acordeon { transition: none; }
+}
 
 .expandLabel {
   display: flex;

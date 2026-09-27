@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { supabase } from '../lib/supabase'
+// Diferido: ver lib/supabaseDiferido.js.
+import { conSupabase, cuandoEsteOcioso } from '../lib/supabaseDiferido'
 
 /* ─────────────────────────────────────────────────────────────────────
    Ofertas en la web pública.
@@ -57,6 +58,7 @@ export function useOfertasPublicas(hotelId) {
 
     async function cargar() {
       try {
+        const supabase = await conSupabase()
         const consulta = supabase
           .from('offers_publicas')
           .select('*')
@@ -75,8 +77,12 @@ export function useOfertasPublicas(hotelId) {
       }
     }
 
-    cargar()
-    return () => { vivo = false }
+    /* Cuando el navegador esté libre (1,5 s como mucho). Las ofertas no
+       van en el HTML prerenderizado, pero la píldora del hero puede
+       aparecer un instante después sin mover nada de sitio, y para
+       cuando alguien llega al formulario de reserva ya están. */
+    const cancelar = cuandoEsteOcioso(cargar, 1500)
+    return () => { vivo = false; cancelar() }
   }, [hotelId])
 
   /** Comprueba un código contra la base de datos. Devuelve true si vale.
@@ -95,6 +101,7 @@ export function useOfertasPublicas(hotelId) {
     setEstadoCodigo('validando')
 
     try {
+      const supabase = await conSupabase()
       const { data, error } = await supabase.rpc('oferta_por_codigo', { p_codigo: limpio })
       if (error) throw error
 

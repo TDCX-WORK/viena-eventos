@@ -377,3 +377,29 @@
 @media (min-width: 768px) {
   .title { font-size: 1.75rem; }
 }
+/* ─────────────────────────────────────────────────────────────────────
+   MÓVIL (< 600 px): menos aire alrededor del formulario, para que se
+   vean más campos a la vez, y sin desenfoques (en el teléfono cuestan
+   cada fotograma de scroll y no se aprecian).
+   ───────────────────────────────────────────────────────────────────── */
+@media (max-width: 599px) {
+  .title    { font-size: 1.3rem; }
+  .subtitle { font-size: 0.85rem; }
+
+  .formCard { padding: 1rem 0.9rem; }
+  .input,
+  .textarea { padding: 0.8rem 0.9rem; font-size: 16px; }
+  .privacyCard { padding: 0.85rem 0.9rem; }
+
+  .formCard,
+  .input,
+  .textarea,
+  .privacyCard,
+  .errorMsg {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .formCard { background: rgba(255,255,255,0.9); }
+  .input,
+  .textarea { background: #fff; }
+}

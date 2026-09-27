@@ -85,81 +85,117 @@
   padding: 1rem 1.25rem 1.25rem;
 }
 
-.calWrap :global(.rdp) {
-  --rdp-cell-size: 38px;
-  --rdp-accent-color: #5B8C5A;
-  --rdp-background-color: rgba(91,140,90,0.08);
-  margin: 0;
-}
+/* ── Calendario (react-day-picker v9) ──────────────────────────────────
+   Estos estilos estaban escritos para la versión 8 (.rdp-day_selected,
+   .rdp-nav_button, --rdp-cell-size…). El proyecto usa la 9, que cambió
+   todos los nombres, así que no se aplicaba ninguno: el calendario salía
+   con el azul por defecto de la librería y el aro de foco azul.
 
-.calWrap :global(.rdp-caption) {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 0.5rem;
+   En la 9 la personalización va sobre todo por variables CSS en
+   .rdp-root. El día es un <td class="rdp-day"> con un <button
+   class="rdp-day_button"> dentro; los modificadores (seleccionado,
+   hoy, bloqueado, con oferta) van en el <td>. */
+
+.calWrap :global(.rdp-root) {
+  --rdp-accent-color: #5B8C5A;
+  --rdp-accent-background-color: rgba(91,140,90,0.10);
+  --rdp-today-color: #5B8C5A;
+  --rdp-day-height: 42px;
+  --rdp-day-width: 42px;
+  --rdp-day_button-height: 38px;
+  --rdp-day_button-width: 38px;
+  --rdp-day_button-border-radius: 0.625rem;
+  --rdp-selected-border: 0;
+  --rdp-nav-height: 2.5rem;
+  --rdp-nav_button-height: 2.1rem;
+  --rdp-nav_button-width: 2.1rem;
+  --rdp-disabled-opacity: 0.35;
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .calWrap :global(.rdp-caption_label) {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: #18120E;
   text-transform: capitalize;
 }
 
-.calWrap :global(.rdp-head_cell) {
+.calWrap :global(.rdp-weekday) {
   font-size: 0.68rem;
   font-weight: 700;
   color: #78716c;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  text-align: center;
+  opacity: 1;
 }
 
-.calWrap :global(.rdp-day) {
-  font-size: 0.88rem;
+.calWrap :global(.rdp-day_button) {
+  font-size: 0.92rem;
   color: #18120E;
-  border-radius: 0.625rem;
   transition: background 0.2s, box-shadow 0.2s;
 }
 
-.calWrap :global(.rdp-day:hover:not(.rdp-day_selected):not(.rdp-day_disabled)) {
+.calWrap :global(.rdp-day:not(.rdp-selected):not(.rdp-disabled) .rdp-day_button:hover) {
   background: rgba(91,140,90,0.12);
 }
 
-.calWrap :global(.rdp-day_selected) {
-  background: #5B8C5A !important;
-  color: #fff !important;
-  border-radius: 0.625rem;
+.calWrap :global(.rdp-selected .rdp-day_button) {
+  background: #5B8C5A;
+  color: #fff;
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(91,140,90,0.35);
 }
 
-.calWrap :global(.rdp-day_today:not(.rdp-day_selected)) {
+.calWrap :global(.rdp-today:not(.rdp-selected) .rdp-day_button) {
   color: #5B8C5A;
   font-weight: 700;
 }
 
-.calWrap :global(.rdp-day_disabled) {
-  color: #d4d0cb;
+.calWrap :global(.rdp-disabled .rdp-day_button) {
   cursor: not-allowed;
 }
 
-.blockedDay {
-  background: rgba(220,38,38,0.08) !important;
-  color: #dc2626 !important;
+/* Aro de foco solo con teclado, y en verde. Con el azul por defecto
+   parecía que el día tocado estaba "seleccionado de otra manera". */
+.calWrap :global(.rdp-day_button:focus-visible) {
+  outline: 2px solid #5B8C5A;
+  outline-offset: 2px;
+}
+.calWrap :global(.rdp-day_button:focus:not(:focus-visible)) { outline: none; }
+
+.calWrap :global(.rdp-chevron) { fill: #3D3530; }
+
+.calWrap :global(.rdp-button_previous),
+.calWrap :global(.rdp-button_next) {
+  border-radius: 0.625rem;
+  border: 1px solid rgba(160,120,72,0.18);
+  transition: background 0.2s;
+}
+.calWrap :global(.rdp-button_previous:hover),
+.calWrap :global(.rdp-button_next:hover) {
+  background: rgba(91,140,90,0.08);
+}
+
+/* Bloqueado: en el <td>, pero el color va al botón. */
+.blockedDay :global(.rdp-day_button) {
+  background: rgba(220,38,38,0.08);
+  color: #dc2626;
   text-decoration: line-through;
   font-weight: 600;
 }
 
-.calWrap :global(.rdp-nav_button) {
-  color: #18120E;
-  border-radius: 0.625rem;
-  transition: background 0.2s;
-  border: 1px solid rgba(160,120,72,0.15);
-}
-
-.calWrap :global(.rdp-nav_button:hover) {
-  background: rgba(91,140,90,0.08);
+/* Móvil: el calendario ocupa todo el ancho, con días más grandes para
+   el dedo. 7 columnas × 44 px caben en 320 px de pantalla. */
+@media (max-width: 599px) {
+  .calWrap { padding: 0.75rem 0.5rem 0.9rem; }
+  .calWrap :global(.rdp-root) {
+    --rdp-day-height: 44px;
+    --rdp-day-width: calc((100vw - 5rem) / 7);
+    --rdp-day_button-height: 40px;
+    --rdp-day_button-width: 40px;
+  }
 }
 
 /* ── Columna fechas ── */
@@ -233,11 +269,15 @@
   font-size: 1.2rem;
   font-weight: 700;
   color: #18120E;
-  text-transform: capitalize;
+  /* Solo la primera letra en mayúscula (ver ::first-letter). Con
+     capitalize salía "Lunes 28 De Septiembre". */
+  display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.dateCardDate::first-letter { text-transform: uppercase; }
 
 .dateCardMeta { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
 .dateCardJornada { font-size: 0.9rem; font-weight: 700; color: #3D3530; }
@@ -513,4 +553,28 @@
   margin-top: 0.42rem;
   border-radius: 50%;
   background: #166534;
+}
+
+
+/* ── Móvil ─────────────────────────────────────────────────────────────
+   En el teléfono cada píxel de alto cuenta: el calendario y, debajo, la
+   configuración de la fecha elegida tienen que caber sin que haya que
+   buscarla. Títulos más pequeños, menos aire y sin desenfoques (sobre el
+   fondo fijo de la web, en un móvil, cuestan cada fotograma de scroll). */
+@media (max-width: 599px) {
+  .wrapper  { gap: 1rem; }
+  .mainRow  { gap: 1rem; }
+  .title    { font-size: 1.3rem; }
+  .subtitle { font-size: 0.85rem; }
+
+  .calWrap,
+  .dateCard {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(255,255,255,0.92);
+  }
+
+  .dateCardHeader { padding: 0.8rem 0.9rem; }
+  .dateCardDate   { font-size: 1.05rem; }
+  .dateSection    { padding: 0.8rem 0.9rem; }
 }

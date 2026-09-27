@@ -182,6 +182,27 @@ export default function StepJornadaFecha({ booking, updateBooking, updateFecha, 
 
   const datesRef = useRef(null)
 
+  /* Primera fecha elegida: se baja lo justo para que se vea su tarjeta
+     (jornada, montaje y asistentes). En el móvil queda debajo del
+     calendario, fuera de la pantalla, y el botón "Siguiente" seguía
+     apagado sin que se viera por qué. Solo con la primera: si alguien
+     va marcando varios días, no se le mueve el calendario a cada toque.
+     `nearest` desplaza lo mínimo: el calendario sigue asomando arriba. */
+  const numFechasAntes = useRef(fechas.length)
+  useEffect(() => {
+    const antes = numFechasAntes.current
+    numFechasAntes.current = fechas.length
+    if (antes !== 0 || fechas.length === 0) return
+    // Solo en móvil: en pantallas grandes la tarjeta ya se ve al lado o
+    // justo debajo, y mover la vista recortaba el calendario.
+    if (!window.matchMedia('(max-width: 599px)').matches) return
+    const id = setTimeout(() => {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      datesRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' })
+    }, 250)   // tras la animación de entrada de la tarjeta
+    return () => clearTimeout(id)
+  }, [fechas.length])
+
   const scrollToDates = () => {
     datesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }

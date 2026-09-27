@@ -158,7 +158,24 @@
   color: #18120E;
 }
 
-/* ── Respuesta ── */
+/* ── Respuesta ──
+   Plegada con grid-template-rows (0fr → 1fr): anima hasta la altura
+   real del texto sin medirla en JavaScript. */
+
+.panelRespuesta {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.panelRespuestaAbierto { grid-template-rows: 1fr; opacity: 1; }
+.recorte { min-height: 0; overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .panelRespuesta { transition: none; }
+}
 
 .respuesta {
   /* El texto se alinea con la pregunta, no con el número: el margen

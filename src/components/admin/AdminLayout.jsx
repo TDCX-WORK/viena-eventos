@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import Navbar from './Navbar/Navbar'
 import styles from './AdminLayout.module.css'
@@ -22,7 +22,13 @@ export default function AdminLayout() {
             animación de entrada. Sin la key, React reutilizaría el nodo
             y la animación solo se vería la primera vez. */}
         <div key={location.pathname} className={styles.transicion}>
-          <Outlet />
+          {/* Cada pantalla del panel es un fichero aparte (lazy en
+              App.jsx). Este Suspense hace que, mientras baja, se quede
+              la barra de navegación y solo se espere en el hueco del
+              contenido, en vez de cambiar la pantalla entera. */}
+          <Suspense fallback={<p className={styles.cargando}>Cargando…</p>}>
+            <Outlet />
+          </Suspense>
         </div>
       </main>
 

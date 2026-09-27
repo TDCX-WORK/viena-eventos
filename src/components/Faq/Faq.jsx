@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, X, ArrowUpRight } from 'lucide-react'
 import { construirFaq, faqJsonLd } from '../../lib/faq'
 import { useFaqsPublicas } from '../../hooks/useFaqsPublicas'
@@ -73,20 +72,27 @@ export default function Faq({ hotel }) {
                   </span>
                 </button>
 
-                <AnimatePresence initial={false}>
-                  {activa && (
-                    <motion.div
-                      id={`faq-panel-${p.id}`}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
-                      style={{ overflow: 'hidden' }}
-                    >
-                      <p className={styles.respuesta}>{p.respuesta}</p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {/* La respuesta está SIEMPRE en el HTML, plegada con CSS.
+
+                    Antes framer-motion la creaba al abrir y la
+                    destruía al cerrar: en el HTML prerenderizado no
+                    había ninguna respuesta, y Google pide que el texto
+                    del marcado FAQPage (el <script> de abajo) esté
+                    también en la página. Además, framer-motion eran
+                    ~120 kB de JavaScript en la portada para esto.
+
+                    `inert` cuando está cerrada: ni el tabulador ni el
+                    lector de pantalla entran en una respuesta que no
+                    se ve. */}
+                <div
+                  id={`faq-panel-${p.id}`}
+                  className={`${styles.panelRespuesta} ${activa ? styles.panelRespuestaAbierto : ''}`}
+                  inert={!activa}
+                >
+                  <div className={styles.recorte}>
+                    <p className={styles.respuesta}>{p.respuesta}</p>
+                  </div>
+                </div>
               </li>
             )
           })}

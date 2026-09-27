@@ -1,7 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
-import { AuthProvider } from './contexts/AuthContext'
-import ProtectedRoute from './components/ProtectedRoute'
 import NoEncontrada from './components/NoEncontrada/NoEncontrada'
 
 // Público
@@ -49,7 +47,9 @@ const BookingWizard = lazy(() => import('./components/BookingWizard/BookingWizar
    El <Suspense> de más abajo es obligatorio: mientras el fichero baja,
    el componente no existe todavía y React necesita algo que pintar.
    ──────────────────────────────────────────────────────────────────── */
-const AdminLayout         = lazy(() => import('./components/admin/AdminLayout'))
+/* AdminRaiz = sesión (AuthProvider) + login (ProtectedRoute) + layout.
+   Ver el comentario de ese fichero: la sesión ya no envuelve la web. */
+const AdminRaiz           = lazy(() => import('./components/admin/AdminRaiz'))
 const AdminDashboard      = lazy(() => import('./components/admin/AdminDashboard'))
 const AdminPrecios        = lazy(() => import('./components/admin/AdminPrecios'))
 const AdminDisponibilidad = lazy(() => import('./components/admin/AdminDisponibilidad'))
@@ -191,48 +191,44 @@ function PublicApp() {
    (entry-server.jsx), que no tiene barra de direcciones. */
 export function AppRutas() {
   return (
-    <AuthProvider>
-      <Routes>
-        {/* Rutas públicas */}
-        <Route path="/" element={<PublicApp />} />
-        <Route path="/salas/:slug" element={<PaginaSala />} />
-        {USOS.map(u => (
-          <Route key={u.slug} path={u.ruta} element={<PaginaUso />} />
-        ))}
-        {LEGALES.map(d => (
-          <Route key={d.slug} path={d.ruta} element={<PaginaLegal />} />
-        ))}
+    <Routes>
+      {/* Rutas públicas */}
+      <Route path="/" element={<PublicApp />} />
+      <Route path="/salas/:slug" element={<PaginaSala />} />
+      {USOS.map(u => (
+        <Route key={u.slug} path={u.ruta} element={<PaginaUso />} />
+      ))}
+      {LEGALES.map(d => (
+        <Route key={d.slug} path={d.ruta} element={<PaginaLegal />} />
+      ))}
 
-        {/* Rutas admin protegidas — login aparece como modal.
+      {/* Rutas admin protegidas — login aparece como modal.
 
-            El Suspense envuelve al layout, no a cada pantalla: como es
-            antepasado de todas, también cubre las de dentro cuando se
-            navega entre secciones del panel. Una sola pantalla de
-            carga en lugar de nueve. */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<PantallaCarga texto="Cargando panel..." fondo="#f1f0f0" />}>
-                <AdminLayout />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AdminDashboard />} />
-          <Route path="precios" element={<AdminPrecios />} />
-          <Route path="ofertas" element={<AdminOfertas />} />
-          <Route path="faq" element={<AdminFaq />} />
-          <Route path="disponibilidad" element={<AdminDisponibilidad />} />
-          <Route path="reservas" element={<AdminReservas />} />
-          <Route path="fotos" element={<AdminFotos />} />
-          <Route path="config" element={<AdminConfig />} />
-        </Route>
+          El Suspense envuelve a AdminRaiz, no a cada pantalla: como
+          es antepasado de todas, también cubre las de dentro cuando
+          se navega entre secciones del panel. Una sola pantalla de
+          carga en lugar de nueve. */}
+      <Route
+        path="/admin"
+        element={
+          <Suspense fallback={<PantallaCarga texto="Cargando panel..." fondo="#F2EDE5" />}>
+            <AdminRaiz />
+          </Suspense>
+        }
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="precios" element={<AdminPrecios />} />
+        <Route path="ofertas" element={<AdminOfertas />} />
+        <Route path="faq" element={<AdminFaq />} />
+        <Route path="disponibilidad" element={<AdminDisponibilidad />} />
+        <Route path="reservas" element={<AdminReservas />} />
+        <Route path="fotos" element={<AdminFotos />} />
+        <Route path="config" element={<AdminConfig />} />
+      </Route>
 
-        {/* Cualquier otra ruta */}
-        <Route path="*" element={<NoEncontrada />} />
-      </Routes>
-    </AuthProvider>
+      {/* Cualquier otra ruta */}
+      <Route path="*" element={<NoEncontrada />} />
+    </Routes>
   )
 }
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
+// Diferido: ver lib/supabaseDiferido.js.
+import { conSupabase, cuandoEsteOcioso } from '../lib/supabaseDiferido'
 import { useDatosIniciales } from '../lib/datosIniciales'
 
 /* ─────────────────────────────────────────────────────────────────────
@@ -17,6 +18,7 @@ import { useDatosIniciales } from '../lib/datosIniciales'
 
 /** Consulta sin estado. La usa el hook y también el prerender. */
 export async function cargarFaqs(hotelId) {
+  const supabase = await conSupabase()
   let consulta = supabase
     .from('faqs')
     .select('id, question, answer, sort_order')
@@ -55,8 +57,9 @@ export function useFaqsPublicas(hotelId) {
       }
     }
 
-    cargar()
-    return () => { vivo = false }
+    // Igual que useHotelData: con prerender, el refresco espera.
+    const cancelar = iniciales ? cuandoEsteOcioso(cargar) : (cargar(), () => {})
+    return () => { vivo = false; cancelar() }
     // iniciales no cambia durante la vida de la página.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hotelId])

@@ -29,20 +29,21 @@
          paralelo con el bundle de React, en vez de esperar a que React
          monte el componente.
 
-         Los nombres tienen que coincidir con los de Hero.jsx. Si se
-         cambia la foto, se sustituyen los ficheros de /public sin
-         renombrarlos y aquí no hay que tocar nada. -->
+         Las URLs tienen que coincidir con las de Hero.jsx, incluido el
+         ?v=2. Si se cambia la foto, se sustituyen los ficheros de
+         /public y se sube la versión (?v=3) aquí Y en Hero.jsx, o los
+         navegadores seguirán enseñando la vieja durante 30 días. -->
     <!-- Dos precargas, una por recorte. El `media` de cada una tiene que
          ser EXACTAMENTE el del <source> de Hero.jsx (max-width: 599px):
          si no coinciden, el móvil baja las dos fotos.
 
          scripts/prerender.js quita estas dos líneas en todas las páginas
          que no son la portada, porque allí no hay hero. -->
-    <link rel="preload" as="image" href="/hero-vert-760.webp"
-          imagesrcset="/hero-vert-500.webp 500w, /hero-vert-760.webp 760w"
+    <link rel="preload" as="image" href="/hero-vert-760.webp?v=2"
+          imagesrcset="/hero-vert-500.webp?v=2 500w, /hero-vert-760.webp?v=2 760w"
           imagesizes="100vw" media="(max-width: 599px)" fetchpriority="high" />
-    <link rel="preload" as="image" href="/hero-2000.webp"
-          imagesrcset="/hero-800.webp 800w, /hero-1280.webp 1280w, /hero-2000.webp 2000w"
+    <link rel="preload" as="image" href="/hero-2000.webp?v=2"
+          imagesrcset="/hero-800.webp?v=2 800w, /hero-1280.webp?v=2 1280w, /hero-2000.webp?v=2 2000w"
           imagesizes="100vw" media="(min-width: 600px)" fetchpriority="high" />
 
     <!-- ── Tipografías ──
@@ -55,9 +56,8 @@
          Ahora los @font-face están en src/styles/fuentes.css y los
          ficheros los baja `npm run fuentes` una sola vez.
 
-         Las dos precargas son de las fuentes que se usan en la primera
-         pantalla: Playfair en el titular del hero e Inter en todo lo
-         demás. `crossorigin` es obligatorio aunque el fichero sea
+         Solo se precarga Inter, la única fuente de la primera pantalla
+         (ver la nota de Playfair más abajo). `crossorigin` es obligatorio aunque el fichero sea
          nuestro: las fuentes se piden siempre en modo anónimo y sin él
          el navegador descarga el fichero dos veces.
 
@@ -65,8 +65,11 @@
          llegar tarde sin que se note. -->
     <link rel="preload" href="/fonts/inter-latin.woff2" as="font"
           type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/playfair-latin.woff2" as="font"
-          type="font/woff2" crossorigin />
+    <!-- Playfair YA NO se precarga. El hero usa solo Inter (el titular
+         también), así que Playfair no aparece en la primera pantalla.
+         Precargada, eran 38 kB con prioridad alta compitiendo con la
+         foto del hero y el CSS en una conexión móvil lenta. Con
+         font-display: swap llega a tiempo para "Elige tu espacio". -->
 
     <!-- ── Favicon ──
          Apuntaba a /vite.svg, que no existe en /public: daba 404 en cada

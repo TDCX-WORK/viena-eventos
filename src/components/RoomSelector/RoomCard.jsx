@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Sun, Users, Maximize2, ArrowRight, ChevronDown, ChevronLeft, ChevronRight, Wifi, Monitor, FileText, Droplets, Check } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+/* Sin framer-motion: el carrusel, la flecha y el acordeón se animan
+   con CSS. framer-motion son ~120 kB de JavaScript que el móvil tenía
+   que descargar y ejecutar antes de pintar la portada, para tres
+   animaciones que el navegador hace solo. Sigue usándose en el wizard
+   de reserva, que va en un fichero aparte. */
 import { getOptimizedUrl, IMAGE_SIZES } from '../../lib/imageUtils'
 import { rutaSala } from '../../lib/seo'
 import styles from './RoomCard.module.css'
@@ -37,6 +41,14 @@ const DEFAULT_BADGE_COLOR = '#B8860B'
 
 export default function RoomCard({ room, onSelect, oferta = null }) {
   const [isOpen, setIsOpen]     = useState(false)
+  /* El contenido del acordeón no se pinta hasta la primera vez que se
+     abre: así no engorda el HTML de la portada (lleva los dibujos de
+     los montajes). Una vez montado se queda, para que al cerrar se vea
+     la animación. */
+  const [montado, setMontado]   = useState(false)
+  /* Si ya se ha usado el carrusel. Hasta entonces la foto no lleva
+     fundido: la primera viene en el HTML y se pinta tal cual. */
+  const [navegado, setNavegado] = useState(false)
   const [photoIdx, setPhotoIdx] = useState(0)
   const [imgLoaded, setImgLoaded] = useState({})
   /* Precarga de las fotos vecinas del carrusel, solo cuando hay
@@ -78,12 +90,26 @@ export default function RoomCard({ room, onSelect, oferta = null }) {
      contiene fotos de varios megapíxeles: el ventilador. */
   const algunaCargada = Object.keys(imgLoaded).length > 0
 
+  /* Abrir la primera vez: se monta el contenido cerrado y, dos
+     fotogramas después, se abre. Con un solo fotograma el navegador
+     aún no ha pintado el estado cerrado y no hay transición. */
+  const alternar = () => {
+    if (!montado) {
+      setMontado(true)
+      requestAnimationFrame(() => requestAnimationFrame(() => setIsOpen(true)))
+      return
+    }
+    setIsOpen(v => !v)
+  }
+
   const prevPhoto = (e) => {
     e.stopPropagation()
+    setNavegado(true)
     setPhotoIdx(i => (i - 1 + images.length) % images.length)
   }
   const nextPhoto = (e) => {
     e.stopPropagation()
+    setNavegado(true)
     setPhotoIdx(i => (i + 1) % images.length)
   }
 
@@ -106,16 +132,13 @@ export default function RoomCard({ room, onSelect, oferta = null }) {
           onPointerEnter={marcarInteres}
           onFocus={marcarInteres}
         >
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.img
+          {/* key por foto: cada cambio monta un <img> nuevo y la
+              animación CSS de entrada (.image) hace el fundido. */}
+            <img
               key={photoIdx}
               src={getOptimizedUrl(images[photoIdx], IMAGE_SIZES.cardImage)}
               alt={`${room.name} — foto ${photoIdx + 1}`}
-              className={styles.image}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.28 }}
+              className={`${styles.image} ${navegado ? styles.imageFundido : ''}`}
               /* lazy: sin esto, el prerender de React 19 mete un preload
                  de cada foto de sala delante del HTML, y compiten con la
                  foto del hero, que es la que mide Google. */
@@ -123,7 +146,6 @@ export default function RoomCard({ room, onSelect, oferta = null }) {
               decoding="async"
               onLoad={() => setImgLoaded(prev => ({ ...prev, [photoIdx]: true }))}
             />
-          </AnimatePresence>
 
           <div className={styles.imageGradient} />
 
@@ -144,7 +166,7 @@ export default function RoomCard({ room, onSelect, oferta = null }) {
               <button
                 key={i}
                 className={`${styles.dot} ${i === photoIdx ? styles.dotActive : ''}`}
-                onClick={e => { e.stopPropagation(); setPhotoIdx(i) }}
+                onClick={e => { e.stopPropagation(); setNavegado(true); setPhotoIdx(i) }}
                 aria-label={`Foto ${i + 1}`}
               />
             ))}
@@ -177,7 +199,7 @@ export default function RoomCard({ room, onSelect, oferta = null }) {
         {/* Header clicable — abre/cierra acordeón */}
         <button
           className={styles.headerBtn}
-          onClick={() => setIsOpen(v => !v)}
+          onClick={alternar}
           aria-expanded={isOpen}
         >
           <div className={styles.nameBlock}>
@@ -206,26 +228,19 @@ export default function RoomCard({ room, onSelect, oferta = null }) {
 
           <span className={styles.expandLabel}>
             <span className={styles.expandText}>{isOpen ? 'ver menos' : 'ver más'}</span>
-            <motion.span
-              className={styles.chevron}
-              animate={{ rotate: isOpen ? 180 : 0 }}
-              transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-            >
+            <span className={`${styles.chevron} ${isOpen ? styles.chevronAbierto : ''}`}>
               <ChevronDown size={20} />
-            </motion.span>
+            </span>
           </span>
         </button>
 
         {/* ── ACORDEÓN ── */}
-        <AnimatePresence initial={false}>
-          {isOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-              style={{ overflow: 'hidden' }}
+        {montado && (
+            <div
+              className={`${styles.acordeon} ${isOpen ? styles.acordeonAbierto : ''}`}
+              inert={!isOpen}
             >
+             <div className={styles.acordeonRecorte}>
               <div className={styles.accordionInner}>
 
                 {/* Descripción */}
@@ -296,9 +311,9 @@ export default function RoomCard({ room, onSelect, oferta = null }) {
                 )}
 
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+             </div>
+            </div>
+        )}
 
         {/* Separador */}
         <div className={styles.divider} />

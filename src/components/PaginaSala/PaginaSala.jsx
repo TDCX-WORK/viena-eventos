@@ -11,7 +11,10 @@ import { USOS } from '../../lib/usos'
 import { tienePlano } from '../../lib/planos'
 import { getOptimizedUrl, IMAGE_SIZES } from '../../lib/imageUtils'
 import NoEncontrada from '../NoEncontrada/NoEncontrada'
-import Gallery from '../Gallery/Gallery'
+// La galería va aparte (lleva framer-motion): solo se descarga si se
+// pulsa "Ver fotos". Mismo patrón que en RoomSelector.
+const cargarGaleria = () => import('../Gallery/Gallery')
+const Gallery = lazy(cargarGaleria)
 import PlanoSala from '../PlanoSala/PlanoSala'
 import Footer from '../Footer/Footer'
 import styles from './PaginaSala.module.css'
@@ -173,7 +176,13 @@ export default function PaginaSala() {
               />
             ))}
             {fotos.length > 1 && (
-              <button type="button" className={styles.verFotos} onClick={() => setGaleria(true)}>
+              <button
+                type="button"
+                className={styles.verFotos}
+                onClick={() => setGaleria(true)}
+                onPointerEnter={cargarGaleria}
+                onFocus={cargarGaleria}
+              >
                 <Images size={16} /> Ver las {fotos.length} fotos
               </button>
             )}
@@ -359,7 +368,11 @@ export default function PaginaSala() {
         <button type="button" onClick={reservar}>Reservar <ArrowRight size={15} /></button>
       </div>
 
-      {galeria && <Gallery images={fotos} onClose={() => setGaleria(false)} />}
+      {galeria && (
+        <Suspense fallback={null}>
+          <Gallery images={fotos} onClose={() => setGaleria(false)} />
+        </Suspense>
+      )}
     </main>
   )
 }

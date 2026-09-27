@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '../lib/supabase'
+// Diferido: ver lib/supabaseDiferido.js.
+import { conSupabase, cuandoEsteOcioso } from '../lib/supabaseDiferido'
 import { salasRelacionadas } from '../lib/constants'
 import { useDatosIniciales } from '../lib/datosIniciales'
 
@@ -18,6 +19,8 @@ import { useDatosIniciales } from '../lib/datosIniciales'
    ───────────────────────────────────────────────────────────────────── */
 
 export async function cargarFilasHotel() {
+  const supabase = await conSupabase()
+
   // 1) Hotel
   const { data: hotelRow, error: hErr } = await supabase
     .from('hotels')
@@ -246,8 +249,11 @@ export function useHotelData() {
       }
     }
 
-    refrescar()
-    return () => { vivo = false }
+    /* Con datos del prerender, el refresco espera a que el navegador
+       esté libre: la página ya está completa y no hay prisa. Sin ellos
+       (npm run dev) no hay nada que enseñar, así que va inmediato. */
+    const cancelar = filasIniciales ? cuandoEsteOcioso(refrescar) : (refrescar(), () => {})
+    return () => { vivo = false; cancelar() }
     // Solo al montar: filasIniciales no cambia durante la vida de la página.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

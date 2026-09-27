@@ -23,13 +23,21 @@ import styles from './Hero.module.css'
 
    Para cambiar la foto se sustituyen los ficheros; los nombres no se
    tocan. */
-const HERO_SRC = '/hero-2000.webp'
-const HERO_SRCSET = '/hero-800.webp 800w, /hero-1280.webp 1280w, /hero-2000.webp 2000w'
+/* VERSIÓN DE LA FOTO. Las fotos se cachean 30 días (public/_headers) y
+   se llaman siempre igual, así que al sustituirlas los navegadores
+   seguían enseñando la vieja. Al cambiar de foto: sustituir los ficheros
+   y SUBIR ESTE NÚMERO aquí y en las dos precargas de index.html (tienen
+   que coincidir exactamente o el móvil descarga la foto dos veces).
+   Para el navegador es una dirección nueva y la pide al momento. */
+const V = '?v=2'
+
+const HERO_SRC = `/hero-2000.webp${V}`
+const HERO_SRCSET = `/hero-800.webp${V} 800w, /hero-1280.webp${V} 1280w, /hero-2000.webp${V} 2000w`
 
 /* Recorte vertical para móvil. Con el apaisado, en una pantalla de
    390 px de ancho la tarjeta es tan alta que `object-fit: cover` se
    queda con un trozo del pilono y el templo no se reconoce. */
-const HERO_SRCSET_VERT = '/hero-vert-500.webp 500w, /hero-vert-760.webp 760w'
+const HERO_SRCSET_VERT = `/hero-vert-500.webp${V} 500w, /hero-vert-760.webp${V} 760w`
 
 const ID_SALAS = 'salas'
 

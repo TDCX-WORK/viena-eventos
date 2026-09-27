@@ -1,5 +1,4 @@
-import { useState, useMemo } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import { useState, useMemo, lazy, Suspense } from 'react'
 import { Images, Presentation, MonitorPlay, UserSearch, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import RoomCard from './RoomCard'
@@ -7,7 +6,10 @@ import { ID_SALAS } from '../Hero/Hero'
 import Faq from '../Faq/Faq'
 import Contacto from '../Contacto/Contacto'
 import { ofertaEscaparate } from '../../lib/ofertas'
-import Gallery from '../Gallery/Gallery'
+/* La galería va aparte: solo se usa si alguien pulsa el botón, y lleva
+   framer-motion dentro. Se precarga al acercarse al botón. */
+const cargarGaleria = () => import('../Gallery/Gallery')
+const Gallery = lazy(cargarGaleria)
 import Footer from '../Footer/Footer'
 import { HOTEL_ESTATICO } from '../../lib/hotelEstatico'
 import { USOS } from '../../lib/usos'
@@ -188,21 +190,26 @@ export default function RoomSelector({ hotel, onSelectRoom, ofertas = [] }) {
 
         {/* Botón ver galería */}
         <div className={`${styles.galleryRow} ${styles.aparece}`}>
-          <button className={styles.galleryBtn} onClick={() => setShowGallery(true)}>
+          <button
+            className={styles.galleryBtn}
+            onClick={() => setShowGallery(true)}
+            onPointerEnter={cargarGaleria}
+            onFocus={cargarGaleria}
+          >
             <Images size={18} />
             Ver galería de fotos
           </button>
         </div>
 
         {/* Modal galería */}
-        <AnimatePresence>
-          {showGallery && (
+        {showGallery && (
+          <Suspense fallback={null}>
             <Gallery
               images={hotel.gallery}
               onClose={() => setShowGallery(false)}
             />
-          )}
-        </AnimatePresence>
+          </Suspense>
+        )}
 
       </section>
 
