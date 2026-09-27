@@ -73,10 +73,25 @@
          visita y la pestaña salía con el icono genérico. El fichero que
          sí está es favicon.svg.
 
-         El ?v=2 obliga a navegadores y a la caché de Cloudflare a pedir
-         el icono de nuevo. Si se cambia el icono, subir el número. -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
-    <link rel="apple-touch-icon" href="/favicon.svg?v=2" />
+         El ?v=3 obliga a navegadores y a la caché de Cloudflare a pedir
+         el icono de nuevo. Si se cambia el icono, subir el número.
+
+         Cuatro formatos, porque cada cliente lee uno distinto:
+         · favicon.ico (16/32/48 px): el que pide Google para la
+           búsqueda y cualquier programa que vaya a /favicon.ico por su
+           cuenta. Antes no existía y esa petición daba 404.
+         · favicon.svg: nítido a cualquier tamaño en navegadores
+           modernos.
+         · favicon-192.png: Android y Google, que piden un múltiplo de
+           48 px.
+         · apple-touch-icon.png (180 px): iPhone/iPad al guardar en la
+           pantalla de inicio. Safari NO acepta SVG aquí; antes apuntaba
+           al SVG y salía una captura de la página en su lugar.
+         Todos salen del mismo favicon.svg. -->
+    <link rel="icon" href="/favicon.ico?v=3" sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=3" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3" />
 
     <!-- ── Geo tags (Madrid — C/ Juan Álvarez Mendizábal 17) ── -->
     <meta name="geo.region" content="ES-MD" />

@@ -82,7 +82,7 @@ export default function PaginaUso() {
       <div className={base.contenedor}>
         <nav aria-label="Ruta" className={base.migas}>
           <ol>
-            <li><Link to="/">Salas de reuniones</Link></li>
+            <li><Link to="/#salas">Salas de reuniones</Link></li>
             <li aria-current="page">{uso.etiqueta}</li>
           </ol>
         </nav>
@@ -220,7 +220,7 @@ export default function PaginaUso() {
         </section>
 
         <p className={base.volver}>
-          <a href="/#salas"><ArrowLeft size={15} /> Ver todas las salas</a>
+          <Link to="/#salas"><ArrowLeft size={15} /> Ver todas las salas</Link>
         </p>
       </div>
 

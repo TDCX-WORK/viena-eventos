@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { Sun, Users, Maximize2, ArrowRight, ChevronDown, ChevronLeft, ChevronRight, Wifi, Monitor, FileText, Droplets, Check } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getOptimizedUrl, IMAGE_SIZES } from '../../lib/imageUtils'
+import { rutaSala } from '../../lib/seo'
 import styles from './RoomCard.module.css'
 
 import teatroSvg   from '../../assets/layouts/teatro.svg?url'
@@ -33,17 +35,24 @@ function getCarouselImages(room) {
 
 const DEFAULT_BADGE_COLOR = '#B8860B'
 
-export default function RoomCard({ room, onSelect, index = 0, oferta = null }) {
+export default function RoomCard({ room, onSelect, oferta = null }) {
   const [isOpen, setIsOpen]     = useState(false)
   const [photoIdx, setPhotoIdx] = useState(0)
   const [imgLoaded, setImgLoaded] = useState({})
+  /* Precarga de las fotos vecinas del carrusel, solo cuando hay
+     intención de usarlo. Antes se hacía al montar la tarjeta: con 3
+     salas y 3 fotos cada una, la portada descargaba las 9 fotos a
+     tamaño original nada más abrirse, sin que nadie hubiera bajado a
+     verlas ni tocado una flecha. Ver `interesado` más abajo. */
+  const [interesado, setInteresado] = useState(false)
 
   const maxCapacity = Math.max(...room.layouts.map(l => l.max))
   const images = getCarouselImages(room)
   const badgeColor = room.hoverBadgeColor || DEFAULT_BADGE_COLOR
 
-  // Preload adjacent carousel images
+  // Precarga de la foto anterior y la siguiente, una vez hay interés.
   useEffect(() => {
+    if (!interesado || images.length < 2) return
     const toPreload = [
       (photoIdx + 1) % images.length,
       (photoIdx - 1 + images.length) % images.length,
@@ -54,7 +63,20 @@ export default function RoomCard({ room, onSelect, index = 0, oferta = null }) {
         img.src = getOptimizedUrl(images[idx], IMAGE_SIZES.cardImage)
       }
     })
-  }, [photoIdx, images, imgLoaded])
+  }, [interesado, photoIdx, images, imgLoaded])
+
+  /* El ratón entra en la foto, un dedo la toca o el teclado llega a una
+     flecha. Los pointer events cubren también el táctil: el
+     pointerenter salta al empezar el toque, antes del clic. */
+  const marcarInteres = () => { if (!interesado) setInteresado(true) }
+
+  /* El brillo de "cargando" solo mientras no hay ninguna foto pintada.
+     Era una animación infinita de background-position: no la hace la
+     tarjeta gráfica, obliga a repintar la zona en cada fotograma, y
+     seguía viva debajo de la foto para siempre. Con tres tarjetas en
+     pantalla eran tres repintados por fotograma de una zona que
+     contiene fotos de varios megapíxeles: el ventilador. */
+  const algunaCargada = Object.keys(imgLoaded).length > 0
 
   const prevPhoto = (e) => {
     e.stopPropagation()
@@ -79,7 +101,11 @@ export default function RoomCard({ room, onSelect, index = 0, oferta = null }) {
 
       {/* ── FOTO CON CARRUSEL ── */}
       <div className={styles.imageContainer}>
-        <div className={styles.imageWrapper}>
+        <div
+          className={`${styles.imageWrapper} ${algunaCargada ? styles.imageWrapperListo : ''}`}
+          onPointerEnter={marcarInteres}
+          onFocus={marcarInteres}
+        >
           <AnimatePresence mode="wait" initial={false}>
             <motion.img
               key={photoIdx}
@@ -285,6 +311,30 @@ export default function RoomCard({ room, onSelect, index = 0, oferta = null }) {
           Elegir esta sala
           <ArrowRight size={15} />
         </button>
+
+        {/* Enlace a la ficha de la sala.
+
+            Antes vivía en una fila suelta debajo de las tres tarjetas,
+            en RoomSelector. Era el ÚNICO camino a /salas/<slug>, porque
+            esta tarjeta no enlazaba a ninguna parte: el botón de arriba
+            abre el formulario. Quien quería leer sobre la sala tenía
+            que buscar un enlace pequeño fuera de la tarjeta.
+
+            Deliberadamente discreto: la acción principal sigue siendo
+            reservar. Si esto fuera un segundo botón, competirían y la
+            tarjeta perdería el foco.
+
+            Sigue siendo el camino por el que Google descubre las
+            fichas, así que tiene que ser un <a> real y estar siempre en
+            el HTML. Con <Link> de react-router lo es, y el prerender lo
+            escribe. */}
+        <Link
+          to={rutaSala(room.slug)}
+          className={styles.verFicha}
+          onClick={(e) => e.stopPropagation()}
+        >
+          Ver ficha de la sala
+        </Link>
 
       </div>
     </article>

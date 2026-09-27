@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { AnimatePresence } from 'framer-motion'
-import { Images } from 'lucide-react'
+import { Images, Presentation, MonitorPlay, UserSearch, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import RoomCard from './RoomCard'
 import { ID_SALAS } from '../Hero/Hero'
@@ -10,9 +10,19 @@ import { ofertaEscaparate } from '../../lib/ofertas'
 import Gallery from '../Gallery/Gallery'
 import Footer from '../Footer/Footer'
 import { HOTEL_ESTATICO } from '../../lib/hotelEstatico'
-import { rutaSala } from '../../lib/seo'
 import { USOS } from '../../lib/usos'
 import styles from './RoomSelector.module.css'
+
+/* Icono de cada página de uso. Va por slug y no dentro de lib/usos.js
+   a propósito: aquel fichero es texto y datos, y meterle componentes de
+   React lo ataría a la interfaz. Si se añade un uso sin icono, el chip
+   sale de solo texto y no se rompe nada. */
+const ICONOS_USO = {
+  formaciones:    Presentation,
+  presentaciones: MonitorPlay,
+  entrevistas:    UserSearch,
+  juntas:         Users,
+}
 
 /* Compartida con el esqueleto de carga, para que el texto sea el mismo
    antes y después de llegar los datos. */
@@ -122,41 +132,59 @@ export default function RoomSelector({ hotel, onSelectRoom, ofertas = [] }) {
         </div>
 
         <div className={styles.grid}>
-          {hotel.rooms.map((room, index) => (
+          {hotel.rooms.map(room => (
             <RoomCard
               key={room.id}
               room={room}
-              index={index}
               oferta={ofertaPorSala[room.slug]}
               onSelect={() => onSelectRoom(room)}
             />
           ))}
         </div>
 
-        {/* Enlaces a las fichas de cada sala. Además de servir al
-            cliente, son el camino por el que Google descubre esas
-            páginas: tienen que ser <a> reales y estar siempre en el
-            HTML, no dentro de un acordeón. */}
-        <nav className={styles.fichas} aria-label="Fichas de las salas">
-          <span>Ficha completa de cada sala:</span>
-          <ul>
-            {hotel.rooms.map(room => (
-              <li key={room.slug}>
-                <Link to={rutaSala(room.slug)}>{room.name}</Link>
-              </li>
-            ))}
+        {/* Páginas por tipo de evento.
+
+            Antes esto eran dos filas de enlaces subrayados con el mismo
+            estilo, una debajo de otra, lo que las hacía parecer
+            hermanas. No lo son: la primera repetía las tres salas de
+            arriba y ya vive dentro de cada tarjeta ("Ver ficha de la
+            sala"); esta apunta a cuatro páginas distintas.
+
+            Con encabezado propio deja de leerse como un pie de página y
+            pasa a ser una sección. De paso, esas cuatro páginas cuelgan
+            ahora de un <h2> en vez de un <span>, que estructuralmente
+            vale más.
+
+            Son el camino por el que Google llega a las páginas de uso:
+            <a> reales, siempre en el HTML, nunca dentro de un acordeón.
+
+            PARA MOVERLA: este bloque es autónomo. Bajarlo después del
+            botón de galería o subirlo antes de la rejilla de salas es
+            cortar y pegar, no hay nada que dependa de su posición. */}
+        <section className={styles.usos} aria-labelledby="usos-titulo">
+          <h2 id="usos-titulo" className={styles.usosTitulo}>
+            ¿Para qué necesitas la sala?
+          </h2>
+          <p className={styles.usosTexto}>
+            Te contamos qué montaje y qué espacio encaja mejor en cada caso.
+          </p>
+          <ul className={styles.usosLista}>
+            {USOS.map(u => {
+              const Icono = ICONOS_USO[u.slug]
+              return (
+                <li key={u.slug}>
+                  <Link to={u.ruta} className={styles.chip}>
+                    {/* Para quitar los iconos, borrar esta línea y el
+                        mapa ICONOS_USO de arriba. Los chips se quedan
+                        de solo texto y no hay que tocar el CSS. */}
+                    {Icono && <Icono size={16} strokeWidth={1.8} aria-hidden="true" />}
+                    {u.etiqueta}
+                  </Link>
+                </li>
+              )
+            })}
           </ul>
-        </nav>
-        <nav className={styles.fichas} aria-label="Salas por tipo de evento">
-          <span>Ideal para:</span>
-          <ul>
-            {USOS.map(u => (
-              <li key={u.slug}>
-                <Link to={u.ruta}>{u.etiqueta}</Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        </section>
 
         {/* Botón ver galería */}
         <div className={`${styles.galleryRow} ${styles.aparece}`}>

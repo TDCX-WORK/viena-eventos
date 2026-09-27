@@ -28,7 +28,13 @@ export default function Footer() {
           <ul>
             {ENLACES_LEGALES.map(e => (
               <li key={e.ruta}>
-                <Link to={e.ruta}>{e.titulo}</Link>
+                {/* Aviso legal y privacidad son los de la web del hotel
+                    (ver lib/legal.js): se abren en pestaña nueva. */}
+                {e.externo ? (
+                  <a href={e.href} target="_blank" rel="noopener noreferrer">{e.titulo}</a>
+                ) : (
+                  <Link to={e.href}>{e.titulo}</Link>
+                )}
               </li>
             ))}
           </ul>

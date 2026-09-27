@@ -1,12 +1,17 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Phone, ArrowUpRight, Menu, X, Ticket } from 'lucide-react'
+import { Phone, MapPin, ArrowUpRight, Menu, X, Ticket } from 'lucide-react'
+// Lucide no trae logos de marca. Tabler sí, con el mismo trazo, y ya
+// está instalado por el panel: solo viaja este icono.
+import { IconBrandWhatsapp } from '@tabler/icons-react'
 import { estadoOferta, etiquetaDescuento } from '../../lib/ofertas'
 import { HOTEL_ESTATICO, DATOS_HERO_ESTATICOS } from '../../lib/hotelEstatico'
 import styles from './Hero.module.css'
 
-/* Foto de fondo: el Templo de Debod al anochecer, a cinco minutos
-   andando del hotel. Dice "Plaza de España" sin tener que escribirlo.
+/* Foto de fondo: el Templo de Debod reflejado en el estanque, a cinco
+   minutos andando del hotel. Dice "Plaza de España" sin tener que
+   escribirlo. Es una foto de día y muy luminosa: el velo y el filtro
+   de Hero.module.css están ajustados a ella.
 
    Vive en /public y NO en Supabase ni en src/assets, a propósito: es el
    elemento LCP de la página.
@@ -27,6 +32,12 @@ const HERO_SRCSET = '/hero-800.webp 800w, /hero-1280.webp 1280w, /hero-2000.webp
 const HERO_SRCSET_VERT = '/hero-vert-500.webp 500w, /hero-vert-760.webp 760w'
 
 const ID_SALAS = 'salas'
+
+/* Enlace a Google Maps. Se busca por nombre + dirección y no solo por
+   la dirección: así el mapa abre la ficha del hotel (fotos, horario,
+   reseñas) en lugar de un chincheta sin nombre. */
+const urlMapa = (direccion) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Suites Viena Plaza de España, ${direccion}`)}`
 
 /* Los enlaces del menú apuntan a secciones de esta misma página
    (#salas, #faq y #contacto). Si una sección no está pintada todavía,
@@ -55,6 +66,10 @@ export default function Hero({ hotel: hotelReal, ofertas = [] }) {
   const hotel = hotelReal || HOTEL_ESTATICO
   const salas = hotelReal?.rooms
   const [menuAbierto, setMenuAbierto] = useState(false)
+
+  const direccion = hotel.address || HOTEL_ESTATICO.address
+  const telefono = hotel.phone?.replace(/\s/g, '')
+  const whatsapp = hotel.whatsapp?.replace(/\D/g, '')
 
   /* Todas las cifras del hero salen de la base de datos. Si mañana se
      cambia un precio o se añade una sala desde el panel, el hero se
@@ -140,12 +155,67 @@ export default function Hero({ hotel: hotelReal, ofertas = [] }) {
             </ul>
 
             <div className={styles.navRight}>
-              {hotel.phone && (
-                <a className={styles.navPhone} href={`tel:${hotel.phone.replace(/\s/g, '')}`}>
-                  <Phone size={15} strokeWidth={2.2} />
-                  <span>{hotel.phone}</span>
-                </a>
-              )}
+              {/* ── Contacto: dirección, teléfono y WhatsApp ──
+                  Tres píldoras que se abren y cierran como un acordeón:
+                  solo una enseña su texto a la vez, así el grupo mide
+                  siempre más o menos lo mismo y la barra no baila.
+
+                  · Por defecto está abierta la dirección, cuando cabe
+                    (ver .chipDir en el CSS para los anchos).
+                  · Con ratón, al pasar por el teléfono o el WhatsApp se
+                    abre ese y se cierra la dirección.
+                  · En pantallas táctiles no hay hover: cada icono hace
+                    directamente su acción (llamar, abrir WhatsApp, abrir
+                    el mapa). Pedir dos toques para llamar sería peor.
+
+                  La dirección va la PRIMERA: al estar el grupo pegado a
+                  la derecha, las píldoras crecen hacia la izquierda y la
+                  que tienes debajo del ratón no se escapa. */}
+              <ul className={styles.contacto}>
+                {direccion && (
+                  <li className={styles.chipItem}>
+                    <a
+                      className={`${styles.chip} ${styles.chipDir}`}
+                      href={urlMapa(direccion)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Cómo llegar: ${direccion} (abre Google Maps)`}
+                      title={direccion}
+                    >
+                      <MapPin size={16} strokeWidth={2.2} aria-hidden="true" />
+                      <span className={styles.chipLabel}><span>{direccion}</span></span>
+                    </a>
+                  </li>
+                )}
+
+                {telefono && (
+                  <li className={styles.chipItem}>
+                    <a
+                      className={styles.chip}
+                      href={`tel:${telefono}`}
+                      aria-label={`Llamar al ${hotel.phone}`}
+                    >
+                      <Phone size={15} strokeWidth={2.2} aria-hidden="true" />
+                      <span className={styles.chipLabel}><span>{hotel.phone}</span></span>
+                    </a>
+                  </li>
+                )}
+
+                {whatsapp && (
+                  <li className={styles.chipItem}>
+                    <a
+                      className={`${styles.chip} ${styles.chipWa}`}
+                      href={`https://wa.me/${whatsapp}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Escribir por WhatsApp al ${hotel.whatsapp}`}
+                    >
+                      <IconBrandWhatsapp size={17} stroke={2} aria-hidden="true" />
+                      <span className={styles.chipLabel}><span>{hotel.whatsapp}</span></span>
+                    </a>
+                  </li>
+                )}
+              </ul>
 
               <button
                 type="button"
@@ -162,15 +232,47 @@ export default function Hero({ hotel: hotelReal, ofertas = [] }) {
           {/* Menú desplegable. Solo se ve por debajo de 900 px, donde los
               enlaces no caben en la barra. */}
           {menuAbierto && (
-            <ul className={styles.navPanel}>
-              {ENLACES.map(l => (
-                <li key={l.id}>
-                  <a className={styles.navPanelLink} href={`#${l.id}`} onClick={irA(l.id)}>
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <div className={styles.navPanel}>
+              <ul className={styles.navPanelLinks}>
+                {ENLACES.map(l => (
+                  <li key={l.id}>
+                    <a className={styles.navPanelLink} href={`#${l.id}`} onClick={irA(l.id)}>
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              {/* En móvil los iconos de arriba no enseñan el texto, así
+                  que aquí va todo escrito: es donde alguien busca la
+                  dirección para copiarla o el número para apuntarlo. */}
+              <ul className={styles.navPanelContacto}>
+                {direccion && (
+                  <li>
+                    <a className={styles.navPanelDato} href={urlMapa(direccion)} target="_blank" rel="noopener noreferrer">
+                      <MapPin size={16} strokeWidth={2.2} aria-hidden="true" />
+                      {direccion}
+                    </a>
+                  </li>
+                )}
+                {telefono && (
+                  <li>
+                    <a className={styles.navPanelDato} href={`tel:${telefono}`}>
+                      <Phone size={16} strokeWidth={2.2} aria-hidden="true" />
+                      {hotel.phone}
+                    </a>
+                  </li>
+                )}
+                {whatsapp && (
+                  <li>
+                    <a className={styles.navPanelDato} href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer">
+                      <IconBrandWhatsapp size={17} stroke={2} aria-hidden="true" />
+                      WhatsApp · {hotel.whatsapp}
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </div>
           )}
 
           {/* ── Titular, arriba ── */}
@@ -235,10 +337,10 @@ export default function Hero({ hotel: hotelReal, ofertas = [] }) {
                   <ArrowUpRight size={17} strokeWidth={2.4} />
                 </button>
 
-                {hotel.whatsapp && (
+                {whatsapp && (
                   <a
                     className={styles.ctaGhost}
-                    href={`https://wa.me/${hotel.whatsapp.replace(/\D/g, '')}`}
+                    href={`https://wa.me/${whatsapp}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

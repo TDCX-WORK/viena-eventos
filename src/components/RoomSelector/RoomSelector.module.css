@@ -133,33 +133,75 @@
 .errorTexto { font-size: 0.9rem; color: #78716c; margin: 0; line-height: 1.6; }
 .errorTexto a { color: #A07848; }
 
-/* ── Enlaces a las fichas de sala ── */
-.fichas + .fichas { margin-top: 0.6rem; }
-.fichas {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem 0.9rem;
-  margin-top: 1.75rem;
+/* ── Páginas por tipo de evento ──
+
+   Sustituye a las dos filas de enlaces subrayados que había aquí
+   (.fichas). Aquello se leía como un pie de página; esto es una
+   sección, con separador arriba para despegarla de las tarjetas y no
+   dejarla apretada contra el botón de galería.
+
+   Los chips son enlaces, no botones: llevan a otra página. Por eso van
+   en píldora y no en rectángulo, para que no se confundan con el CTA
+   de las tarjetas. */
+.usos {
+  margin-top: 2.75rem;
+  padding-top: 2.25rem;
+  border-top: 1px solid rgba(160,120,72,0.15);
+  text-align: center;
+}
+
+.usosTitulo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #18120E;
+  margin: 0 0 0.3rem;
+}
+
+.usosTexto {
   font-size: 0.92rem;
   color: #6b6560;
+  margin: 0 0 1.15rem;
 }
-.fichas ul {
+
+.usosLista {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.4rem 0.9rem;
+  gap: 0.65rem;
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
-.fichas a {
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.05rem;
+  border: 1px solid rgba(160,120,72,0.25);
+  border-radius: 999px;
+  background: #FDFCFB;
+  font-size: 0.92rem;
   color: #3D3530;
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-color: rgba(160,120,72,0.45);
-  text-underline-offset: 4px;
+  text-decoration: none;
+  transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
 }
-.fichas a:hover { color: #A07848; }
+
+.chip svg { color: #A07848; transition: color 0.25s ease; }
+
+.chip:hover {
+  border-color: #A07848;
+  background: #fff;
+  color: #18120E;
+}
+
+.chip:hover svg { color: #18120E; }
+
+@media (max-width: 480px) {
+  .usos { margin-top: 2.25rem; padding-top: 1.75rem; }
+  .chip { padding: 0.55rem 0.9rem; font-size: 0.87rem; }
+}
 
 /* ─────────────────────────────────────────────────────────────────────
    Aparición al entrar en pantalla, sin JavaScript.

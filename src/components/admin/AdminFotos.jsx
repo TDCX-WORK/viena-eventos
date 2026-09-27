@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, memo, useCallback } from 'react'
 import { supabase } from '../../lib/supabase'
 import { getOptimizedUrl, IMAGE_SIZES } from '../../lib/imageUtils'
+import { prepararFoto } from '../../lib/prepararFoto'
 import { Upload, Trash2, Star, Loader2, ImageIcon, PartyPopper, ChevronDown } from 'lucide-react'
 import styles from './AdminFotos.module.css'
 
@@ -63,13 +64,13 @@ export default function AdminFotos() {
       if (activeTarget === 'gallery') {
         const maxOrder = Math.max(0, ...gallery.map(i => i.sort_order))
         for (let i = 0; i < files.length; i++) {
-          const file = files[i]
-          const ext = file.name.split('.').pop().toLowerCase()
+          // Reducida a 1920 px y en WebP antes de subir: ver lib/prepararFoto.js.
+          const { blob, ext, tipo } = await prepararFoto(files[i])
           const fileName = `eventos/${Date.now()}-${i}.${ext}`
 
           const { error: upErr } = await supabase.storage
             .from('salas')
-            .upload(fileName, file, { contentType: file.type })
+            .upload(fileName, blob, { contentType: tipo })
           if (upErr) { console.error(upErr); continue }
 
           const { data: urlData } = supabase.storage.from('salas').getPublicUrl(fileName)
@@ -85,13 +86,13 @@ export default function AdminFotos() {
         const room = rooms.find(r => r.id === activeTarget)
         const maxOrder = Math.max(0, ...room.room_images.map(i => i.sort_order))
         for (let i = 0; i < files.length; i++) {
-          const file = files[i]
-          const ext = file.name.split('.').pop().toLowerCase()
+          // Reducida a 1920 px y en WebP antes de subir: ver lib/prepararFoto.js.
+          const { blob, ext, tipo } = await prepararFoto(files[i])
           const fileName = `${room.slug}/${Date.now()}-${i}.${ext}`
 
           const { error: upErr } = await supabase.storage
             .from('salas')
-            .upload(fileName, file, { contentType: file.type })
+            .upload(fileName, blob, { contentType: tipo })
           if (upErr) { console.error(upErr); continue }
 
           const { data: urlData } = supabase.storage.from('salas').getPublicUrl(fileName)

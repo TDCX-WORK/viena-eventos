@@ -50,6 +50,18 @@
   100% { background-position: -200% 0; }
 }
 
+/* En cuanto hay una foto pintada, fuera la animación. Ver RoomCard.jsx:
+   dejarla corriendo debajo de la foto costaba un repintado por
+   fotograma en cada tarjeta, para siempre. */
+.imageWrapperListo {
+  animation: none;
+  background: #f0ede8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .imageWrapper { animation: none; }
+}
+
 .image {
   position: absolute;
   inset: 0;
@@ -317,7 +329,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin: 12px 14px 14px;
+  margin: 12px 14px 0;
   padding: 13px 20px;
   background: rgba(255,255,255,0.45);
   color: #3D3530;
@@ -327,6 +339,29 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Enlace a la ficha de la sala, bajo el CTA.
+
+   Va en un tono apagado a propósito: es la acción secundaria. El
+   subrayado con offset es el mismo recurso que usaban los enlaces
+   sueltos que había debajo de las tarjetas, para que el cambio no
+   introduzca un lenguaje visual nuevo. */
+.verFicha {
+  display: block;
+  margin: 9px 14px 14px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #6b6560;
+  text-decoration: underline;
+  text-decoration-color: rgba(160,120,72,0.4);
+  text-underline-offset: 4px;
+  transition: color 0.25s ease, text-decoration-color 0.25s ease;
+}
+
+.verFicha:hover {
+  color: #A07848;
+  text-decoration-color: #A07848;
 }
 
 .cta:hover {

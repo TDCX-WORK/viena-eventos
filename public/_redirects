@@ -11,3 +11,10 @@
 #
 # El fichero se deja para las redirecciones que hagan falta en el
 # futuro (p. ej. una URL antigua → una nueva, con 301).
+# Aviso legal y política de privacidad: se usan los de la web del hotel
+# (misma sociedad, indicación del abogado). 302 y no 301 a propósito:
+# es provisional y así nadie cachea la redirección para siempre.
+# Si algún día se publican los textos propios, borrar estas dos líneas
+# y poner USAR_TEXTOS_DEL_HOTEL = false en src/lib/legal.js.
+/aviso-legal            https://www.suitesviena.com/aviso-legal/          302
+/politica-privacidad    https://www.suitesviena.com/politica-privacidad/  302

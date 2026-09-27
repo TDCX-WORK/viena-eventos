@@ -4,7 +4,7 @@ import { ArrowLeft, Phone, AlertTriangle } from 'lucide-react'
 import { useCabecera } from '../../hooks/useCabecera'
 import { HOTEL_ESTATICO } from '../../lib/hotelEstatico'
 import {
-  documentoPorRuta, cabeceraLegal, BORRADOR, ACTUALIZADO, ENLACES_LEGALES,
+  documentoPorRuta, cabeceraLegal, esBorrador, ACTUALIZADO, ENLACES_LEGALES,
 } from '../../lib/legal'
 import NoEncontrada from '../NoEncontrada/NoEncontrada'
 import Footer from '../Footer/Footer'
@@ -122,9 +122,10 @@ export default function PaginaLegal() {
 
         <article className={styles.documento}>
 
-          {/* Mientras lib/legal.js tenga BORRADOR = true. Al aprobarse el
-              texto se pone a false y este cartel desaparece solo. */}
-          {BORRADOR && (
+          {/* Mientras lib/legal.js tenga BORRADOR = true (o el documento
+              su propio `borrador: true`). Al aprobarse el texto se pone
+              a false y este cartel desaparece solo. */}
+          {esBorrador(doc) && (
             <div className={styles.borrador} role="note">
               <AlertTriangle size={18} strokeWidth={2.2} />
               <div>
@@ -138,7 +139,7 @@ export default function PaginaLegal() {
 
           <h1 className={styles.titulo}>{doc.titulo}</h1>
           <p className={styles.actualizado}>
-            Última actualización: <Texto>{ACTUALIZADO}</Texto>
+            Última actualización: <Texto>{doc.actualizado || ACTUALIZADO}</Texto>
           </p>
           {doc.entradilla && (
             <p className={styles.entradilla}><Texto>{doc.entradilla}</Texto></p>
@@ -155,7 +156,13 @@ export default function PaginaLegal() {
             <span>Ver también:</span>
             <ul>
               {otros.map(o => (
-                <li key={o.ruta}><Link to={o.ruta}>{o.titulo}</Link></li>
+                <li key={o.ruta}>
+                  {o.externo ? (
+                    <a href={o.href} target="_blank" rel="noopener noreferrer">{o.titulo}</a>
+                  ) : (
+                    <Link to={o.href}>{o.titulo}</Link>
+                  )}
+                </li>
               ))}
             </ul>
           </nav>

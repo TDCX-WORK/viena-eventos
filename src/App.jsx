@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import NoEncontrada from './components/NoEncontrada/NoEncontrada'
@@ -99,6 +99,33 @@ function PublicApp() {
 
   // Título y metas de la portada al volver aquí desde una ficha de sala.
   useCabecera(cabeceraPortada(hotel))
+
+  /* Salto a la sección cuando se llega con un ancla (/#salas).
+
+     Hace falta porque el navegador solo salta al ancla si el elemento
+     ya existe cuando lee la URL, y aquí la sección la pinta React
+     después de que lleguen los datos. Por eso "Ver todas las salas"
+     desde una ficha dejaba al visitante arriba del todo, en el hero.
+
+     Se espera a que no haya `loading`: antes de eso la sección no está
+     en el DOM. El requestAnimationFrame da un fotograma más para que
+     el navegador haya pintado, porque scrollIntoView sobre un elemento
+     recién montado a veces mide mal la posición.
+
+     Se respeta prefers-reduced-motion, igual que el menú del hero. */
+  const { hash } = useLocation()
+  useEffect(() => {
+    if (loading || error || !hash) return
+
+    const salto = requestAnimationFrame(() => {
+      const destino = document.getElementById(hash.slice(1))
+      if (!destino) return
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      destino.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+    })
+
+    return () => cancelAnimationFrame(salto)
+  }, [hash, loading, error])
 
   /* Precarga del wizard.
   

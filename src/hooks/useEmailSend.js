@@ -43,7 +43,8 @@ const formatFechas = (booking) => {
   return fechas.map(f => ({
     fecha:      format(f.date, "EEEE d 'de' MMMM", { locale: es }),
     jornada:    JORNADA_LABELS[f.jornada] || f.jornada || '—',
-    layout:     LAYOUT_LABELS[f.layout] || '—',
+    // Sin montaje elegido: la configuración es opcional en el wizard.
+    layout:     LAYOUT_LABELS[f.layout] || 'Sin preferencia',
     asistentes: f.asistentes || '—',
   }))
 }

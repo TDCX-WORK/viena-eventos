@@ -8,9 +8,11 @@ import { useOfertasPublicas } from '../../hooks/useOfertasPublicas'
 import { useCabecera } from '../../hooks/useCabecera'
 import { cabeceraSala, capacidadSala, rutaSala } from '../../lib/seo'
 import { USOS } from '../../lib/usos'
+import { tienePlano } from '../../lib/planos'
 import { getOptimizedUrl, IMAGE_SIZES } from '../../lib/imageUtils'
 import NoEncontrada from '../NoEncontrada/NoEncontrada'
 import Gallery from '../Gallery/Gallery'
+import PlanoSala from '../PlanoSala/PlanoSala'
 import Footer from '../Footer/Footer'
 import styles from './PaginaSala.module.css'
 
@@ -129,7 +131,7 @@ export default function PaginaSala() {
         {/* ── Migas de pan ── */}
         <nav aria-label="Ruta" className={styles.migas}>
           <ol>
-            <li><Link to="/">Salas de reuniones</Link></li>
+            <li><Link to="/#salas">Salas de reuniones</Link></li>
             <li aria-current="page">{sala.name}</li>
           </ol>
         </nav>
@@ -183,10 +185,15 @@ export default function PaginaSala() {
           {/* ── Columna de contenido ── */}
           <div className={styles.contenido}>
 
-            {sala.description && (
+            {/* El plano no depende de que haya descripción: una sala sin
+                texto sigue teniendo forma. `tienePlano` evita que quede
+                un bloque con solo el título si no hay ni una cosa ni la
+                otra. */}
+            {(sala.description || tienePlano(sala.slug)) && (
               <section className={styles.bloque}>
                 <h2>Cómo es la sala</h2>
-                <p>{sala.description}</p>
+                {sala.description && <p>{sala.description}</p>}
+                <PlanoSala sala={sala} />
               </section>
             )}
 
@@ -330,8 +337,17 @@ export default function PaginaSala() {
           </section>
         )}
 
+        {/* Vuelta a la portada, a la sección de salas.
+
+            Era un <a href="/#salas">, que recarga la página entera: se
+            volvía a descargar el bundle y a consultar Supabase para
+            enseñar algo que el visitante acababa de dejar. Con <Link>
+            la vuelta es instantánea.
+
+            El salto a la sección lo hace PublicApp al leer el hash,
+            porque aquí el ancla todavía no existe en el DOM. */}
         <p className={styles.volver}>
-          <a href="/#salas"><ArrowLeft size={15} /> Ver todas las salas</a>
+          <Link to="/#salas"><ArrowLeft size={15} /> Ver todas las salas</Link>
         </p>
       </div>
 

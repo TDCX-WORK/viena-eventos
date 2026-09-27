@@ -1,9 +1,10 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  /* Un punto más oscuro para compensar el blur(4px) que se ha quitado:
+     era un desenfoque a pantalla completa animado con un fundido cada
+     vez que se abría un modal. */
+  background: rgba(0, 0, 0, 0.42);
   /* Muy por encima de la navbar, que está en 100. Al ir por portal a
      document.body no hay ningún contexto de apilado que lo encierre. */
   z-index: 1000;

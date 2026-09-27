@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { CheckCircle, User, Mail, Phone, MessageSquare, Shield, AlertTriangle, Clock } from 'lucide-react'
 import { useEmailSend } from '../../../hooks/useEmailSend'
 import { validarContacto, validarCampo } from '../../../lib/validacionContacto'
-import { CAPA_1 } from '../../../lib/legal'
+import { CAPA_1, HREF_PRIVACIDAD, HREF_AVISO_LEGAL, HREF_CONDICIONES } from '../../../lib/legal'
 import styles from './StepContacto.module.css'
 
 export default function StepContacto({ booking, updateContacto, hotel, desglose, onStatusChange }) {
@@ -319,13 +319,15 @@ export default function StepContacto({ booking, updateContacto, hotel, desglose,
             pestaña nueva con una carga completa deja intacto el wizard
             de esta pestaña. Con react-router, navegar desmontaría el
             formulario y el cliente perdería lo que lleva escrito. */}
+        {/* La política de privacidad es la de la web del hotel (ver
+            lib/legal.js): el enlace sale de ahí y no se escribe a mano. */}
         <label className={styles.privacyText} htmlFor="privacidad">
           He leído y acepto la{' '}
-          <a href="/politica-privacidad" target="_blank" rel="noopener noreferrer">
+          <a href={HREF_PRIVACIDAD} target="_blank" rel="noopener noreferrer">
             política de privacidad
           </a>
           {' '}y las{' '}
-          <a href="/condiciones-reserva" target="_blank" rel="noopener noreferrer">
+          <a href={HREF_CONDICIONES} target="_blank" rel="noopener noreferrer">
             condiciones de reserva
           </a>
           {' '}de Suites Viena
@@ -355,10 +357,13 @@ export default function StepContacto({ booking, updateContacto, hotel, desglose,
         </dl>
         <p>
           Puedes consultar la{' '}
-          <a href="/politica-privacidad" target="_blank" rel="noopener noreferrer">
+          <a href={HREF_PRIVACIDAD} target="_blank" rel="noopener noreferrer">
             información adicional y detallada
           </a>
-          {' '}en nuestra política de privacidad.
+          {' '}en nuestra política de privacidad y los datos del titular en el{' '}
+          <a href={HREF_AVISO_LEGAL} target="_blank" rel="noopener noreferrer">
+            aviso legal
+          </a>.
         </p>
       </details>
 

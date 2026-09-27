@@ -8,9 +8,12 @@
   justify-content: center;
   padding: 1.5rem;
   background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  animation: overlayIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  /* SIN backdrop-filter. Había un blur(12px) a pantalla completa y,
+     encima, animado con un fundido: el navegador tenía que recalcular
+     el desenfoque de toda la pantalla en cada fotograma, y eso era el
+     "va a tirones" al pulsar la tuerca. Detrás solo hay el degradado
+     liso de ProtectedRoute: desenfocado se ve exactamente igual. */
+  animation: overlayIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes overlayIn {
@@ -30,11 +33,17 @@
     0 8px 40px rgba(0, 0, 0, 0.18),
     0 2px 8px rgba(139, 32, 32, 0.06),
     0 0 60px -10px rgba(139, 32, 32, 0.1);
-  animation: cardIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: cardIn 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Solo transform y opacity: los dos que la tarjeta gráfica anima sin
+     repintar. El will-change prepara la capa antes del primer fotograma
+     y se queda puesto, que para una tarjeta así no cuesta nada. */
+  will-change: transform, opacity;
 }
 
+/* Sin rebote: el rebote de antes (sobrepasaba la escala final y
+   volvía) es lo primero que delata un fotograma perdido. */
 @keyframes cardIn {
-  from { opacity: 0; transform: scale(0.92) translateY(20px); }
+  from { opacity: 0; transform: scale(0.96) translateY(12px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
@@ -159,6 +168,53 @@
 .submitBtn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .footer {
-  text-align: center; padding: 0 2.1rem 1.85rem;
+  text-align: center; padding: 0 2.1rem 0.9rem;
   font-size: 0.82rem; color: #999; margin: 0;
 }
+
+/* ── Cerrar ──
+   Dos salidas: la X arriba a la derecha, sobre la cabecera negra, y
+   "Volver a la web" abajo, para quien no la vea. Además cierran Esc y
+   el clic fuera de la tarjeta (AdminLogin.jsx). */
+.cerrar {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.cerrar:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+.cerrar:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.volver {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0 2.1rem 1.6rem;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #8B2020;
+  cursor: pointer;
+}
+.volver:hover { text-decoration: underline; text-underline-offset: 3px; }
+.volver:focus-visible { outline: 2px solid #8B2020; outline-offset: 2px; border-radius: 6px; }

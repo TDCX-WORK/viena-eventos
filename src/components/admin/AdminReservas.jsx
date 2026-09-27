@@ -105,9 +105,14 @@ export default function AdminReservas() {
   // useLayoutEffect: coloca antes del pintado, así no se ve nunca en una
   // posición equivocada. Depende de contadores porque los números de
   // dentro de cada pestaña cambian su ancho.
+  //
+  // Y de `cargando`: mientras carga, la pantalla sale antes (return de
+  // más abajo) y las pestañas no existen. Si al terminar los contadores
+  // no han cambiado —el caso de una lista vacía— el efecto no volvía a
+  // ejecutarse y la pestaña activa se quedaba sin marcar.
   useLayoutEffect(() => {
     colocarIndicador()
-  }, [colocarIndicador, contadores])
+  }, [colocarIndicador, contadores, cargando])
 
   useEffect(() => {
     window.addEventListener('resize', colocarIndicador)

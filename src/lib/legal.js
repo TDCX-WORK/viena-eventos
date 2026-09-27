@@ -25,8 +25,30 @@
    aquí también.
    ───────────────────────────────────────────────────────────────────── */
 
-/** Cartel de borrador + noindex. Las dos a false para publicar de verdad. */
+/** Cartel de borrador + noindex. Las dos a false para publicar de verdad.
+ *  Un documento puede saltárselo con su propio `borrador: false` (es el
+ *  caso de la política de cookies definitiva, más abajo). */
 export const BORRADOR = true
+
+/* ── Aviso legal y privacidad: los del hotel ──────────────────────────
+   Por indicación del abogado, el aviso legal y la política de
+   privacidad de esta web son los de www.suitesviena.com (misma
+   sociedad). Los enlaces del pie y del formulario de reserva van
+   directamente allí y las rutas /aviso-legal y /politica-privacidad de
+   esta web redirigen allí (public/_redirects).
+
+   LOS BORRADORES PROPIOS NO SE HAN BORRADO. Siguen más abajo, completos
+   (AVISO_LEGAL, PRIVACIDAD y COOKIES_BORRADOR). Si algún día hace falta
+   que esta web tenga sus propios textos:
+     1. USAR_TEXTOS_DEL_HOTEL = false
+     2. Quitar las dos redirecciones de public/_redirects
+     3. Si se quiere la política de cookies larga, cambiar COOKIES por
+        COOKIES_BORRADOR en DOCUMENTOS.
+   Y las páginas vuelven a generarse solas en el build. */
+export const USAR_TEXTOS_DEL_HOTEL = true
+
+export const URL_AVISO_LEGAL_HOTEL = 'https://www.suitesviena.com/aviso-legal/'
+export const URL_PRIVACIDAD_HOTEL = 'https://www.suitesviena.com/politica-privacidad/'
 
 /** Fecha que se enseña como "última actualización". */
 export const ACTUALIZADO = '{{fecha de aprobación}}'
@@ -69,6 +91,7 @@ export const CAPA_1 = [
 const AVISO_LEGAL = {
   slug: 'aviso-legal',
   ruta: '/aviso-legal',
+  externa: URL_AVISO_LEGAL_HOTEL,
   titulo: 'Aviso legal',
   seoTitulo: 'Aviso legal | Suites Viena Plaza de España',
   seoDescripcion:
@@ -198,6 +221,7 @@ const AVISO_LEGAL = {
 const PRIVACIDAD = {
   slug: 'politica-privacidad',
   ruta: '/politica-privacidad',
+  externa: URL_PRIVACIDAD_HOTEL,
   titulo: 'Política de privacidad',
   seoTitulo: 'Política de privacidad | Suites Viena Plaza de España',
   seoDescripcion:
@@ -429,7 +453,9 @@ const PRIVACIDAD = {
   ],
 }
 
-const COOKIES = {
+/* Borrador largo de la política de cookies. Se conserva tal cual; la que
+   se publica ahora es COOKIES, justo debajo. */
+const COOKIES_BORRADOR = {
   slug: 'politica-cookies',
   ruta: '/politica-cookies',
   titulo: 'Política de cookies',
@@ -502,6 +528,97 @@ const COOKIES = {
           texto:
             'Puedes borrar o bloquear el almacenamiento de cualquier web desde la configuración de tu navegador, en el ' +
             'apartado de privacidad o de datos de navegación.',
+        },
+      ],
+    },
+  ],
+}
+
+/* ── Política de cookies publicada ─────────────────────────────────────
+   Versión corta y definitiva: la web pública no instala ninguna cookie.
+   No lleva cartel de borrador y sí se indexa. */
+const COOKIES = {
+  slug: 'politica-cookies',
+  ruta: '/politica-cookies',
+  titulo: 'Política de cookies',
+  borrador: false,
+  actualizado: '27 de septiembre de 2026',
+  seoTitulo: 'Política de cookies | Suites Viena Plaza de España',
+  seoDescripcion:
+    'suitesvienaeventos.com no utiliza cookies de rastreo, analítica ni publicidad. Por eso no verás ningún aviso de cookies.',
+  entradilla:
+    'En pocas palabras: esta web no te rastrea. No instala cookies de analítica, de publicidad ni de redes sociales, y por eso no te pedimos que aceptes nada al entrar.',
+  secciones: [
+    {
+      h: 'No usamos cookies',
+      bloques: [
+        {
+          tipo: 'p',
+          texto:
+            'Mientras navegas por esta web, consultas las salas o envías una solicitud de reserva, no se guarda ninguna ' +
+            'cookie en tu navegador. En concreto:',
+        },
+        {
+          tipo: 'lista',
+          elementos: [
+            'No hay Google Analytics ni ninguna otra herramienta de medición de visitas.',
+            'No hay píxeles ni etiquetas de publicidad (Google Ads, Meta, LinkedIn…).',
+            'No hay botones de redes sociales, vídeos ni mapas incrustados de terceros.',
+            'Las tipografías se sirven desde este mismo dominio, no desde Google Fonts.',
+          ],
+        },
+      ],
+    },
+    {
+      h: '¿Y Google Search Console?',
+      bloques: [
+        {
+          tipo: 'p',
+          texto:
+            'Esta web está dada de alta en Google Search Console, una herramienta que permite al titular saber cómo aparece ' +
+            'la web en los resultados de búsqueda de Google (por qué búsquedas sale, cuántas veces y si hay errores). Esos ' +
+            'datos los obtiene Google de su propio buscador, de forma agregada.',
+        },
+        {
+          tipo: 'p',
+          texto:
+            'Search Console no instala cookies ni añade ningún código de seguimiento a estas páginas, y no nos permite ' +
+            'saber quién eres ni qué haces dentro de la web. No es un rastreo de tu navegación.',
+        },
+      ],
+    },
+    {
+      h: 'Panel de administración',
+      bloques: [
+        {
+          tipo: 'p',
+          texto:
+            'La única excepción es el panel interno (/admin), al que solo accede el personal del hotel. Al iniciar sesión, ' +
+            'el navegador guarda un identificador de sesión estrictamente necesario para mantenerla abierta, que desaparece ' +
+            'al cerrarla. No afecta a los visitantes de la web.',
+        },
+      ],
+    },
+    {
+      h: 'Enlaces a otras webs',
+      bloques: [
+        {
+          tipo: 'p',
+          texto:
+            'Algunos enlaces te llevan fuera de esta web: la web del hotel (www.suitesviena.com, donde están el aviso legal ' +
+            'y la política de privacidad), WhatsApp o Google Maps. Al abrirlos se aplican las políticas de cookies de ' +
+            'esos sitios, que no dependen de nosotros.',
+        },
+      ],
+    },
+    {
+      h: 'Si esto cambia',
+      bloques: [
+        {
+          tipo: 'p',
+          texto:
+            'Si en el futuro se añade alguna herramienta que utilice cookies no necesarias, antes se pondrá un aviso que ' +
+            'permita aceptarlas o rechazarlas y se actualizará esta página.',
         },
       ],
     },
@@ -613,18 +730,45 @@ const CONDICIONES = {
   ],
 }
 
-export const LEGALES = [AVISO_LEGAL, PRIVACIDAD, COOKIES, CONDICIONES]
+/** Los cuatro documentos, en el orden habitual en España. */
+const DOCUMENTOS = [AVISO_LEGAL, PRIVACIDAD, COOKIES, CONDICIONES]
 
-/** Enlaces del pie. El orden es el habitual en España. */
-export const ENLACES_LEGALES = LEGALES.map(d => ({ ruta: d.ruta, titulo: d.titulo }))
+/** URL externa del documento, si ahora mismo se usa la del hotel. */
+const externa = (d) => (USAR_TEXTOS_DEL_HOTEL && d.externa) || null
+
+/** Las páginas que existen en ESTA web (rutas y prerender). Las que
+ *  apuntan a la web del hotel no se generan: /aviso-legal y
+ *  /politica-privacidad redirigen allí desde public/_redirects. */
+export const LEGALES = DOCUMENTOS.filter(d => !externa(d))
+
+/** Enlaces del pie y de "Ver también". `externo` = abre la web del
+ *  hotel en pestaña nueva; si no, es una ruta interna. */
+export const ENLACES_LEGALES = DOCUMENTOS.map(d => ({
+  ruta: d.ruta,
+  titulo: d.titulo,
+  href: externa(d) || d.ruta,
+  externo: Boolean(externa(d)),
+}))
+
+/** Para el formulario de reserva: a dónde apunta cada documento hoy. */
+export const HREF_PRIVACIDAD = externa(PRIVACIDAD) || PRIVACIDAD.ruta
+export const HREF_AVISO_LEGAL = externa(AVISO_LEGAL) || AVISO_LEGAL.ruta
+export const HREF_CONDICIONES = CONDICIONES.ruta
+
+/** Los borradores propios, guardados para cuando hagan falta. No se
+ *  usan en ninguna parte; se exportan para que sigan a mano. */
+export const BORRADORES_PROPIOS = { AVISO_LEGAL, PRIVACIDAD, COOKIES: COOKIES_BORRADOR }
+
+/** ¿Este documento sale como borrador (cartel rojo + noindex)? */
+export const esBorrador = (doc) => doc.borrador ?? BORRADOR
 
 export const documentoPorRuta = (ruta) =>
   LEGALES.find(d => d.ruta === ruta) || null
 
-/** Cabecera SEO. Mientras sea borrador, ninguna de estas páginas se indexa. */
+/** Cabecera SEO. Mientras sea borrador, la página no se indexa. */
 export const cabeceraLegal = (doc) => ({
   titulo: doc.seoTitulo,
   descripcion: doc.seoDescripcion,
   ruta: doc.ruta,
-  noindex: BORRADOR,
+  noindex: esBorrador(doc),
 })

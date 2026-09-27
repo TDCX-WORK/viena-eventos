@@ -149,9 +149,13 @@ export default function StepJornadaFecha({ booking, updateBooking, updateFecha, 
   // ── Handlers por fecha ──
   const setFechaJornada = (date, jornada) => updateFecha(date, { jornada })
 
-  const setFechaLayout = (date, layout) => {
+  /* La configuración es opcional. Pulsar la que ya está elegida la
+     quita (vuelve a "sin preferencia"), para que quien la marcó por
+     curiosidad pueda deshacerlo sin tener que elegir otra. */
+  const setFechaLayout = (date, elegido) => {
     const f = fechas.find(ff => isSameDay(ff.date, date))
-    const lo = room.layouts.find(l => l.type === layout)
+    const layout = f?.layout === elegido ? null : elegido
+    const lo = layout ? room.layouts.find(l => l.type === layout) : null
     const maxPax = lo ? lo.max : Math.max(...room.layouts.map(l => l.max))
     const asistentes = (f?.asistentes && f.asistentes > maxPax) ? maxPax : f?.asistentes
     updateFecha(date, { layout, asistentes })
@@ -310,13 +314,22 @@ export default function StepJornadaFecha({ booking, updateBooking, updateFecha, 
 
                       {/* Layout selector */}
                       <div className={styles.dateSection}>
-                        <span className={styles.dateSectionLabel}>Configuración de sala</span>
+                        <span className={styles.dateSectionLabel}>
+                          Configuración de sala{' '}
+                          <span className={styles.opcional}>(opcional)</span>
+                        </span>
+                        <p className={styles.dateSectionHint}>
+                          {f.layout
+                            ? 'Vuelve a pulsarla para quitarla.'
+                            : 'Si aún no lo tienes claro, déjalo en blanco y lo vemos contigo.'}
+                        </p>
                         <div className={styles.layoutGrid}>
                           {room.layouts.map(layout => (
                             <button
                               key={layout.type}
                               className={`${styles.layoutCard} ${f.layout === layout.type ? styles.layoutOn : ''}`}
                               data-type={layout.type}
+                              aria-pressed={f.layout === layout.type}
                               onClick={() => setFechaLayout(f.date, layout.type)}
                             >
                               <img src={LAYOUT_SVGS[layout.type]} alt={layout.label} className={styles.layoutSvg} />

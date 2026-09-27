@@ -4,8 +4,19 @@ import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { getOptimizedUrl, IMAGE_SIZES } from '../../lib/imageUtils'
 import styles from './Gallery.module.css'
 
+/* Distancia mínima, en px, para que un deslizamiento cuente como
+   "pasar de foto" y no como un toque. */
+const UMBRAL_SWIPE = 50
+
 export default function Gallery({ images, onClose }) {
   const [lightbox, setLightbox] = useState(null)
+
+  /* Deslizar con el dedo en el visor. Pointer events y no touch events:
+     funcionan igual con dedo, lápiz o ratón arrastrando. `arrastre`
+     recuerda si el último gesto fue un deslizamiento, para que el clic
+     que el navegador lanza al soltar no cierre el visor. */
+  const inicioGesto = useRef(null)
+  const arrastre = useRef(false)
 
   const goTo = useCallback((dir) => {
     setLightbox(prev => {
@@ -29,6 +40,27 @@ export default function Gallery({ images, onClose }) {
       img.src = getOptimizedUrl(images[idx], IMAGE_SIZES.lightbox)
     })
   }, [lightbox, images])
+
+  const alEmpezarGesto = (e) => {
+    inicioGesto.current = { x: e.clientX, y: e.clientY }
+    arrastre.current = false
+  }
+  const alAcabarGesto = (e) => {
+    const ini = inicioGesto.current
+    inicioGesto.current = null
+    if (!ini) return
+    const dx = e.clientX - ini.x
+    const dy = e.clientY - ini.y
+    // Horizontal y suficientemente largo. Un gesto vertical se ignora.
+    if (Math.abs(dx) > UMBRAL_SWIPE && Math.abs(dx) > Math.abs(dy)) {
+      arrastre.current = true
+      goTo(dx < 0 ? 1 : -1)
+    }
+  }
+  const cerrarVisor = () => {
+    if (arrastre.current) { arrastre.current = false; return }
+    setLightbox(null)
+  }
 
   useEffect(() => {
     const handleKey = (e) => {
@@ -89,7 +121,10 @@ export default function Gallery({ images, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            onClick={() => setLightbox(null)}
+            onClick={cerrarVisor}
+            onPointerDown={alEmpezarGesto}
+            onPointerUp={alAcabarGesto}
+            onPointerCancel={() => { inicioGesto.current = null }}
           >
             <button
               className={`${styles.lbNav} ${styles.lbPrev}`}
@@ -99,7 +134,13 @@ export default function Gallery({ images, onClose }) {
               <ChevronLeft size={28} />
             </button>
 
+            {/* key por foto: al cambiar de foto React crea un
+                LightboxImage nuevo y su estado "cargada" empieza en
+                false desde el primer fotograma. Antes se reiniciaba en
+                un efecto, un fotograma tarde, y la foto nueva se veía,
+                desaparecía y volvía a aparecer. */}
             <LightboxImage
+              key={images[lightbox]}
               src={images[lightbox]}
               index={lightbox}
               total={images.length}
@@ -131,68 +172,58 @@ export default function Gallery({ images, onClose }) {
   )
 }
 
-// ── Thumbnail with lazy loading ──
+// ── Miniatura ──
+/* Antes: IntersectionObserver a mano + una animación de framer-motion
+   por miniatura. Con 18 fotos eran 18 animaciones de JavaScript en el
+   hilo principal justo mientras el navegador decodificaba las fotos, y
+   se notaba al abrir la galería.
+
+   Ahora la carga diferida es la nativa del navegador (loading="lazy",
+   que funciona dentro de un contenedor con scroll) y la entrada es una
+   animación CSS de opacity + transform, que la hace la tarjeta gráfica
+   sin tocar el hilo principal. El escalonado va en animation-delay. */
 const GalleryThumb = memo(function GalleryThumb({ src, index, onClick }) {
   const [loaded, setLoaded] = useState(false)
-  const [inView, setInView] = useState(false)
-  const ref = useRef(null)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setInView(true); observer.disconnect() } },
-      { rootMargin: '300px' }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
   const thumbUrl = getOptimizedUrl(src, IMAGE_SIZES.galleryThumb)
 
   return (
-    <motion.button
-      ref={ref}
+    <button
+      type="button"
       className={styles.thumb}
       onClick={onClick}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: Math.min(index * 0.03, 0.6) }}
+      style={{ animationDelay: `${Math.min(index * 30, 450)}ms` }}
+      aria-label={`Ampliar foto ${index + 1}`}
     >
       <div className={`${styles.thumbPlaceholder} ${loaded ? styles.thumbPlaceholderDone : ''}`} />
-      {inView && (
-        <img
-          src={thumbUrl}
-          alt={`Foto ${index + 1}`}
-          className={`${styles.thumbImg} ${loaded ? styles.thumbImgLoaded : ''}`}
-          decoding="async"
-          onLoad={() => setLoaded(true)}
-        />
-      )}
-    </motion.button>
+      <img
+        src={thumbUrl}
+        alt=""
+        className={`${styles.thumbImg} ${loaded ? styles.thumbImgLoaded : ''}`}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+      />
+    </button>
   )
 })
 
-// ── Lightbox image with loading state ──
+// ── Foto del visor ──
+/* Se monta de nuevo con cada foto (key en el padre), así que `loaded`
+   empieza siempre en false. El fundido es una transición CSS de
+   opacity, sin framer-motion. */
 const LightboxImage = memo(function LightboxImage({ src, index, total }) {
   const [loaded, setLoaded] = useState(false)
   const fullUrl = getOptimizedUrl(src, IMAGE_SIZES.lightbox)
 
-  // Reset loaded state when src changes
-  useEffect(() => { setLoaded(false) }, [src])
-
   return (
     <div className={styles.lbImageWrap} onClick={(e) => e.stopPropagation()}>
       {!loaded && <div className={styles.lbSpinner} />}
-      <motion.img
-        key={src}
+      <img
         src={fullUrl}
-        alt={`Foto ${index + 1}`}
-        className={styles.lbImg}
-        initial={{ opacity: 0, scale: 0.97 }}
-        animate={{ opacity: loaded ? 1 : 0, scale: loaded ? 1 : 0.97 }}
-        transition={{ duration: 0.25 }}
+        alt={`Foto ${index + 1} de ${total}`}
+        className={`${styles.lbImg} ${loaded ? styles.lbImgLoaded : ''}`}
         decoding="async"
+        draggable={false}
         onLoad={() => setLoaded(true)}
       />
     </div>

@@ -295,6 +295,22 @@
   text-transform: uppercase;
 }
 
+/* "(opcional)" junto a la etiqueta: en minúscula y sin peso, para que
+   se lea como aclaración y no como parte del título. */
+.opcional {
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #8A817A;
+}
+
+.dateSectionHint {
+  margin: -0.25rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: #8A817A;
+}
+
 /* ── Jornada pills — bordes oscuros ── */
 .jornadaPills {
   display: flex;

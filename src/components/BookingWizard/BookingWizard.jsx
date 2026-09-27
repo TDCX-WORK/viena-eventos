@@ -47,7 +47,9 @@ export default function BookingWizard({ hotel, room, onBack, ofertasApi }) {
   const canGoNext = () => {
     if (currentStep === 1) {
       if (!booking.fechas || booking.fechas.length === 0) return false
-      return booking.fechas.every(f => f.jornada && f.layout && f.asistentes > 0)
+      // El montaje (f.layout) es opcional: muchos clientes no lo tienen
+      // claro al pedir la sala y se cierra después con la directora.
+      return booking.fechas.every(f => f.jornada && f.asistentes > 0)
     }
     if (currentStep === 2) return true
     return false

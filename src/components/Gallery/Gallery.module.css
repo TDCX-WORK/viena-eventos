@@ -3,9 +3,12 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(24,18,14,0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  /* Opaco y sin backdrop-filter. Antes era un fondo al 92 % con un
+     blur(12px) a pantalla completa, que el navegador recalculaba en
+     cada fotograma del fundido de entrada. El desenfoque solo servía
+     para que no se leyera la página de debajo; un fondo opaco lo
+     consigue sin coste. */
+  background: #18120E;
   display: flex;
   flex-direction: column;
 }
@@ -88,6 +91,19 @@
   background: transparent;
   padding: 0;
   transition: border-color 0.25s, transform 0.25s;
+  animation: entrarMiniatura 0.3s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+/* Entrada de cada miniatura (el retraso escalonado lo pone el JSX).
+   `backwards` y no `both`: al terminar la animación deja de aplicarse
+   y el transform del :hover funciona. */
+@keyframes entrarMiniatura {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb { animation: none; }
 }
 .thumb:hover {
   border-color: rgba(255,255,255,0.25);
@@ -130,6 +146,10 @@
   align-items: center;
   justify-content: center;
   padding: 3rem 1rem;
+  /* El navegador no se queda los deslizamientos horizontales para hacer
+     scroll (aquí no hay nada que desplazar) y así llegan al visor para
+     pasar de foto. El pellizco para ampliar sigue funcionando. */
+  touch-action: pinch-zoom;
 }
 
 .lbImageWrap {
@@ -158,7 +178,10 @@
   border-radius: 0.5rem;
   user-select: none;
   -webkit-user-drag: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
+.lbImgLoaded { opacity: 1; }
 
 .lbNav {
   position: absolute;

@@ -6,11 +6,12 @@
    juego en `npm run dev`, donde no hay prerender, y en el aviso de error
    de la sección de salas (email y teléfono).
 
-   Si cambian el teléfono o el email, actualizarlos aquí.
+   Si cambian la dirección, el teléfono o el email, actualizarlos aquí.
    ───────────────────────────────────────────────────────────────────── */
 
 export const HOTEL_ESTATICO = {
   location: 'Madrid · Plaza de España',
+  address: 'C/ Juan Álvarez Mendizábal, 17, 28008 Madrid',
   phone: '+34 917 583 605',
   whatsapp: '+34 671 613 939',
   email: 'reservas@suitesviena.es',
