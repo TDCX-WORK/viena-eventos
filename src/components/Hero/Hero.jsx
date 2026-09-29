@@ -8,10 +8,20 @@ import { estadoOferta, etiquetaDescuento } from '../../lib/ofertas'
 import { HOTEL_ESTATICO, DATOS_HERO_ESTATICOS } from '../../lib/hotelEstatico'
 import styles from './Hero.module.css'
 
-/* Foto de fondo: el Templo de Debod reflejado en el estanque, a cinco
-   minutos andando del hotel. Dice "Plaza de España" sin tener que
-   escribirlo. Es una foto de día y muy luminosa: el velo y el filtro
-   de Hero.module.css están ajustados a ella.
+/* Foto de fondo: el Templo de Debod al anochecer, iluminado y
+   reflejado en el estanque, a cinco minutos andando del hotel. Dice
+   "Plaza de España" sin tener que escribirlo. Es una foto oscura: el
+   velo de Hero.module.css solo oscurece el cielo (detrás de la barra)
+   y la franja del texto, y la foto va sin filtro.
+
+   La foto está ALARGADA POR ARRIBA 170 px: se añadió cielo (el mismo
+   color del cielo de la foto, degradado) para que el remate del templo
+   no quede pegado a la barra de navegación. Si se cambia de foto, esto
+   ya no aplica.
+
+   Anchos reales: la original mide 1900 px, así que hero-2000.webp se
+   llama así pero mide 1900 (el srcset dice 1900w, que es lo que cuenta).
+   Lo mismo con hero-vert-760: mide 600 px de ancho.
 
    Vive en /public y NO en Supabase ni en src/assets, a propósito: es el
    elemento LCP de la página.
@@ -29,15 +39,15 @@ import styles from './Hero.module.css'
    y SUBIR ESTE NÚMERO aquí y en las dos precargas de index.html (tienen
    que coincidir exactamente o el móvil descarga la foto dos veces).
    Para el navegador es una dirección nueva y la pide al momento. */
-const V = '?v=2'
+const V = '?v=4'
 
 const HERO_SRC = `/hero-2000.webp${V}`
-const HERO_SRCSET = `/hero-800.webp${V} 800w, /hero-1280.webp${V} 1280w, /hero-2000.webp${V} 2000w`
+const HERO_SRCSET = `/hero-800.webp${V} 800w, /hero-1280.webp${V} 1280w, /hero-2000.webp${V} 1900w`
 
-/* Recorte vertical para móvil. Con el apaisado, en una pantalla de
-   390 px de ancho la tarjeta es tan alta que `object-fit: cover` se
-   queda con un trozo del pilono y el templo no se reconoce. */
-const HERO_SRCSET_VERT = `/hero-vert-500.webp${V} 500w, /hero-vert-760.webp${V} 760w`
+/* Recorte vertical para móvil, centrado en el pilono. Con el apaisado,
+   en una pantalla de 390 px de ancho la tarjeta es tan alta que
+   `object-fit: cover` se queda con un trozo cualquiera de la foto. */
+const HERO_SRCSET_VERT = `/hero-vert-500.webp${V} 500w, /hero-vert-760.webp${V} 600w`
 
 const ID_SALAS = 'salas'
 

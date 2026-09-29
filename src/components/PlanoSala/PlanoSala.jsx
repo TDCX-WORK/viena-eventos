@@ -60,7 +60,10 @@ export default function PlanoSala({ sala }) {
         role="img"
         aria-labelledby={`plano-t-${sala.slug} plano-d-${sala.slug}`}
       >
-        <title id={`plano-t-${sala.slug}`}>Plano de {sala.name}</title>
+        {/* Un solo texto (plantilla), no "Plano de " + {nombre}: React
+            exige que el contenido de <title> sea una cadena única y, si
+            no, avisa en cada página del prerender. */}
+        <title id={`plano-t-${sala.slug}`}>{`Plano de ${sala.name}`}</title>
         <desc id={`plano-d-${sala.slug}`}>{descripcion}</desc>
 
         {/* Huella completa. Queda de fondo siempre, para que se vea qué

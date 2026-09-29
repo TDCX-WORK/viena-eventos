@@ -30,8 +30,8 @@
          monte el componente.
 
          Las URLs tienen que coincidir con las de Hero.jsx, incluido el
-         ?v=2. Si se cambia la foto, se sustituyen los ficheros de
-         /public y se sube la versión (?v=3) aquí Y en Hero.jsx, o los
+         ?v=4. Si se cambia la foto, se sustituyen los ficheros de
+         /public y se sube la versión (?v=5) aquí Y en Hero.jsx, o los
          navegadores seguirán enseñando la vieja durante 30 días. -->
     <!-- Dos precargas, una por recorte. El `media` de cada una tiene que
          ser EXACTAMENTE el del <source> de Hero.jsx (max-width: 599px):
@@ -39,11 +39,11 @@
 
          scripts/prerender.js quita estas dos líneas en todas las páginas
          que no son la portada, porque allí no hay hero. -->
-    <link rel="preload" as="image" href="/hero-vert-760.webp?v=2"
-          imagesrcset="/hero-vert-500.webp?v=2 500w, /hero-vert-760.webp?v=2 760w"
+    <link rel="preload" as="image" href="/hero-vert-760.webp?v=4"
+          imagesrcset="/hero-vert-500.webp?v=4 500w, /hero-vert-760.webp?v=4 600w"
           imagesizes="100vw" media="(max-width: 599px)" fetchpriority="high" />
-    <link rel="preload" as="image" href="/hero-2000.webp?v=2"
-          imagesrcset="/hero-800.webp?v=2 800w, /hero-1280.webp?v=2 1280w, /hero-2000.webp?v=2 2000w"
+    <link rel="preload" as="image" href="/hero-2000.webp?v=4"
+          imagesrcset="/hero-800.webp?v=4 800w, /hero-1280.webp?v=4 1280w, /hero-2000.webp?v=4 1900w"
           imagesizes="100vw" media="(min-width: 600px)" fetchpriority="high" />
 
     <!-- ── Tipografías ──
