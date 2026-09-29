@@ -625,15 +625,27 @@ const COOKIES = {
   ],
 }
 
+/* ── Condiciones de reserva ────────────────────────────────────────────
+   Texto de la dirección del hotel (documento "Condiciones de reserva",
+   septiembre de 2026). Ya no es un borrador técnico: son sus
+   condiciones comerciales. Lo que en el documento venía tachado o eran
+   notas internas ("esto lo puse para las productoras") no se publica.
+
+   El suplemento de fin de semana del punto 2 se ANUNCIA aquí pero NO se
+   suma en el presupuesto de la web: lo decide el hotel caso a caso. El
+   importe que suma la web es el de "Supl. finde/festivo" del panel
+   (Precios); mientras esté a 0, no aparece en el resumen ni en la ficha. */
 const CONDICIONES = {
   slug: 'condiciones-reserva',
   ruta: '/condiciones-reserva',
   titulo: 'Condiciones de reserva',
+  // Texto aprobado por la dirección: sin cartel de borrador y se indexa.
+  borrador: false,
+  actualizado: '29 de septiembre de 2026',
   seoTitulo: 'Condiciones de reserva de salas | Suites Viena Plaza de España',
   seoDescripcion:
-    'Condiciones aplicables al alquiler de las salas de reuniones de Suites Viena Plaza de España: solicitud, confirmación, pago, cancelaciones y uso de los espacios.',
-  entradilla:
-    'Condiciones aplicables al alquiler de las salas. Todo este documento está pendiente de que el hotel confirme sus condiciones comerciales reales.',
+    'Condiciones aplicables al alquiler de las salas de reuniones de Suites Viena Plaza de España: solicitud, precios, horarios, pago, cancelaciones y uso de los espacios.',
+  entradilla: 'Condiciones aplicables al alquiler de las salas.',
   secciones: [
     {
       h: '1. La solicitud no es una reserva',
@@ -641,14 +653,14 @@ const CONDICIONES = {
         {
           tipo: 'p',
           texto:
-            'El formulario de esta web sirve para solicitar una sala. Al enviarlo recibirás un correo de acuse de recibo ' +
-            'con un número de referencia, que confirma que la solicitud ha llegado, no que la sala esté reservada.',
+            'El cliente, al enviar la solicitud al establecimiento, recibe un correo de acuse de recibo con un número de ' +
+            'referencia, que no constituye una reserva en firme.',
         },
         {
           tipo: 'p',
           texto:
-            'La reserva existe cuando el hotel la confirma expresamente, {{indicar plazo de respuesta habitual}}, y con las ' +
-            'condiciones que figuren en esa confirmación.',
+            'El establecimiento contactará con el cliente, confirmando o no la disponibilidad de la sala, en un plazo ' +
+            'aproximado de 24 a 72 horas.',
         },
       ],
     },
@@ -658,19 +670,26 @@ const CONDICIONES = {
         {
           tipo: 'p',
           texto:
-            'Los precios publicados corresponden a media jornada o jornada completa según se indique, e incluyen el ' +
-            'equipamiento descrito en la ficha de cada sala. {{Confirmar qué incluye exactamente el precio: horario de la ' +
-            'media jornada y de la jornada completa, si el montaje va incluido, qué pasa si se excede el horario.}}',
+            'Los precios publicados incluyen agua, carpetas, folios y bolígrafos, así como el uso de proyector y pantalla.',
+        },
+        {
+          tipo: 'p',
+          texto: 'Durante los fines de semana y festivos se podrá aplicar un suplemento mínimo de 100 € por día.',
         },
         {
           tipo: 'p',
           texto:
-            'Los extras y el catering se facturan aparte, según las cantidades finalmente consumidas o contratadas. ' +
-            '{{Confirmar con cuánta antelación hay que cerrar el catering y el número definitivo de asistentes.}}',
+            'Horario de mañana: de 9:00 a 14:00. Horario de tarde: de 15:00 a 20:00. Fuera de este horario se aplican ' +
+            'otros precios.',
         },
         {
           tipo: 'p',
-          texto: 'Todos los precios se muestran con IVA incluido. {{Confirmar.}}',
+          texto:
+            'El uso de las salas para otro tipo de eventos (que no sean reuniones o formaciones) se cotiza a otros precios.',
+        },
+        {
+          tipo: 'p',
+          texto: 'Todos los precios incluyen los impuestos correspondientes.',
         },
       ],
     },
@@ -680,8 +699,8 @@ const CONDICIONES = {
         {
           tipo: 'p',
           texto:
-            '{{Describir la forma de pago: si hay señal o prepago, qué porcentaje, cuándo se abona el resto, qué medios se ' +
-            'aceptan y cómo se factura a empresas.}}',
+            'El establecimiento informará a cada cliente de la política de pago y cancelación. En todo caso, el pago deberá ' +
+            'realizarse con al menos 10 días de antelación a la fecha de la reserva.',
         },
       ],
     },
@@ -690,15 +709,13 @@ const CONDICIONES = {
       bloques: [
         {
           tipo: 'p',
-          texto:
-            '{{Describir la política de cancelación: hasta cuándo se cancela sin coste, qué penalización se aplica después, ' +
-            'y si se permiten cambios de fecha y en qué condiciones.}}',
+          texto: 'Una vez realizado el pago, el cliente no tiene derecho a reembolso.',
         },
         {
           tipo: 'p',
           texto:
-            'El hotel podrá cancelar o reubicar la reserva por causas de fuerza mayor o por incidencias técnicas en la sala, ' +
-            'ofreciendo un espacio equivalente o la devolución de lo abonado.',
+            'El establecimiento podrá cancelar o reubicar la reserva por causas de fuerza mayor o por incidencias técnicas ' +
+            'en la sala, ofreciendo un espacio equivalente o la devolución de lo abonado.',
         },
       ],
     },
@@ -711,7 +728,8 @@ const CONDICIONES = {
             'El aforo máximo de cada montaje es el publicado en la ficha de la sala y no puede superarse.',
             'El cliente responde de los daños que él o sus asistentes causen en el mobiliario, el equipamiento o las instalaciones.',
             'Está prohibido fumar en todo el establecimiento.',
-            '{{Indicar si se permite introducir comida o bebida ajena al hotel, colgar material en las paredes o acceder fuera del horario contratado.}}',
+            'El cliente no podrá introducir comida o bebida, ni contratar un catering ajeno al del establecimiento.',
+            'No está permitido colgar material en las paredes ni acceder fuera del horario contratado.',
           ],
         },
       ],

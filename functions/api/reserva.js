@@ -53,6 +53,15 @@ const URL_PANEL = 'https://suitesvienaeventos.com/admin/reservas'
    política de precios, se cambia AQUÍ y en ningún otro sitio. */
 const TEXTO_IVA = 'IVA incluido'
 
+/* Suplemento de fin de semana. NO se suma al precio de la web (el hotel
+   decide caso a caso si lo cobra), pero si la solicitud tiene algún
+   sábado o domingo se avisa al cliente en su correo, tal y como dicen
+   las condiciones de reserva (punto 2). Los festivos no se detectan:
+   la web no tiene calendario de festivos y los cubren las condiciones. */
+const AVISO_FINDE =
+  'Tu solicitud incluye fin de semana: podría aplicarse un suplemento mínimo de 100 € por día. ' +
+  'Te lo confirmaremos al responderte.'
+
 const TELEFONO_HOTEL = { texto: '917 583 605', tel: '+34917583605' }
 
 /* Este endpoint manda correos a una dirección que viene en el cuerpo de
@@ -451,7 +460,7 @@ const correoCliente = (d) => armazon('Solicitud recibida - Suites Viena', `
     <tr>
       <td class="px" style="padding:32px 40px 0;">
         <p class="greet" style="margin:0 0 6px;font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:700;color:${C.tinta};">Hola, ${texto(d.contacto.nombre, 80)}</p>
-        <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:15px;color:${C.suave};line-height:24px;">Gracias por tu interés. Hemos recibido tu solicitud y la estamos revisando. Te escribiremos en las próximas horas para confirmar la disponibilidad y cerrar los detalles contigo.</p>
+        <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:15px;color:${C.suave};line-height:24px;">Gracias por tu interés. Hemos recibido tu solicitud y la estamos revisando. Te escribiremos en un plazo aproximado de 24 a 72 horas para confirmar la disponibilidad y cerrar los detalles contigo.</p>
       </td>
     </tr>
 
@@ -469,6 +478,21 @@ const correoCliente = (d) => armazon('Solicitud recibida - Suites Viena', `
         </table>
       </td>
     </tr>
+
+    ${d.hayFinde ? `<!-- Fin de semana -->
+    <tr>
+      <td class="px" style="padding:12px 40px 0;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+          style="background-color:${C.bloque};border:1px solid ${C.linea};border-radius:10px;">
+          <tr>
+            <td style="padding:14px 18px;font-family:Arial,Helvetica,sans-serif;">
+              <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:${C.acento};">Fin de semana</p>
+              <p style="margin:0;font-size:14px;line-height:21px;color:${C.suave};">${AVISO_FINDE}</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>` : ''}
 
     <!-- Referencia -->
     <tr>
@@ -607,6 +631,11 @@ function leerDatos(cuerpo) {
       capacidad: cuerpo?.sala?.capacidad || '—',
     },
     fechas: Array.isArray(cuerpo.fechas) ? cuerpo.fechas.slice(0, 30) : [],
+    /* ¿Algún sábado o domingo? El navegador manda `finde`; si viniera de
+       una versión vieja de la web sin ese campo, se mira el nombre del
+       día ("sábado 3 de octubre"). */
+    hayFinde: (Array.isArray(cuerpo.fechas) ? cuerpo.fechas.slice(0, 30) : [])
+      .some(f => f?.finde === true || /^(sábado|domingo)/i.test(String(f?.fecha || ''))),
     extras: Array.isArray(cuerpo.extras) ? cuerpo.extras.slice(0, 20) : [],
     precios: {
       base:      Number(precios.base)      || 0,

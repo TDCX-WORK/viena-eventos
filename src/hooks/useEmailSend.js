@@ -46,6 +46,8 @@ const formatFechas = (booking) => {
     // Sin montaje elegido: la configuración es opcional en el wizard.
     layout:     LAYOUT_LABELS[f.layout] || 'Sin preferencia',
     asistentes: f.asistentes || '—',
+    // Sábado o domingo: el correo al cliente avisa del posible suplemento.
+    finde:      [0, 6].includes(f.date.getDay()),
   }))
 }
 
